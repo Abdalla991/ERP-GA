@@ -151,7 +151,7 @@
                                         <field name="product_uom_category_id" invisible="1"/>
                                         <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
                                         <field name="price_unit" string="Price"/>
-                                        <field name="discount" string="Disc.%" optional="hide"/>
+                                        <field name="discount" string="Disc.%"/>
                                         <field name="tax_ids" widget="many2many_tags" domain="[('type_tax_use', '=?', parent.invoice_filter_type_domain), ('company_id', '=', parent.company_id)]" context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}" options="{'no_create': True}" optional="show"/>
                                         <!--<field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>-->
                                         <field name="yds_price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>

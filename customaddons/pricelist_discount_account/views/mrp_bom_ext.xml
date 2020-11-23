@@ -6,8 +6,14 @@
             <field name="name">mrp.bom.form.view.ext</field>
             <field name="model">mrp.bom</field>
             <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
-            <!-- <field name="groups_id" eval="[(4, ref('mrp_plm.group_plm_user'))]"/> -->
             <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group/field[@name='type']" position="after">
+                    <field name="start_date"/>
+                    <field name="end_date" />
+
+                </xpath>
+
                 <xpath expr="//form/sheet/notebook/page[1]/field/tree/field[@name='product_qty']" position="after">
                     <field name="yds_product_percent"/>
 

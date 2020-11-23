@@ -98,7 +98,7 @@ class KsGlobalDiscountInvoice(models.Model):
                 lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
             other_lines = self.line_ids.filtered(
                 lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-            if already_exists:z
+            if already_exists:
                 amount = rec.ks_amount_discount
                 if rec.ks_sales_discount_account_id \
                         and (rec.move_type == "out_invoice"

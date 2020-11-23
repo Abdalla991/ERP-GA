@@ -3,6 +3,8 @@ from odoo import models, fields, api, exceptions
 
 class YdsMrpBom(models.Model):
     _inherit = "mrp.bom"
+    start_date = fields.Date(string="Start Date")
+    end_date = fields.Date(string="End Date")
 
 
     @api.onchange('bom_line_ids','product_tmpl_id', 'product_qty','product_uom_id')
