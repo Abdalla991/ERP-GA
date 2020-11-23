@@ -8,7 +8,7 @@ class YDSAccountMovePricelist(models.Model):
 
     pricelist_id = fields.Many2one(
         'product.pricelist', string='Pricelist', check_company=True,  # Unrequired company
-        required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+         readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", tracking=1,
         help="If you change the pricelist, only newly added lines will be affected.")
 
@@ -181,4 +181,4 @@ class YDSSaleOrderPricelist(models.Model):
         res['pricelist_id'] = self.pricelist_id
 
             
-        return res
+        return res 

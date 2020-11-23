@@ -5,9 +5,8 @@ from odoo.exceptions import UserError, ValidationError
 class KSGlobalDiscountPurchases(models.Model):
     _inherit = "purchase.order"
 
-    ks_global_discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')],
+    ks_global_discount_type = fields.Selection([('percent', 'Percentage')],
                                                string='Universal Discount Type', readonly=True,
-                                               states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                                default='percent')
     ks_global_discount_rate = fields.Float('Universal Discount', readonly=True,
                                            states={'draft': [('readonly', False)], 'sent': [('readonly', False)]})
@@ -20,7 +19,12 @@ class KSGlobalDiscountPurchases(models.Model):
         for rec in self:
             rec.ks_enable_discount = rec.company_id.ks_enable_discount
 
-    @api.depends('order_line.price_total', 'ks_global_discount_type', 'ks_global_discount_rate')
+    @api.onchange('partner_id')
+    def calc_uni_rate(self):
+        for rec in self:
+            rec.ks_global_discount_rate = rec.partner_id.yds_customer_universal_discount_rate
+            
+    @api.depends('order_line.price_total', 'ks_global_discount_rate')
     def _amount_all(self):
         ks_res = super(KSGlobalDiscountPurchases, self)._amount_all()
         for rec in self:

@@ -9,16 +9,16 @@
                 <xpath expr="//field[@name='has_accounting_entries']" position="after">
 
                     <h2 attrs="{'invisible': [('has_chart_of_accounts','==',False)]}">Universal Discount</h2>
-                    <div class="row mt16 o_settings_container"
+                    <div class="row mt16 o_settings_container" 
                          attrs="{'invisible': [('has_chart_of_accounts','==',False)]}">
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="ks_enable_discount"/>
+                                <field name="ks_enable_discount" invisible="1"/>
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for ='ks_enable_discount'/>
                                 <div class="text-muted">
-                                    Activate Universal discount on all modules.
+                                   من فضلك إختر الحسابات التي سيتم تسجيل الخصومات بها 
                                 </div>
 
                             </div>

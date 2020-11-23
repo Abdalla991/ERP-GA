@@ -30,7 +30,8 @@ class YDSAccountMove(models.Model):
         'line_ids.amount_residual_currency',
         'line_ids.payment_id.state',
         'line_ids.price_subtotal',   #change to moataz's new variable
-        'yds_total_discount')
+        'yds_total_discount',
+        'pricelist_id')
     def _compute_amount(self):
         super(YDSAccountMove, self)._compute_amount()
         for rec in self:
@@ -38,7 +39,6 @@ class YDSAccountMove(models.Model):
             rec.yds_total_discount=0
             rec._calculatePricelistDiscount()
             rec.amount_total = rec.amount_tax + rec.amount_untaxed - rec.yds_total_discount
-            rec.add_lines()
             # rec.update_pricelist_account()
             #depending on the change of the price_subtotal field
             rec.yds_amount_untaxed = rec.amount_untaxed
@@ -51,8 +51,11 @@ class YDSAccountMove(models.Model):
 
     def _calculatePricelistDiscount(self):
         for rec in self:
-         for line in rec.line_ids:
+            for line in rec.line_ids:
                 rec.yds_total_discount += line.price_unit * ( (line.discount or 0.0) / 100.0) * line.quantity
+            
+            rec.remove_lines_disc() #somehow wont work after .add_lines()
+            rec.add_lines()
     
     @api.model
     def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
@@ -101,7 +104,7 @@ class YDSAccountMove(models.Model):
                         universal_discount_line_amount=0
 
                     
-                    lineName =  str(move._origin.id)+" "+line.name[:64]+" discount " + str(line.sequence)
+                    lineName = line.name[:64]+" discount " + str(line.sequence)
                     already_exists = self.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     terms_lines = self.line_ids.filtered(
@@ -217,9 +220,9 @@ class YDSAccountMove(models.Model):
                                             print("in draft mode 1")
                                             self.line_ids += create_method(dict)
                                             # Updation of Invoice Line Id
-                                            duplicate_id = self.invoice_line_ids.filtered(
-                                                lambda line: line.name and line.name.find(lineName) == 0)
-                                            self.invoice_line_ids = self.invoice_line_ids - duplicate_id
+                                            # duplicate_id = self.invoice_line_ids.filtered(
+                                            #     lambda line: line.name and line.name.find(lineName) == 0)
+                                            # self.invoice_line_ids = self.invoice_line_ids - duplicate_id
                                         else:
                                             dict.update({
                                             'price_unit': 0.0,
@@ -236,6 +239,12 @@ class YDSAccountMove(models.Model):
                                         lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
                                     total_balance = sum(other_lines.mapped('balance'))  
                                     total_amount_currency = sum(other_lines.mapped('amount_currency'))
+                                    print("exists? " + str(exists))
+                                    # if(exists):
+                                    #     total_balance = sum(other_lines.mapped('balance'))
+                                    # else:
+                                    #     total_balance = sum(other_lines.mapped('balance')) + amount
+                                    print("total balance: "+ str(total_balance))
                                     terms_lines.update({
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
@@ -250,6 +259,8 @@ class YDSAccountMove(models.Model):
                                                         lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
                                     other_lines = self.line_ids.filtered(
                                                         lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
+                                    total_balance = sum(other_lines.mapped('balance'))  
+                                    total_amount_currency = sum(other_lines.mapped('amount_currency'))
                                     if(exists):
                                         total_balance = sum(other_lines.mapped('balance'))
                                     else:
@@ -272,7 +283,28 @@ class YDSAccountMove(models.Model):
       
             # Post entries.
             # return super()._post(soft=False)
-
+    def remove_lines_disc(self):
+        print("checking lines to remove")
+        for move in self:
+            for line in move.invoice_line_ids:
+                if line.discount == 0:
+                    lineName = line.name[:64]+" discount " + str(line.sequence)
+                    already_exists = self.line_ids.filtered(
+                                lambda line: line.name and line.name.find(lineName) == 0)
+                    if already_exists:
+                        print("found")
+                        self.line_ids -= already_exists
+                        terms_lines = self.line_ids.filtered(
+                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
+                        other_lines = self.line_ids.filtered(
+                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
+                        total_balance = sum(other_lines.mapped('balance'))
+                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
+                        terms_lines.update({
+                            'amount_currency': -total_amount_currency,
+                            'debit': total_balance < 0.0 and -total_balance or 0.0,
+                            'credit': total_balance > 0.0 and total_balance or 0.0,
+                        })
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
@@ -303,7 +335,31 @@ class YDSAccountMoveLine(models.Model):
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
- 
+
+    # def unlink(self):
+    #     print("unlink called")
+    #     for line in self:
+    #         lineName = line.name[:64]+" discount " + str(line.sequence)
+    #         already_exists = self.filtered(
+    #                         lambda line: line.name and line.name.find(lineName) == 0)
+    #         if already_exists:
+    #                 print("found")
+    #                 self -= already_exists
+    #                 terms_lines = self.filtered(
+    #                     lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
+    #                 other_lines = self.filtered(
+    #                     lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
+    #                 total_balance = sum(other_lines.mapped('balance'))
+    #                 total_amount_currency = sum(other_lines.mapped('amount_currency'))
+    #                 terms_lines.update({
+    #                     'amount_currency': -total_amount_currency,
+    #                     'debit': total_balance < 0.0 and -total_balance or 0.0,
+    #                     'credit': total_balance > 0.0 and total_balance or 0.0,
+    #                 })
+            
+    #     res = super(YDSAccountMoveLine, self).unlink()
+    #     return res
+
 
 # class YDSAccountAnalyticLine(models.Model):
 #     _inherit = 'account.analytic.line'
