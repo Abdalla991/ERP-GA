@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_universal" model="ir.ui.view">
+            <field name="name">view.partner.form.universal</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/notebook/page[2]/group/group/field[@name='user_id']" position="after">
+                <!-- YDS universal discount related fields -->
+                  <field name="yds_customer_universal_discount_rate"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
