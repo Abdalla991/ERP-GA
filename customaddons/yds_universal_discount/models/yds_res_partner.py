@@ -6,7 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 class YDSResPartner(models.Model):
     _inherit = "res.partner"
     
-    yds_customer_universal_discount_rate = fields.Float('Universal Discount',readonly=False)
+    yds_customer_universal_discount_rate = fields.Float('Universal Discount', default="0.0",readonly=False)
 
     
 

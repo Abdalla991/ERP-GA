@@ -10,10 +10,8 @@
                     <div class="ks_container">
                         <field name="ks_enable_discount" invisible="1"/>
                         <field name="ks_amount_discount" invisible="1"/>
-                        <label for="ks_global_discount_type" string="Universal Discount Type:"
-                               attrs="{'invisible':['|',('ks_enable_discount','!=',True),('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))]}"/>
-                        <field name="ks_global_discount_type" class="oe_inline"
-                               attrs="{'invisible':['|',('ks_enable_discount','!=',True),('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))],'readonly':['|',('ks_enable_discount','!=',True),('state', 'in', ['posted', 'cancel'])]}"/>
+                        <field name="ks_global_discount_type" class="oe_inline" invisible = "1"/>
+                               
                     </div>
                     <div class="ks_container">
                         <label for="ks_global_discount_rate" string="Universal Discount :"

@@ -7,10 +7,8 @@ from odoo.exceptions import UserError, ValidationError
 class KsGlobalDiscountSales(models.Model):
     _inherit = "sale.order"
 
-    ks_global_discount_type = fields.Selection([('percent', 'Percentage'), ('amount', 'Amount')],
-                                               string='Universal Discount Type',
-                                               readonly=True,
-                                               states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+    ks_global_discount_type = fields.Selection([('percent', 'Percentage')],
+                                               string='Universal Discount Type', readonly=True,
                                                default='percent')
     ks_global_discount_rate = fields.Float('Universal Discount',
                                            readonly=True,
@@ -24,13 +22,18 @@ class KsGlobalDiscountSales(models.Model):
         for rec in self:
             rec.ks_enable_discount = rec.company_id.ks_enable_discount
 
-    @api.depends('order_line.price_total', 'ks_global_discount_rate', 'ks_global_discount_type')
+    @api.depends('order_line.price_total', 'ks_global_discount_rate')
     def _amount_all(self):
         res = super(KsGlobalDiscountSales, self)._amount_all()
         for rec in self:
             if not ('ks_global_tax_rate' in rec):
                 rec.ks_calculate_discount()
         return res
+
+    @api.onchange('partner_id')
+    def calc_uni_rate(self):
+        for rec in self:
+            rec.ks_global_discount_rate = rec.partner_id.yds_customer_universal_discount_rate
 
     # @api.multi
     def _prepare_invoice(self):

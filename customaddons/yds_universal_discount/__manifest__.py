@@ -54,6 +54,7 @@
         'views/ks_account_invoice_supplier_form.xml',
         'views/ks_account_account.xml',
         'views/ks_report.xml',
+        'views/yds_res_partner.xml',
         'views/assets.xml',
 
     ],
