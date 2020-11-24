@@ -47,7 +47,7 @@
                 <tr>
                     <td>
                         <span>Universal Discount </span>
-                        <t t-if="o.ks_global_discount_type == 'percent'">
+                        <t t-if="o.ks_global_discount_type == 'percent'"> 
                             (<span t-field="o.ks_global_discount_rate"/>%)
                         </t>
                     </td>
@@ -55,6 +55,21 @@
                         <span t-field="o.ks_amount_discount"
                               t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
                     </td>
+                </tr>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@class='row justify-content-end']" position="after">
+            <t t-if="o.payment_term_id">
+
+                <tr>
+                    <td>
+                        <span>Payment Terms: </span>
+                        <t t-if="o.payment_term_id"> 
+                            <span t-field="o.payment_term_id"/>
+                        </t>
+                    </td>
+
                 </tr>
             </t>
         </xpath>
