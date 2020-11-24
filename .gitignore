@@ -1,1 +1,8 @@
-__pycache__/
+customaddons/pricelist_discount_account/__pycache__
+customaddons/universal_discount/__pycache__
+customaddons/universal_discountClean/__pycache__
+customaddons/yds_universal_discount/__pycache__
+customaddons/pricelist_discount_account/models/__pycache__
+customaddons/universal_discount/models/__pycache__
+customaddons/universal_discountClean/models/__pycache__
+customaddons/yds_universal_discount/models/__pycache__
