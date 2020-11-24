@@ -49,8 +49,7 @@ class KsGlobalDiscountInvoice(models.Model):
         'line_ids.amount_residual_currency',
         'line_ids.payment_id.state',
         'ks_global_discount_type',
-        'ks_global_discount_rate',
-        'yds_total_discount')
+        'ks_global_discount_rate')
     def _compute_amount(self):
         super(KsGlobalDiscountInvoice, self)._compute_amount()
         for rec in self:
@@ -213,7 +212,7 @@ class KsGlobalDiscountInvoice(models.Model):
                     else:
                         universal_discount_line_amount=0
 
-                    print ("in loop: "+ str(count) +" currunt line sequence: "+str(line.sequence))
+                    
                     lineName =  line.name[:64]+" Universal discount " + str(line.sequence)
                     already_exists = self.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
@@ -222,7 +221,7 @@ class KsGlobalDiscountInvoice(models.Model):
                     other_lines = self.line_ids.filtered(
                         lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
                     if already_exists:
-                        print("Uni Aleady exisits 1 "+lineName)
+                        print("Uni Aleady exisits 1 "+line.name)
                         exists=True
                         amount = universal_discount_line_amount
                         if sale_uni_discount_account \

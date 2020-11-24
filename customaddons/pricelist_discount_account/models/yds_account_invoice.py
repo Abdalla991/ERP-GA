@@ -64,11 +64,6 @@ class YDSAccountMove(models.Model):
         yds_res['yds_total_discount'] = self.yds_total_discount
         return yds_res
 
-    # def add_disc_to_tax(self):
-    #     for move in self:
-    #         for line in move.invoice_line_ids:
-    #             rec.amount_tax = rec.amount_tax + line.yds_total_discount*
-
     def add_lines(self):       
         # OVERRIDE
         # Don't change anything on moves used to cancel another ones.
