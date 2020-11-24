@@ -1,4 +1,7 @@
-from odoo import models, fields, api, exceptions
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+from collections import defaultdict
+import ipdb 
 
 
 class YdsMrpBom(models.Model):
@@ -39,9 +42,18 @@ class YdsMrpBomLine(models.Model):
                     bom_line.product_qty = bom_line.yds_product_qty
 
             
-                
+               
 
+class YdsMrpProduction(models.Model):
+    _inherit = "mrp.production"
 
+    def button_mark_done(self):
+        for move in self.move_raw_ids:
+            if not move.forecast_availability < move.quantity_done:
+                raise ValidationError('Please check the availability for all components.')
+                return
+        res = super(YdsMrpProduction, self).button_mark_done()
+        return res
 
 
  
