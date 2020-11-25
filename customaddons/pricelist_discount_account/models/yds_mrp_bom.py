@@ -41,13 +41,7 @@ class YdsMrpBomLine(models.Model):
                     bom_line.yds_product_qty = bom_line.yds_product_percent / 100 * bom_line.yds_record_product_qty
                     bom_line.product_qty = bom_line.yds_product_qty
 
-            
-               
-
-class YdsMrpProduction(models.Model):
-    _inherit = "mrp.production"
-
-
+                        
 
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
