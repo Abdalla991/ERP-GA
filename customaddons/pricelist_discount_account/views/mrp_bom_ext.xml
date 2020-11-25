@@ -33,8 +33,9 @@
             <field name="arch" type="xml">
             <xpath expr="//field[@name='bom_id']" position="after">
                     <field name="yds_bom_expired" invisible="1"/>
-                    <label for="yds_bom_expired" attrs="{'invisible':('yds_bom_expired','==',True)}" style="color:red ! important;" string="Selected Bill of Material has expired" />
-
+                    <group>
+                    <label for="yds_bom_expired" attrs="{'invisible':[('yds_bom_expired','==',False)]}" style="color:red ! important;" string="Selected Bill of Material has expired" />
+                    </group>    
                     </xpath>
                  </field>
         </record>

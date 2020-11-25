@@ -213,7 +213,7 @@ class KsGlobalDiscountInvoice(models.Model):
                         universal_discount_line_amount=0
 
                     
-                    lineName =  line.name[:64]+" Universal discount " + str(line.sequence)
+                    lineName =  line.name[:64]+" Universal discount "
                     already_exists = self.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     terms_lines = self.line_ids.filtered(
@@ -422,7 +422,6 @@ class KsGlobalDiscountInvoice(models.Model):
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
                                         })
-                                    ipdb.set_trace()
                                 else: 
                                     print("Uni not in draft mode final")
                                     already_exists = self.line_ids.filtered(
@@ -476,7 +475,7 @@ class KsGlobalDiscountInvoice(models.Model):
         for move in self:
             for line in move.invoice_line_ids:
                 if move.ks_global_discount_rate == 0:
-                    lineName =  line.name[:64]+" Universal discount " + str(line.sequence)
+                    lineName =  line.name[:64]+" Universal discount "
                     already_exists = self.line_ids.filtered(
                                 lambda line: line.name and line.name.find(lineName) == 0)
                     if already_exists:

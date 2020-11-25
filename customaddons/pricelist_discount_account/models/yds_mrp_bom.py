@@ -55,6 +55,11 @@ class YdsMrpBomLine(models.Model):
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
     yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired", Default="False")
+                        
+
+class YdsMrpProduction(models.Model):
+    _inherit = "mrp.production"
+    yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired !", Default="False")
     
     @api.depends('product_id', 'bom_id', 'company_id')
     def _compute_allowed_product_ids(self):
@@ -65,13 +70,16 @@ class YdsMrpProduction(models.Model):
                 end = datetime.strptime(str(production.bom_id.end_date), '%Y-%m-%d')
                 current = datetime.strptime(str(datetime.now().date()), '%Y-%m-%d')
                 if start < current and end > current :
-                    production.yds_bom_expired = True
+                    production.yds_bom_expired = False
+                    print(str(production.yds_bom_expired))
                     # if  start < current:
                     #     production.yds_bom_expired.string="ab"
                     # elif end > current 
                     #     production.yds_bom_expired.string="cd"
                 else:
-                    production.yds_bom_expired = False
+                    production.yds_bom_expired = True
+                    print(str(production.yds_bom_expired))
+
         return super(YdsMrpProduction, self)._compute_allowed_product_ids()
 
     def button_mark_done(self):
