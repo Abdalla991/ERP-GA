@@ -70,6 +70,29 @@ class YDSAccountMove(models.Model):
                     print(productNames)
                     print(productCounts)
 
+    @api.onchange('invoice_line_ids')
+    def readjust_lines(self):
+        print("----------------------------------")
+        for move in self:
+            for line in move.line_ids:
+                if line.name:
+                    if "discount" in line.name:
+                        self.line_ids -= line
+                        terms_lines = self.line_ids.filtered(
+                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
+                        other_lines = self.line_ids.filtered(
+                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
+                        total_balance = sum(other_lines.mapped('balance'))
+                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
+                        terms_lines.update({
+                            'amount_currency': -total_amount_currency,
+                            'debit': total_balance < 0.0 and -total_balance or 0.0,
+                            'credit': total_balance > 0.0 and total_balance or 0.0,
+                        })
+            move.add_lines()
+                    
+
+
 
     @api.depends('amount_total')
     def _compute_amount2(self):
@@ -281,7 +304,6 @@ class YDSAccountMove(models.Model):
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
                                         })
-                                    ipdb.set_trace()
                                 else: 
                                     print("not in draft mode final")
                                     already_exists = self.line_ids.filtered(
