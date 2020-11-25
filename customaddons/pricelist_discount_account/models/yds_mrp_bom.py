@@ -51,7 +51,7 @@ class YdsMrpProduction(models.Model):
 
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
-    yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired", Default="False")
+    yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired !", Default="False")
     
     @api.depends('product_id', 'bom_id', 'company_id')
     def _compute_allowed_product_ids(self):
