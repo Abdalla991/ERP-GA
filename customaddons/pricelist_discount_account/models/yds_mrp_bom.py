@@ -41,11 +41,14 @@ class YdsMrpBomLine(models.Model):
                     bom_line.yds_product_qty = bom_line.yds_product_percent / 100 * bom_line.yds_record_product_qty
                     bom_line.product_qty = bom_line.yds_product_qty
 
-            
-               
+    @api.onchange('yds_product_percent','product_uom_id', 'yds_record_product_uom_id')
+    def _yds_check_uom(self):
+        for bom_line in self:
+                if bom_line.yds_product_percent != 0.0:
+                     if bom_line.yds_product_uom_id != bom_line.yds_record_product_uom_id: 
+                         raise ValidationError("The component doesn't have the same uom of the product.")
 
-class YdsMrpProduction(models.Model):
-    _inherit = "mrp.production"
+
 
 
 

@@ -43,6 +43,8 @@ class YDSAccountMove(models.Model):
             #depending on the change of the price_subtotal field
             rec.yds_amount_untaxed = rec.amount_untaxed
             rec.yds_amount_untaxed_after_discount = rec.yds_amount_untaxed - rec.yds_total_discount
+
+
     
     @api.depends('amount_total')
     def _compute_amount2(self):
