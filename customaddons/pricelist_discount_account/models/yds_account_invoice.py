@@ -22,6 +22,10 @@ class YDSAccountMove(models.Model):
     yds_amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_compute_amount2')
 
     @api.depends(
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency', 
         'line_ids.debit',
         'line_ids.credit',
         'line_ids.currency_id',
@@ -29,6 +33,7 @@ class YDSAccountMove(models.Model):
         'line_ids.amount_residual',
         'line_ids.amount_residual_currency',
         'line_ids.payment_id.state',
+        'line_ids.full_reconcile_id',
         'line_ids.price_subtotal',   #change to moataz's new variable
         'yds_total_discount',
         'pricelist_id')

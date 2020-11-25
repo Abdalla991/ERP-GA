@@ -32,6 +32,30 @@ class YDSSaleOrder(models.Model):
                 'amount_total': amount_untaxed + amount_tax,
             })
 
+    #fixed double id  issues
+    @api.onchange('order_line')
+    def rename_line(self):
+        print("rename_lines")
+        productNames = [] 
+        productCounts = [] 
+        for rec in self :
+            innerloopCount=0
+            for line in rec.order_line:
+                print("line number: " + str(innerloopCount))
+                innerloopCount+=1
+                print(line.product_id.name)
+                if line.product_id.name in productNames:
+                    print("product found") 
+                    index = productNames.index(line.product_id.name)
+                    productCounts[index]+=1
+                    line.name = line.product_id.name +" ("+str(productCounts[index])+")"
+                    print(line.name) 
+                else:   
+                    print("product not found..adding new product")
+                    productNames.append(line.product_id.name)
+                    productCounts.append(1)
+                    print(productNames)
+                    print(productCounts)
     # Send values to account.move
     def _prepare_invoice(self):
         res = super(YDSSaleOrder, self)._prepare_invoice()

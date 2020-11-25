@@ -422,7 +422,6 @@ class KsGlobalDiscountInvoice(models.Model):
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
                                         })
-                                    ipdb.set_trace()
                                 else: 
                                     print("Uni not in draft mode final")
                                     already_exists = self.line_ids.filtered(
