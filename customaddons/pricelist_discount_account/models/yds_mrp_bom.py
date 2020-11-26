@@ -48,15 +48,6 @@ class YdsMrpBomLine(models.Model):
                      if bom_line.yds_product_uom_id != bom_line.yds_record_product_uom_id: 
                          raise ValidationError("The component doesn't have the same uom of the product.")
 
-
-
-
-
-class YdsMrpProduction(models.Model):
-    _inherit = "mrp.production"
-    yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired", Default="False")
-                        
-
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
     yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired !", Default="False")

@@ -41,7 +41,6 @@ class YDSAccountMove(models.Model):
         super(YDSAccountMove, self)._compute_amount()
         
         for rec in self:
-            
             rec.yds_total_discount=0
             rec._calculatePricelistDiscount()
             rec.amount_total = rec.amount_tax + rec.amount_untaxed - rec.yds_total_discount
@@ -49,6 +48,7 @@ class YDSAccountMove(models.Model):
             #depending on the change of the price_subtotal field
             rec.yds_amount_untaxed = rec.amount_untaxed
             rec.yds_amount_untaxed_after_discount = rec.yds_amount_untaxed - rec.yds_total_discount
+            rec.update_tax_lines()
 
 
     
@@ -80,7 +80,6 @@ class YDSAccountMove(models.Model):
 
     @api.onchange('invoice_line_ids')
     def readjust_lines(self):
-        print("----------------------------------")
         for move in self:
             for line in move.line_ids:
                 if line.name:
@@ -99,8 +98,29 @@ class YDSAccountMove(models.Model):
                         })
             move.add_lines()
                     
+    @api.onchange('tax_line_ids')
+    def update_tax_lines(self):
+        print("----------------------------------")
+        for move in self:
+            for line in move.invoice_line_ids:
+                discount_amount = line.price_subtotal * line.discount / 100
+                for tax in line.tax_ids:
+                    print("Tax amount "+ str(tax.amount))
+                        
+    #     for move in self:
+    #         for line in move.line_ids:
+    #             if line.tax_line_id:
+    #                 untaxedAmount= move.yds_amount_untaxed_after_discount - move.ks_amount_discount
+    #                 taxAmount= line.tax_line_id.amount/100 *untaxedAmount*-1
+                    # dict1 = {       'debit': taxAmount > 0.0 and taxAmount or 0.0, 
+                    #                 'credit': taxAmount < 0.0 and -taxAmount or 0.0,
+                    #                         }
+                    # print(dict1)
+                    # self.line_ids = [(1, line.id, dict1)]
 
-
+    #                 # print("tax: " + line.tax_line_id.name+ " Amount: " + str(line.tax_line_id.amount))
+    #                 # print ("tax base amount: "+str(line.tax_base_amount))
+    #                 ipdb.set_trace()    
 
     @api.depends('amount_total')
     def _compute_amount2(self):

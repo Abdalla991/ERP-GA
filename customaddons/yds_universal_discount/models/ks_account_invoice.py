@@ -60,12 +60,6 @@ class KsGlobalDiscountInvoice(models.Model):
             # rec.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax) * (1-rec.ks_global_discount_rate/100)
             # rec.amount_untaxed_signed = -total_untaxed * (1-rec.ks_global_discount_rate/100)
 
-
-
-
-
-
-
     # @api.multi
     def ks_calculate_discount(self):
         for rec in self:
