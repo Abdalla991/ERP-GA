@@ -50,11 +50,6 @@ class YdsMrpBomLine(models.Model):
 
 
 
-
-
-class YdsMrpProduction(models.Model):
-    _inherit = "mrp.production"
-    yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired", Default="False")
                         
 
 class YdsMrpProduction(models.Model):
