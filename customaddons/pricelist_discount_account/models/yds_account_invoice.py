@@ -38,6 +38,7 @@ class YDSAccountMove(models.Model):
         for rec in self:
             rec.ks_global_discount_rate = rec.partner_id.yds_customer_universal_discount_rate
 
+    
 
     #Check that universal discount rate is valid
     @api.constrains('ks_global_discount_rate')
@@ -350,14 +351,9 @@ class YDSAccountMove(models.Model):
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
                                     })
 
-                    # Add discount line.
-      
-            # Post entries.
-            # return super()._post(soft=False)
-    @api.onchange('ks_global_discount_rate')
-
+  
     #Remove Universal discount lines if rate == 0
-    
+
     @api.onchange('ks_global_discount_rate')
     def remove_lines_uni(self):
         # print("checking lines to remove")
@@ -408,7 +404,7 @@ class YDSAccountMove(models.Model):
         'line_ids.amount_residual_currency',
         'line_ids.payment_id.state',
         'line_ids.full_reconcile_id',
-        'line_ids.price_subtotal',   #change to moataz's new variable
+        'line_ids.price_subtotal',
         'yds_total_discount',
         'ks_global_discount_rate',
         'pricelist_id',
@@ -433,11 +429,12 @@ class YDSAccountMove(models.Model):
                 total_residual = 0.0
                 total_residual_currency = 0.0
                 total = 0.0
-                total_currency = 0.0
+                total_currency = 0.0    
                 currencies = set()
 
 
-
+                
+                move._recompute_tax_lines()
                 for line in move.line_ids:
                     if line.currency_id:
                         currencies.add(line.currency_id)
@@ -474,42 +471,69 @@ class YDSAccountMove(models.Model):
                     sign = -1
 
 
-                invoiceTaxForDiscount = 0
-                invoiceTaxForUniversalDiscount = 0
-                invoiceTaxForProduct = 0
-                for line in move.invoice_line_ids:
-                    discount_amount = line.yds_price_subtotal * line.discount / 100
-                    universal_discount_amount = line.yds_price_subtotal * (1-line.discount / 100) * move.ks_global_discount_rate / 100
-                    totalTax = 0
-                    for tax in line.tax_ids:
-                        totalTax += tax.amount
-                    taxForDiscount = discount_amount * totalTax /100
-                    taxForUniversalDiscount = universal_discount_amount * totalTax /100
-                    taxForProduct = line.yds_price_subtotal * totalTax /100
-                    invoiceTaxForDiscount += taxForDiscount
-                    invoiceTaxForUniversalDiscount += taxForUniversalDiscount
-                    invoiceTaxForProduct += taxForProduct
-                    print("----------Moataz Start---------")
-                    print ("Invoice tax "+ str(invoiceTaxForDiscount))
-                    print ("universal Invoice tax "+ str(invoiceTaxForUniversalDiscount))
-                    print ("total product Tax: "+ str(invoiceTaxForProduct))
-
-
+                 
                 
+                # move.amount_tax = move.amount_tax - invoiceTaxForUniversalDiscount ###
+                # difference = move.yds_amount_tax - move.amount_tax
+                
+                # move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount - difference ###
+                
+                # move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
+                
+                # move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual) - difference  ###
+                # move.amount_untaxed_signed = -total_untaxed
+                # # move.amount_tax_signed = -total_tax * (1-move.ks_global_discount_rate/100) ####
+                # move.amount_tax_signed = -total_tax
+                # move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
+                # move.amount_residual_signed = total_residual
+
+                # move.yds_amount_tax = move.amount_tax
+        
                 move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
+                move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
+                move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
+                move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+                move.amount_untaxed_signed = -total_untaxed
+                move.amount_tax_signed = -total_tax
+                move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
+                move.amount_residual_signed = total_residual
+
                 move.yds_total_discount=0
                 move._calculatePricelistDiscount()
                 move.yds_amount_untaxed = move.amount_untaxed
                 move.yds_amount_untaxed_after_discount = move.yds_amount_untaxed - move.yds_total_discount
-                move.add_lines_uni()
-                # move.remove_lines_disc() #somehow wont work after .add_lines()
-                move.add_lines()
-                    
+
+
+                # invoiceTaxForDiscount = 0
+                # invoiceTaxForUniversalDiscount = 0
+                # invoiceTaxForProduct = 0
+                # for line in move.invoice_line_ids:
+                #     discount_amount = line.yds_price_subtotal * line.discount / 100
+                #     universal_discount_amount = line.yds_price_subtotal * (1-line.discount / 100) * move.ks_global_discount_rate / 100
+                #     totalTax = 0
+                #     for tax in line.tax_ids:
+                #         totalTax += tax.amount
+                #     taxForDiscount = discount_amount * totalTax /100
+                #     taxForUniversalDiscount = universal_discount_amount * totalTax /100
+                #     taxForProduct = line.yds_price_subtotal * totalTax /100
+                #     invoiceTaxForDiscount += taxForDiscount
+                #     invoiceTaxForUniversalDiscount += taxForUniversalDiscount
+                #     invoiceTaxForProduct += taxForProduct
+                #     print("----------Moataz Start---------")
+                #     print ("Invoice tax "+ str(invoiceTaxForDiscount))
+                #     print ("universal Invoice tax "+ str(invoiceTaxForUniversalDiscount))
+                #     print ("total product Tax: "+ str(invoiceTaxForProduct))     
+
+                # if invoiceTaxForProduct ==  sign * (total_tax_currency if len(currencies) == 1 else total_tax):
+                #     move.amount_tax = invoiceTaxForProduct - invoiceTaxForDiscount
+                # else:
+                #     move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
+
                 
+                # print("amount_tax" + str(move.amount_tax))
+                # print("----------Moataz End---------")
 
 
-
-                difference = 0
                 if move.ks_global_discount_type == "amount":
                     move.ks_amount_discount = move.ks_global_discount_rate if move.yds_amount_untaxed_after_discount > 0 else 0
                 elif move.ks_global_discount_type == "percent":
@@ -521,30 +545,11 @@ class YDSAccountMove(models.Model):
                     move.ks_global_discount_rate = 0
                     move.ks_amount_discount = 0
 
-                if invoiceTaxForProduct ==  sign * (total_tax_currency if len(currencies) == 1 else total_tax):
-                    move.amount_tax = invoiceTaxForProduct - invoiceTaxForDiscount
-                else:
-                    move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
 
-                move.yds_amount_tax = move.amount_tax
-                print("amount_tax" + str(move.amount_tax))
-                print("----------Moataz End---------")
+                move.add_lines_uni()
+                move.add_lines()
 
-                # move.amount_tax = move.amount_tax - invoiceTaxForUniversalDiscount ###
-                difference = move.yds_amount_tax - move.amount_tax
-                
-                move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount - difference ###
-                
-                # move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax) #Remove me
-                
-                move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual) - difference  ###
-                move.amount_untaxed_signed = -total_untaxed
-                move.amount_tax_signed = -total_tax * (1-move.ks_global_discount_rate/100) ####
-                move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
-                move.amount_residual_signed = total_residual
-                
-        
-                
+               
 
 
                 currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
@@ -572,14 +577,15 @@ class YDSAccountMove(models.Model):
                         new_pmt_state = 'reversed'
 
                 move.payment_state = new_pmt_state
-                move._recompute_tax_lines()
+
+    
 
     #Rename lines with same already existing product to avoid ignoring of discount lines due to dubplicate line names
     @api.onchange('invoice_line_ids')
     def rename_line(self):
         # print("rename_lines")
         productNames = [] 
-        productCounts = [] 
+        productCounts = []
         for rec in self :
             innerloopCount=0
             for line in rec.invoice_line_ids:
@@ -600,8 +606,9 @@ class YDSAccountMove(models.Model):
                     # print(productCounts)
 
     #On row deletion or addition readd lines
-    @api.onchange('invoice_line_ids')
+    # @api.onchange('invoice_line_ids')
     def readjust_lines(self):
+        print("readjust_lines called")
         for move in self:
             for line in move.line_ids:
                 if line.name:
@@ -639,12 +646,13 @@ class YDSAccountMove(models.Model):
 
 
 
-    #Add regular discount line per product
+    # #Add regular discount line per product
+    # @api.onchange('line_ids.discount',
+    #     'line_ids.price_subtotal',
+    #     'yds_total_discount')
     def add_lines(self):       
-
         print("adding discount line")
         type_list = ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']
-
         for move in self:
             count =0  #for counting loops
             if move.is_invoice(include_receipts=True):
@@ -689,6 +697,7 @@ class YDSAccountMove(models.Model):
                         print("Aleady exisits 1 "+line.name)
                         exists=True
                         amount = pricelist_discount_line_amount
+                        print("new amount = "+str(amount))
                         if product_discount_account \
                                 and (move.move_type == "out_invoice"
                                     or move.move_type == "out_refund")\
@@ -698,6 +707,8 @@ class YDSAccountMove(models.Model):
                                     'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
                                 })
+                                print("new debit= "+str(already_exists.debit))
+                                print("new credit= "+str(already_exists.credit))
                             else:
                                 already_exists.update({
                                     'debit': amount < 0.0 and -amount or 0.0,
@@ -710,12 +721,11 @@ class YDSAccountMove(models.Model):
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
                         })
+                        ipdb.set_trace()
+                        total_balance = sum(other_lines.mapped('balance'))
+                        print("total balance: "+ str(total_balance))
                     if not already_exists and pricelist_discount_line_amount > 0:
                         print("does not exist")
-                        search_ids =  self.env['account.move.line'].search([],order="id desc")
-                        last_id = search_ids and max(search_ids)
-                        predictedId = last_id.id + 1
-
                         in_draft_mode = self != self._origin
                         if move.move_type == 'out_invoice':
                             newLineName = line.name[:64]+" discount "
@@ -817,12 +827,11 @@ class YDSAccountMove(models.Model):
                                     total_balance = sum(other_lines.mapped('balance'))  
                                     print("total balance: "+ str(total_balance))
                                     total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                    # print("exists? " + str(exists))
+                                    print("exists? " + str(exists))
                                     # if(exists):
                                     #     total_balance = sum(other_lines.mapped('balance'))
                                     # else:
                                     #     total_balance = sum(other_lines.mapped('balance')) + amount
-                                    # print("total balance: "+ str(total_balance))
                                     terms_lines.update({
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
@@ -853,15 +862,9 @@ class YDSAccountMove(models.Model):
                                     # ipdb.set_trace()
                                     self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
                                     print()
-                        # print("in draft mode 3")
-
-                    # Add discount line.
-      
-            # Post entries.
-            # return super()._post(soft=False)
     
+
     #Remove regular discount line per product when discount == 0
-    @api.onchange('invoice_line_ids.discount') 
     def remove_lines_disc(self):
         # print("checking lines to remove")
         for move in self:
