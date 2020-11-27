@@ -76,7 +76,6 @@ class YDSAccountMoveLinePricelist(models.Model):
 
 
     def _get_display_price(self, product):
-        print("_get_display_price called")
         if self.move_id.pricelist_id.discount_policy == 'with_discount':
             return product.with_context(pricelist=self.move_id.pricelist_id.id).price
         product_context = dict(self.env.context, partner_id=self.move_id.partner_id.id, date=self.move_id.date, uom=self.product_uom_id.id)
