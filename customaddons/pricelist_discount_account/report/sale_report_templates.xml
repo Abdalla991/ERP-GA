@@ -161,7 +161,7 @@
                                     <span t-field="doc.amount_untaxed"/>
                                 </td>
                             </tr>
-                            <t t-foreach="doc.amount_by_group" t-as="amount_by_group">
+                            <t t-foreach="doc.amount_by_group" t-as="amount_by_group" t-if="doc.amount_tax == 0">
                                 <tr style="">
                                     <t t-if="amount_by_group[5] == 1 and doc.amount_untaxed == amount_by_group[2]">
                                         <td name="td_amount_by_group_label_3">
@@ -184,6 +184,12 @@
                                     </t>
                                 </tr>
                             </t>
+                            <tr class="border-black o_subtotal" style="">
+                                <td name="td_amount_tax_label">Taxes</td>
+                                <td name="td_amount_tax" class="text-right">
+                                    <span t-field="doc.amount_tax"/>
+                                </td>
+                            </tr>
                             <tr class="border-black o_total">
                                 <td name="td_amount_total_label"><strong>Total</strong></td>
                                 <td name="td_amount_total" class="text-right">
