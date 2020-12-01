@@ -265,20 +265,20 @@
                                                     context="{'append_type_to_tax_name': not parent.invoice_filter_type_domain}"
                                                     options="{'no_create': True}"
                                                     optional="show"/>
-                                                <!-- <field name="price_subtotal"
+                                                <field name="price_subtotal"
                                                     string="Subtotal"
                                                     groups="account.group_show_line_subtotals_tax_excluded"/>
                                                 <field name="price_total"
                                                     string="Total"
-                                                    groups="account.group_show_line_subtotals_tax_included"/> -->
+                                                    groups="account.group_show_line_subtotals_tax_included"/> 
                                                 
                                                 <!-- custom field -->
-                                                <field name="yds_price_subtotal"
+                                                <!-- <field name="yds_price_subtotal"
                                                     string="Subtotal"
                                                     groups="account.group_show_line_subtotals_tax_excluded"/>
                                                 <field name="yds_price_total"
                                                     string="Total"
-                                                    groups="account.group_show_line_subtotals_tax_included"/>
+                                                    groups="account.group_show_line_subtotals_tax_included"/> -->
 
                                                 <!-- Others fields -->
                                                 <field name="partner_id" invisible="1"/>

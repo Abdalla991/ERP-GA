@@ -148,6 +148,7 @@ class YDSAccountMove(models.Model):
                             'amount_currency': -total_amount_currency,
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
+                            'price_unit': total_balance,
                         })
                     if not already_exists and hasDiscount > 0:
                         # print("Uni does not exist 1")
@@ -204,6 +205,7 @@ class YDSAccountMove(models.Model):
                                                 'amount_currency': -total_amount_currency,
                                                 'debit': total_balance < 0.0 and -total_balance or 0.0,
                                                 'credit': total_balance > 0.0 and total_balance or 0.0,
+                                                'price_unit': total_balance,
                                             })
                                 else:
                                     # print("Uni does not exist 2")
@@ -311,6 +313,7 @@ class YDSAccountMove(models.Model):
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
+                                        'price_unit': total_balance,
                                         })
                                 else: 
                                     # print("Uni not in draft mode final")
@@ -352,6 +355,7 @@ class YDSAccountMove(models.Model):
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
+                                        'price_unit': total_balance,
                                     })
 
   
@@ -379,6 +383,7 @@ class YDSAccountMove(models.Model):
                             'amount_currency': -total_amount_currency,
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
+                            'price_unit': total_balance,
                         })
 
 
