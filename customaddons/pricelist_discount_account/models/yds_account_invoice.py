@@ -148,7 +148,6 @@ class YDSAccountMove(models.Model):
                             'amount_currency': -total_amount_currency,
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
-                            'price_unit': total_balance,
                         })
                     if not already_exists and hasDiscount > 0:
                         # print("Uni does not exist 1")
@@ -205,7 +204,6 @@ class YDSAccountMove(models.Model):
                                                 'amount_currency': -total_amount_currency,
                                                 'debit': total_balance < 0.0 and -total_balance or 0.0,
                                                 'credit': total_balance > 0.0 and total_balance or 0.0,
-                                                'price_unit': total_balance,
                                             })
                                 else:
                                     # print("Uni does not exist 2")
@@ -313,7 +311,6 @@ class YDSAccountMove(models.Model):
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
-                                        'price_unit': total_balance,
                                         })
                                 else: 
                                     # print("Uni not in draft mode final")
@@ -355,7 +352,6 @@ class YDSAccountMove(models.Model):
                                         'amount_currency': -total_amount_currency,
                                         'debit': total_balance < 0.0 and -total_balance or 0.0,
                                         'credit': total_balance > 0.0 and total_balance or 0.0,
-                                        'price_unit': total_balance,
                                     })
 
   
@@ -383,7 +379,6 @@ class YDSAccountMove(models.Model):
                             'amount_currency': -total_amount_currency,
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
-                            'price_unit': total_balance,
                         })
 
 
@@ -735,7 +730,7 @@ class YDSAccountMove(models.Model):
                                 'amount_currency': -total_amount_currency,
                                 'debit': total_balance < 0.0 and -total_balance or 0.0,
                                 'credit': total_balance > 0.0 and total_balance or 0.0,
-                                'price_unit': total_balance,
+                                # 'price_unit': total_balance,
                             })
                             print("total_balance= " + str(total_balance))
                             # ipdb.set_trace()
@@ -778,7 +773,7 @@ class YDSAccountMove(models.Model):
                                                     'amount_currency': -total_amount_currency,
                                                     'debit': total_balance < 0.0 and -total_balance or 0.0,
                                                     'credit': total_balance > 0.0 and total_balance or 0.0,
-                                                    'price_unit': total_balance,
+                                                    # 'price_unit': total_balance,
                                                     
                                                 })
                                     else:
@@ -853,7 +848,7 @@ class YDSAccountMove(models.Model):
                                             'amount_currency': -total_amount_currency,
                                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                                             'credit': total_balance > 0.0 and total_balance or 0.0,
-                                            'price_unit': total_balance,
+                                            # 'price_unit': total_balance,
                                             })
                                     else: 
                                         print("not in draft mode final")
@@ -908,7 +903,7 @@ class YDSAccountMove(models.Model):
                             'amount_currency': -total_amount_currency,
                             'debit': total_balance < 0.0 and -total_balance or 0.0,
                             'credit': total_balance > 0.0 and total_balance or 0.0,
-                            'price_unit': total_balance,
+                            # 'price_unit': total_balance,
                         })
                         # self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
     
@@ -922,9 +917,11 @@ class YDSAccountMove(models.Model):
         if not moves:
             return
         for move in self:
+            print ("---------Start _check_balanced---------")
             for line in move.line_ids:
-                print ("Line Name: "+str(line.name)+"--- credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit))    
-
+                print ("Line Name: "+str(line.name))
+                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit))
+            print ("---------End _check_balanced---------")
         # /!\ As this method is called in create / write, we can't make the assumption the computed stored fields
         # are already done. Then, this query MUST NOT depend of computed stored fields (e.g. balance).
         # It happens as the ORM makes the create with the 'no_recompute' statement.
@@ -982,6 +979,7 @@ class YDSAccountMove(models.Model):
                 sign = -1 if move.is_inbound() else 1
                 quantity = base_line.quantity
                 is_refund = move.move_type in ('out_refund', 'in_refund')
+                #YDS Add all discounts to taxes calculations
                 price_unit_wo_discount = sign * base_line.price_unit * (1 - (base_line.discount / 100.0))*(1 - (move.ks_global_discount_rate / 100)) 
             else:
                 handle_price_include = False
@@ -1125,7 +1123,7 @@ class YDSAccountMove(models.Model):
 
             if in_draft_mode:
                 taxes_map_entry['tax_line'].update(taxes_map_entry['tax_line']._get_fields_onchange_balance(force_computation=True))
-
+  
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
@@ -1138,27 +1136,33 @@ class YDSAccountMoveLine(models.Model):
 
         # Compute 'price_subtotal'.
         line_discount_price_unit = price_unit * (1 - (discount / 100.0))
-        subtotal = quantity * line_discount_price_unit
+        subtotal = quantity * price_unit
         
-        yds_subtotal = quantity * price_unit
+        yds_subtotal = quantity * line_discount_price_unit
 
         # Compute 'price_total'.
         if taxes:
-            taxes_res = taxes._origin.compute_all(line_discount_price_unit,
+            #Use price_unit instead of Odoo's DEFAULT line_discount_price_unit to calc tax without discount
+            taxes_res = taxes._origin.compute_all(price_unit,
                 quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
             
-            res['price_subtotal'] = taxes_res['total_excluded']/(1 - (discount / 100.0)) 
-            res['price_total'] = taxes_res['total_included']/(1 - (discount / 100.0))
-            #change res['debit']
-            res['yds_price_subtotal'] = taxes_res['total_excluded'] 
-            res['yds_price_total'] = taxes_res['total_included']
+            res['price_subtotal'] = taxes_res['total_excluded']
+            res['price_total'] = taxes_res['total_included']
+
+            #YDS Specific fields
+            yds_taxes_res = taxes._origin.compute_all(line_discount_price_unit,
+                quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
+            res['yds_price_subtotal'] = yds_taxes_res['total_excluded'] 
+            res['yds_price_total'] = yds_taxes_res['total_included']
         else:
             res['price_total'] = res['price_subtotal'] = subtotal
+
             res['yds_price_total'] = res['yds_price_subtotal'] = yds_subtotal
         #In case of multi currency, round before it's use for computing debit credit
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
+ 
     def write(self, vals):
         # OVERRIDE
         ACCOUNTING_FIELDS = ('debit', 'credit', 'amount_currency')
@@ -1257,9 +1261,9 @@ class YDSAccountMoveLine(models.Model):
         result = True
         for line in self:
             cleaned_vals = line.move_id._cleanup_write_orm_values(line, vals)
+            ipdb.set_trace()
             if not cleaned_vals:
                 continue
-
             # Auto-fill amount_currency if working in single-currency.
             if 'currency_id' not in cleaned_vals \
                 and line.currency_id == line.company_currency_id \
@@ -1267,8 +1271,11 @@ class YDSAccountMoveLine(models.Model):
                 cleaned_vals.update({
                     'amount_currency': vals.get('debit', 0.0) - vals.get('credit', 0.0),
                 })
+            if not line.name:
+                print("1111111111111")
+                print(cleaned_vals)
+                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit)+" - "+"amount_currency: "+ str(line.amount_currency)+" - "+"price_unit: "+ str(line.price_unit))
             
-
             result |= super(YDSAccountMoveLine, line).write(cleaned_vals)
 
             if not line.move_id.is_invoice(include_receipts=True):
@@ -1280,26 +1287,19 @@ class YDSAccountMoveLine(models.Model):
             # business [resp. accounting] fields are recomputed.
             if any(field in cleaned_vals for field in ACCOUNTING_FIELDS):
                 price_subtotal = line._get_price_total_and_subtotal().get('price_subtotal', 0.0)
+                
                 to_write = line._get_fields_onchange_balance(price_subtotal=price_subtotal)
-                print("1st")
-                print(to_write)
                 to_write.update(line._get_price_total_and_subtotal(
                     price_unit=to_write.get('price_unit', line.price_unit),
                     quantity=to_write.get('quantity', line.quantity),
                     discount=to_write.get('discount', line.discount),
                 ))
-                print("2nd")
-                print(to_write)
                 result |= super(YDSAccountMoveLine, line).write(to_write)
             elif any(field in cleaned_vals for field in BUSINESS_FIELDS):
                 to_write = line._get_price_total_and_subtotal()
-                print("3rd")
-                print(to_write)
                 to_write.update(line._get_fields_onchange_subtotal(
                     price_subtotal=to_write['price_subtotal'],
                 ))
-                print("4th")
-                print(to_write)
                 result |= super(YDSAccountMoveLine, line).write(to_write)
        
         # Check total_debit == total_credit in the related moves.
@@ -1311,7 +1311,6 @@ class YDSAccountMoveLine(models.Model):
         self.mapped('move_id')._synchronize_business_models({'line_ids'})
 
         return result
-
 
    
 
