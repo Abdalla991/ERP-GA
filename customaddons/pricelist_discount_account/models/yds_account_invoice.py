@@ -34,7 +34,7 @@ class YDSAccountMove(models.Model):
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True, currency_field='company_currency_id')
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
-    yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',  readonly=True,store=True)
+    yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',compute='_calc_line_count',store=True)
     #pricelist_related_fields
     #added because of the change in pricelist subtotal
     # yds_amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_compute_amount2')
@@ -169,7 +169,9 @@ class YDSAccountMove(models.Model):
                     move.yds_is_sales_order=False
                         
 
-    @api.onchange('invoice_line_ids','ks_global_discount_rate')
+    @api.onchange('invoice_line_ids',
+                    'ks_global_discount_rate',
+                    'pricelist_id')
     def add_all_lines(self):
         for move in self:
             move.rename_lines()   
@@ -231,6 +233,19 @@ class YDSAccountMove(models.Model):
         yds_res['yds_total_discount'] = self.yds_total_discount
         return yds_res
 
+    # @api.depends('invoice_line_ids')
+    # def _calc_line_count(self):
+    #     print("Counting lines")
+    #     count=0
+    #     for line in self.invoice_line_ids:
+    #         count +=1
+    #     if count != self.yds_invoice_line_count:
+    #         self.yds_invoice_line_count = count
+    #     ipdb.set_trace()
+    
+    @api.onchange('yds_invoice_line_count')            
+    def test(self):
+        print("INVOICE LINE COUNT CHANGED")
  
     def _check_balanced(self):
         ''' Assert the move is fully balanced debit = credit.
@@ -493,4 +508,5 @@ class YDSAccountMoveLine(models.Model):
        for line in self:
             if not line.tax_repartition_line_id:
                 line.recompute_tax_line = True
+
 
