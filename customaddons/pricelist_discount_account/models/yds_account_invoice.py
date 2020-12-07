@@ -7,7 +7,7 @@ import ipdb #Remove before publishing
 class YDSAccountMove(models.Model):
     _inherit = "account.move"
 
-    #KS variables
+    #KS variables (Universal Discount)
     #########################################################################
     ks_global_discount_type = fields.Selection([('percent', 'Percentage')],
                                                string='Universal Discount Type', readonly=True,
@@ -25,363 +25,6 @@ class YDSAccountMove(models.Model):
     ks_sales_discount_account_id = fields.Integer(compute='ks_verify_discount')
     ks_purchase_discount_account_id = fields.Integer(compute='ks_verify_discount')
 
-
-    @api.depends('company_id.ks_enable_discount')
-    def ks_verify_discount(self):
-        for rec in self:
-            rec.ks_enable_discount = rec.company_id.ks_enable_discount
-            rec.ks_sales_discount_account_id = rec.company_id.ks_sales_discount_account.id
-            rec.ks_purchase_discount_account_id = rec.company_id.ks_purchase_discount_account.id
-
-    @api.onchange('partner_id')
-    def calc_uni_rate(self):
-        for rec in self:
-            rec.ks_global_discount_rate = rec.partner_id.yds_customer_universal_discount_rate
-
-    
-
-    #Check that universal discount rate is valid
-    @api.constrains('ks_global_discount_rate')
-    def ks_check_discount_value(self):
-        if self.ks_global_discount_type == "percent":
-            if self.ks_global_discount_rate > 100 or self.ks_global_discount_rate < 0:
-                raise ValidationError('You cannot enter percentage value greater than 100.')
-        else:
-            if self.ks_global_discount_rate < 0 or self.amount_untaxed < 0:
-                raise ValidationError(
-                    'You cannot enter discount amount greater than actual cost or value lower than 0.')
-    
-    @api.model
-    def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
-        ks_res = super(KsGlobalDiscountInvoice, self)._prepare_refund(invoice, date_invoice=None, date=None,
-                                                                      description=None, journal_id=None)
-        ks_res['ks_global_discount_rate'] = self.ks_global_discount_rate
-        ks_res['ks_global_discount_type'] = self.ks_global_discount_type
-        return ks_res
-    
-    #Add Universal discount lines per product
-    def add_lines_uni(self):       
-        # OVERRIDE
-        # Don't change anything on moves used to cancel another ones.
-        # return super()._post(soft=False)
-        # print("add_lines for universal called")
-        type_list = ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']
-
-        for move in self:
-            count =0  #for counting loops
-            if move.is_invoice(include_receipts=True):
-                for line in move.invoice_line_ids:
-                    count+=1
-                    exists = False
-                    # Filter out lines being not eligible for discount/universal discount line.
-                    if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
-                        continue
-
-                    sale_uni_discount_account = move.ks_sales_discount_account_id
-                    purchase_uni_discount_account = move.ks_purchase_discount_account_id
-                    # unversal_discount_account = accounts['expense'] or self.journal_id.default_account_id
-                    if not sale_uni_discount_account or not purchase_uni_discount_account:
-                        continue
-
-                    sign = -1 if move.move_type == 'out_refund' else 1
-                    # price_unit = line.price_unit
-                    # balance = sign * line.quantity * price_unit
-
-                    #Calculations
-                    uni_discount_rate=move.ks_global_discount_rate/100
-                    amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(line.price_unit * ( (line.discount or 0.0) / 100.0) *line.quantity)
-                    hasDiscount = uni_discount_rate > 0
-
-                    if(hasDiscount):
-                        universal_discount_line_amount = ((amount-pricelist_discount_line_amount)*uni_discount_rate)
-                        # print("line "+str(count)+"has "+"uni discount of " +str(universal_discount_line_amount))
-                    else:
-                        universal_discount_line_amount=0
-
-                    
-                    lineName =  line.name[:64]+" Universal discount "
-                    already_exists = self.line_ids.filtered(
-                        lambda line: line.name and line.name.find(lineName) == 0)
-                    terms_lines = self.line_ids.filtered(
-                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                    other_lines = self.line_ids.filtered(
-                        lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                    if already_exists:
-                        # print("Uni Aleady exisits 1 "+line.name)
-                        exists=True
-                        amount = universal_discount_line_amount
-                        if sale_uni_discount_account \
-                                and (move.move_type == "out_invoice"
-                                    or move.move_type == "out_refund")\
-                                and amount > 0:
-                            if move.move_type == "out_invoice":
-                                already_exists.update({
-                                    'debit': amount > 0.0 and amount or 0.0,
-                                    'credit': amount < 0.0 and -amount or 0.0,
-                                })
-                            else:
-                                already_exists.update({
-                                    'debit': amount < 0.0 and -amount or 0.0,
-                                    'credit': amount > 0.0 and amount or 0.0,
-                                })
-                        if purchase_uni_discount_account \
-                                and (move.move_type == "in_invoice"
-                                        or move.move_type == "in_refund")\
-                                and amount > 0:
-                            if move.move_type == "in_invoice":
-                                already_exists.update({
-                                    'debit': amount < 0.0 and -amount or 0.0,
-                                    'credit': amount > 0.0 and amount or 0.0,
-                                })
-                            else:
-                                already_exists.update({
-                                    'debit': amount > 0.0 and amount or 0.0,
-                                    'credit': amount < 0.0 and -amount or 0.0,
-                                })
-                        already_exists.update({
-                                'analytic_account_id': line.analytic_account_id.id,
-                            })
-                        total_balance = sum(other_lines.mapped('balance'))
-                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                        terms_lines.update({
-                            'amount_currency': -total_amount_currency,
-                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                        })
-                    if not already_exists and hasDiscount > 0:
-                        # print("Uni does not exist 1")
-                        in_draft_mode = self != self._origin
-                        # not in_draft_mode and 
-                        if move.move_type == 'out_invoice':
-                            
-                            if hasDiscount and move.move_type in type_list:
-                                in_draft_mode = self != self._origin
-                                terms_lines = self.line_ids.filtered(
-                                    lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                already_exists = self.line_ids.filtered( lambda line: line.name and line.name.find(lineName) == 0)
-                                if already_exists:
-                                    # print("Uni Aleady exisits 2 "+line.name + "should be"+ lineName)
-                                    exists=True
-                                    amount = universal_discount_line_amount
-                                    if sale_uni_discount_account \
-                                            and (self.move_type == "out_invoice"
-                                                or self.move_type == "out_refund"):
-                                        if self.move_type == "out_invoice":
-                                            already_exists.update({
-                                                'name': lineName,
-                                                'debit': amount > 0.0 and amount or 0.0,
-                                                'credit': amount < 0.0 and -amount or 0.0,
-                                            })
-                                        else:
-                                            already_exists.update({
-                                                'name': lineName,
-                                                'debit': amount < 0.0 and -amount or 0.0,
-                                                'credit': amount > 0.0 and amount or 0.0,
-                                            })
-                                        if  purchase_uni_discount_account\
-                                                and (self.move_type == "in_invoice"
-                                                    or self.move_type == "in_refund"):
-                                            if self.move_type == "in_invoice":
-                                                already_exists.update({
-                                                    'name': lineName,
-                                                    'debit': amount < 0.0 and -amount or 0.0,
-                                                    'credit': amount > 0.0 and amount or 0.0,
-                                                })
-                                            else:
-                                                already_exists.update({
-                                                    'name': lineName,
-                                                    'debit': amount > 0.0 and amount or 0.0,
-                                                    'credit': amount < 0.0 and -amount or 0.0,
-                                                })
-                                            terms_lines = self.line_ids.filtered(
-                                                lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                            other_lines = self.line_ids.filtered(
-                                                lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))                   
-                                            total_balance = sum(other_lines.mapped('balance'))
-                                            total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                            terms_lines.update({
-                                                'amount_currency': -total_amount_currency,
-                                                'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                                'credit': total_balance > 0.0 and total_balance or 0.0,
-                                            })
-                                else:
-                                    # print("Uni does not exist 2")
-                                    new_tax_line = self.env['account.move.line']
-                                    create_method = in_draft_mode and \
-                                                    self.env['account.move.line'].new or\
-                                                    self.env['account.move.line'].create
-                                    if sale_uni_discount_account \
-                                            and (self.move_type == "out_invoice"
-                                                or self.move_type == "out_refund"):
-                                        amount = universal_discount_line_amount
-                                        dict = {
-                                            'move_name': move.name,
-                                            'name':lineName,
-                                            'move_id': move._origin,
-                                            'product_id': line.product_id.id,
-                                            'product_uom_id': line.product_uom_id.id,
-                                            'quantity': 1,
-                                            'price_unit': amount,
-                                            'debit': amount > 0.0 and amount or 0.0,
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            'account_id': sale_uni_discount_account,
-                                            'analytic_account_id': line.analytic_account_id.id,
-                                            'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
-                                            'exclude_from_invoice_tab': True,
-                                            'partner_id': terms_lines.partner_id.id,
-                                            'company_id': terms_lines.company_id.id,
-                                            'company_currency_id': terms_lines.company_currency_id.id,
-                                            'date': move.date,
-                                            }
-                                        if move.move_type == "out_invoice":
-                                            dict.update({
-                                            'debit': amount > 0.0 and amount or 0.0,
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            })
-                                        else:
-                                            dict.update({
-                                                'debit': amount < 0.0 and -amount or 0.0,
-                                                'credit': amount > 0.0 and amount or 0.0,
-                                            })
-                                        if in_draft_mode:
-                                            # print("in Uni draft mode 1 sale")
-                                            self.line_ids += create_method(dict)
-                                            # Updation of Invoice Line Id
-                                            duplicate_id = self.invoice_line_ids.filtered(
-                                                lambda line: line.name and line.name.find(lineName) == 0)
-                                            self.invoice_line_ids = self.invoice_line_ids - duplicate_id
-                                        else:
-                                            dict.update({
-                                            'price_unit': 0.0,
-                                            'debit': 0.0,
-                                            'credit': 0.0,
-                                                })
-                                            self.line_ids = [(0, 0, dict)]
-
-                                    if purchase_uni_discount_account\
-                                            and (self.move_type == "in_invoice"
-                                                or self.move_type == "in_refund"):
-                                        amount = universal_discount_line_amount
-                                        dict = {
-                                            'move_name': move.name,
-                                            'name':lineName,
-                                            'move_id': move._origin,
-                                            'product_id': line.product_id.id,
-                                            'product_uom_id': line.product_uom_id.id,
-                                            'quantity': 1,
-                                            'price_unit': amount,
-                                            'debit': amount > 0.0 and amount or 0.0,
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            'account_id': purchase_uni_discount_account,
-                                            'analytic_account_id': line.analytic_account_id.id,
-                                            'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
-                                            'exclude_from_invoice_tab': True,
-                                            'partner_id': terms_lines.partner_id.id,
-                                            'company_id': terms_lines.company_id.id,
-                                            'company_currency_id': terms_lines.company_currency_id.id,
-                                            'date': move.date,
-                                            }
-
-                                        if self.move_type == "in_invoice":
-                                            dict.update({
-                                                'debit': amount < 0.0 and -amount or 0.0,
-                                                'credit': amount > 0.0 and amount or 0.0,
-                                            })
-                                        else:
-                                            dict.update({
-                                                'debit': amount > 0.0 and amount or 0.0,
-                                                'credit': amount < 0.0 and -amount or 0.0,
-                                            })
-                                            self.line_ids += create_method(dict)
-                                            # Updation of Invoice Line Id
-                                            duplicate_id = self.invoice_line_ids.filtered(
-                                                lambda line: line.name and line.name.find(lineName) == 0)
-                                            self.invoice_line_ids = self.invoice_line_ids - duplicate_id
-                                if in_draft_mode:
-                                    # print("Uni in draft mode 2")
-                                    # Update the payement account amount
-                                    terms_lines = self.line_ids.filtered(
-                                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                    other_lines = self.line_ids.filtered(
-                                        lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                                    total_balance = sum(other_lines.mapped('balance'))  
-                                    total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                    terms_lines.update({
-                                        'amount_currency': -total_amount_currency,
-                                        'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                        'credit': total_balance > 0.0 and total_balance or 0.0,
-                                        })
-                                else: 
-                                    # print("Uni not in draft mode final")
-                                    already_exists = self.line_ids.filtered(
-                                            lambda line: line.name and line.name.find(lineName) == 0)
-                                    terms_lines = self.line_ids.filtered(
-                                                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                    other_lines = self.line_ids.filtered(
-                                                        lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                                    if(exists):
-                                        total_balance = sum(other_lines.mapped('balance'))
-                                    else:
-                                        total_balance = sum(other_lines.mapped('balance')) + amount
-                                    dict1 = {
-                                            'debit': amount > 0.0 and amount or 0.0, 
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            }
-                                    dict2 = {
-                                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                                    }
-                                    # ipdb.set_trace()
-                                    self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
-                                    print()
-
-                            elif not hasDiscount:
-                                # print("Uni Does not have discount")
-                                already_exists = self.line_ids.filtered(
-                                    lambda line: line.name and line.name.find(lineName) == 0)
-                                if already_exists:
-                                    self.line_ids -= already_exists
-                                    terms_lines = self.line_ids.filtered(
-                                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                    other_lines = self.line_ids.filtered(
-                                        lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                                    total_balance = sum(other_lines.mapped('balance'))
-                                    total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                    terms_lines.update({
-                                        'amount_currency': -total_amount_currency,
-                                        'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                        'credit': total_balance > 0.0 and total_balance or 0.0,
-                                    })
-
-  
-    #Remove Universal discount lines if rate == 0
-
-    @api.onchange('ks_global_discount_rate')
-    def remove_lines_uni(self):
-        # print("checking lines to remove")
-        for move in self:
-            for line in move.invoice_line_ids:
-                if move.ks_global_discount_rate == 0:
-                    lineName =  line.name[:64]+" Universal discount "
-                    already_exists = self.line_ids.filtered(
-                                lambda line: line.name and line.name.find(lineName) == 0)
-                    if already_exists:
-                        # print("found")
-                        self.line_ids -= already_exists
-                        terms_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                        other_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                        total_balance = sum(other_lines.mapped('balance'))
-                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                        terms_lines.update({
-                            'amount_currency': -total_amount_currency,
-                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                        })
-
-
     # YDS regular discount related variables
     #########################################################################
     yds_total_discount = fields.Float(string='Total Discount',readonly=True,store=True)
@@ -391,10 +34,11 @@ class YDSAccountMove(models.Model):
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True, currency_field='company_currency_id')
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
+    yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',  readonly=True,store=True)
     #pricelist_related_fields
     #added because of the change in pricelist subtotal
     # yds_amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_compute_amount2')
-    @api.onchange(
+    @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
         'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
@@ -408,13 +52,11 @@ class YDSAccountMove(models.Model):
         'line_ids.payment_id.state',
         'line_ids.full_reconcile_id',
         'line_ids.price_subtotal',
-        'line_ids.analytic_account_id'
+        'line_ids.analytic_account_id',
         'yds_total_discount',
         'ks_global_discount_rate',
         'pricelist_id',
-        'ks_global_discount_type',
-        'partner_id',
-        'invoice_line_ids.discount')
+        'partner_id')
     def _compute_amount(self):
             for move in self:
                 if move.payment_state == 'invoicing_legacy':
@@ -424,7 +66,6 @@ class YDSAccountMove(models.Model):
                     # so we don't recompute it here.
                     move.payment_state = move.payment_state
                     continue
-
                 total_untaxed = 0.0
                 total_untaxed_currency = 0.0
                 total_tax = 0.0
@@ -436,9 +77,7 @@ class YDSAccountMove(models.Model):
                 total_currency = 0.0    
                 currencies = set()
 
-
-                
-                move._recompute_tax_lines()
+                # move._recompute_tax_lines()
                 for line in move.line_ids:
                     if line.currency_id:
                         currencies.add(line.currency_id)
@@ -473,31 +112,7 @@ class YDSAccountMove(models.Model):
                     sign = 1
                 else:
                     sign = -1
-
-
-                 
-                
-                # move.amount_tax = move.amount_tax - invoiceTaxForUniversalDiscount ###
-                # difference = move.yds_amount_tax - move.amount_tax
-                
-                # move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount - difference ###
-                
-                # move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
-                
-                # move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual) - difference  ###
-                # move.amount_untaxed_signed = -total_untaxed
-                # # move.amount_tax_signed = -total_tax * (1-move.ks_global_discount_rate/100) ####
-                # move.amount_tax_signed = -total_tax
-                # move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
-                # move.amount_residual_signed = total_residual
-
-                # move.yds_amount_tax = move.amount_tax
-
-             
-
-
-
-                
+            
                 move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
                 move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
                 move.amount_untaxed_signed = -total_untaxed
@@ -523,43 +138,6 @@ class YDSAccountMove(models.Model):
                 move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
                 move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total- move.yds_total_discount - move.ks_amount_discount
                 move.amount_residual_signed = total_residual
-                # invoiceTaxForDiscount = 0
-                # invoiceTaxForUniversalDiscount = 0
-                # invoiceTaxForProduct = 0
-                # for line in move.invoice_line_ids:
-                #     discount_amount = line.yds_price_subtotal * line.discount / 100
-                #     universal_discount_amount = line.yds_price_subtotal * (1-line.discount / 100) * move.ks_global_discount_rate / 100
-                #     totalTax = 0
-                #     for tax in line.tax_ids:
-                #         totalTax += tax.amount
-                #     taxForDiscount = discount_amount * totalTax /100
-                #     taxForUniversalDiscount = universal_discount_amount * totalTax /100
-                #     taxForProduct = line.yds_price_subtotal * totalTax /100
-                #     invoiceTaxForDiscount += taxForDiscount
-                #     invoiceTaxForUniversalDiscount += taxForUniversalDiscount
-                #     invoiceTaxForProduct += taxForProduct
-                #     print("----------Moataz Start---------")
-                #     print ("Invoice tax "+ str(invoiceTaxForDiscount))
-                #     print ("universal Invoice tax "+ str(invoiceTaxForUniversalDiscount))
-                #     print ("total product Tax: "+ str(invoiceTaxForProduct))     
-
-                # if invoiceTaxForProduct ==  sign * (total_tax_currency if len(currencies) == 1 else total_tax):
-                #     move.amount_tax = invoiceTaxForProduct - invoiceTaxForDiscount
-                # else:
-                #     move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
-
-                
-                # print("amount_tax" + str(move.amount_tax))
-                # print("----------Moataz End---------")
-
-
-                
-
-                move.add_lines_uni()
-                move.add_lines()
-                move._recompute_tax_lines()
-
-
                 currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
 
                 # Compute 'payment_state'.
@@ -585,57 +163,26 @@ class YDSAccountMove(models.Model):
                         new_pmt_state = 'reversed'
 
                 move.payment_state = new_pmt_state
+                #call add lines once when coming from a sale order
+                if(move.yds_is_sales_order):
+                    move.add_all_lines()
+                    move.yds_is_sales_order=False
+                        
 
-    
-
-    #Rename lines with same already existing product to avoid ignoring of discount lines due to dubplicate line names
-    @api.onchange('invoice_line_ids')
-    def rename_line(self):
-        # print("rename_lines")
-        productNames = [] 
-        productCounts = []
-        for rec in self :
-            innerloopCount=0
-            for line in rec.invoice_line_ids:
-                # print("line number: " + str(innerloopCount))
-                innerloopCount+=1
-                # print(line.product_id.name)
-                if line.product_id.name in productNames:
-                    # print("product found") 
-                    index = productNames.index(line.product_id.name)
-                    productCounts[index]+=1
-                    line.name = line.product_id.name +" ("+str(productCounts[index])+")"
-                    # print(line.name) 
-                else:   
-                    # print("product not found..adding new product")
-                    productNames.append(line.product_id.name)
-                    productCounts.append(1)
-                    # print(productNames)
-                    # print(productCounts)
-
-    #On row deletion or addition readd lines
-    # @api.onchange('invoice_line_ids')
-    def reInsert_lines(self):
-        print("reInsert_lines called")
+    @api.onchange('invoice_line_ids','ks_global_discount_rate')
+    def add_all_lines(self):
         for move in self:
-            for line in move.line_ids:
-                if line.name:
-                    if "discount" in line.name:
-                        self.line_ids -= line
-                        terms_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                        other_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                        total_balance = sum(other_lines.mapped('balance'))
-                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                        terms_lines.update({
-                            'amount_currency': -total_amount_currency,
-                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                        })
+            move.rename_lines()   
+            print("Calling add lines") 
+            move.add_lines_uni()
             move.add_lines()
-            
-    
+            move._recompute_tax_lines()
+
+    @api.onchange('ks_global_discount_rate')
+    def recalc_tax(self):
+        print("recalc_tax called")
+        for move in self:
+            move._recompute_tax_lines()
 
     #Calculate yds_total_discount
     def _calculatePricelistDiscount(self):
@@ -643,8 +190,40 @@ class YDSAccountMove(models.Model):
             for line in rec.line_ids:
                 rec.yds_total_discount += line.price_unit * ( (line.discount or 0.0) / 100.0) * line.quantity
             
-            
+    @api.depends('company_id.ks_enable_discount')
+    def ks_verify_discount(self):
+        for rec in self:
+            rec.ks_enable_discount = rec.company_id.ks_enable_discount
+            rec.ks_sales_discount_account_id = rec.company_id.ks_sales_discount_account.id
+            rec.ks_purchase_discount_account_id = rec.company_id.ks_purchase_discount_account.id
+
+    @api.onchange('partner_id')
+    def calc_uni_rate(self):
+        for rec in self:
+            rec.ks_global_discount_rate = rec.partner_id.yds_customer_universal_discount_rate
+
     
+    #Check that universal discount rate is valid
+    @api.constrains('ks_global_discount_rate')
+    def ks_check_discount_value(self):
+        if self.ks_global_discount_type == "percent":
+            if self.ks_global_discount_rate > 100 or self.ks_global_discount_rate < 0:
+                raise ValidationError('You cannot enter percentage value greater than 100.')
+        else:
+            if self.ks_global_discount_rate < 0 or self.amount_untaxed < 0:
+                raise ValidationError(
+                    'You cannot enter discount amount greater than actual cost or value lower than 0.')
+       
+    #TEST THIS FUNCTION
+    @api.model
+    def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
+        ks_res = super(YDSAccountMove, self)._prepare_refund(invoice, date_invoice=None, date=None,
+                                                                      description=None, journal_id=None)
+        ks_res['ks_global_discount_rate'] = self.ks_global_discount_rate
+        ks_res['ks_global_discount_type'] = self.ks_global_discount_type
+        return ks_res
+       
+    #TEST THIS FUNCTION 
     @api.model
     def _prepare_refund(self, invoice, date_invoice=None, date=None, description=None, journal_id=None):
         yds_res = super(YDSAccountMove, self)._prepare_refund(invoice, date_invoice=None, date=None,
@@ -652,267 +231,11 @@ class YDSAccountMove(models.Model):
         yds_res['yds_total_discount'] = self.yds_total_discount
         return yds_res
 
-
-
-    # #Add regular discount line per product
-    # @api.onchange('line_ids.discount',
-    #     'line_ids.price_subtotal',
-    #     'yds_total_discount')
-    def add_lines(self):       
-        type_list = ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']
-        for move in self:
-            count =0  #for counting loops
-            if move.is_invoice(include_receipts=True):
-                for line in move.invoice_line_ids:
-                    count+=1
-                    print("adding discount line for invoice line: "+str(count))
-
-                    # print(count)
-                    exists = False
-                    # Filter out lines being not eligible for discount/universal discount line.
-                    if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
-                        continue
-
-                    product_discount_account = move.pricelist_id.yds_assigned_discount_account.id
-                    # unversal_discount_account = accounts['expense'] or self.journal_id.default_account_id
-                    if not product_discount_account:  #or not unversal_discount_account:
-                        continue
-
-                    sign = -1 if move.move_type == 'out_refund' else 1
-                    # price_unit = line.price_unit
-                    # balance = sign * line.quantity * price_unit
-
-                    #Calculations
-                    uni_discount_rate=move.ks_global_discount_rate
-                    amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(line.price_unit * ( (line.discount or 0.0) / 100.0) *line.quantity)
-
-                    hasDiscount = pricelist_discount_line_amount > 0
-
-                    if(uni_discount_rate>0):
-                        universal_discount_line_amount = ((amount-pricelist_discount_line_amount)/uni_discount_rate)
-                    else:
-                        universal_discount_line_amount=0
-
-                    
-                    lineName = line.name[:64]+" discount "
-                    already_exists = self.line_ids.filtered(
-                        lambda line: line.name and line.name.find(lineName) == 0)
-                    terms_lines = self.line_ids.filtered(
-                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                    other_lines = self.line_ids.filtered(
-                        lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                    if pricelist_discount_line_amount > 0 :
-                        if already_exists:
-                            print("Aleady exisits 1 "+line.name)
-                            exists=True
-                            amount = pricelist_discount_line_amount
-                            print("new amount = "+str(amount))
-                            if product_discount_account \
-                                    and (move.move_type == "out_invoice"
-                                        or move.move_type == "out_refund"):
-                                if move.move_type == "out_invoice":
-                                    already_exists.update({
-                                        'debit': amount > 0.0 and amount or 0.0,
-                                        'credit': amount < 0.0 and -amount or 0.0,
-                                    })
-                                else:
-                                    already_exists.update({
-                                        'debit': amount < 0.0 and -amount or 0.0,
-                                        'credit': amount > 0.0 and amount or 0.0,
-                                    })
-                                already_exists.update({
-                                    'analytic_account_id': line.analytic_account_id.id,
-                                })
-                            total_balance = sum(other_lines.mapped('balance'))
-                            total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                            terms_lines.update({
-                                'amount_currency': -total_amount_currency,
-                                'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                'credit': total_balance > 0.0 and total_balance or 0.0,
-                                # 'price_unit': total_balance,
-                            })
-                            print("total_balance= " + str(total_balance))
-                            # ipdb.set_trace()
-                        if not already_exists and pricelist_discount_line_amount > 0:
-                            print("does not exist")
-                            in_draft_mode = self != self._origin
-                            if move.move_type == 'out_invoice':
-                                newLineName = line.name[:64]+" discount "
-                                if hasDiscount and move.move_type in type_list:
-                                    in_draft_mode = self != self._origin
-                                    terms_lines = self.line_ids.filtered(
-                                        lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                    already_exists = self.line_ids.filtered( lambda line: line.name and line.name.find(newLineName) == 0)
-                                    if already_exists:
-                                        print("Aleady exisits 2 "+line.name + "should be"+ newLineName)
-                                        exists=True
-                                        amount = pricelist_discount_line_amount
-                                        if product_discount_account \
-                                                and (self.move_type == "out_invoice"
-                                                    or self.move_type == "out_refund"):
-                                            if self.move_type == "out_invoice":
-                                                already_exists.update({
-                                                    'name': newLineName,
-                                                    'debit': amount > 0.0 and amount or 0.0,
-                                                    'credit': amount < 0.0 and -amount or 0.0,
-                                                })
-                                            else:
-                                                already_exists.update({
-                                                    'name': newLineName,
-                                                    'debit': amount < 0.0 and -amount or 0.0,
-                                                    'credit': amount > 0.0 and amount or 0.0,
-                                                })
-                                                terms_lines = self.line_ids.filtered(
-                                                    lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                                other_lines = self.line_ids.filtered(
-                                                    lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))                   
-                                                total_balance = sum(other_lines.mapped('balance'))
-                                                total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                                terms_lines.update({
-                                                    'amount_currency': -total_amount_currency,
-                                                    'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                                    'credit': total_balance > 0.0 and total_balance or 0.0,
-                                                    # 'price_unit': total_balance,
-                                                    
-                                                })
-                                    else:
-                                        print("does not exist 2")
-                                        new_tax_line = self.env['account.move.line']
-                                        create_method = in_draft_mode and \
-                                                        self.env['account.move.line'].new or\
-                                                        self.env['account.move.line'].create
-                                        if product_discount_account \
-                                                and (self.move_type == "out_invoice"
-                                                    or self.move_type == "out_refund"):
-                                            amount = pricelist_discount_line_amount
-                                            dict = {
-                                                'move_name': move.name,
-                                                'name':newLineName,
-                                                'move_id': move._origin,
-                                                'product_id': line.product_id.id,
-                                                'product_uom_id': line.product_uom_id.id,
-                                                'quantity': 1,
-                                                'price_unit': pricelist_discount_line_amount,
-                                                'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
-                                                'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
-                                                'account_id': product_discount_account,
-                                                'analytic_account_id': line.analytic_account_id.id,
-                                                'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
-                                                'exclude_from_invoice_tab': True,
-                                                'partner_id': terms_lines.partner_id.id,
-                                                'company_id': terms_lines.company_id.id,
-                                                'company_currency_id': terms_lines.company_currency_id.id,
-                                                'date': move.date,
-                                                }
-                                            if move.move_type == "out_invoice":
-                                                dict.update({
-                                                'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
-                                                'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
-                                                })
-                                            else:
-                                                dict.update({
-                                                    'debit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
-                                                    'credit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
-                                                })
-                                            if in_draft_mode:
-                                                print("in draft mode 1")
-                                                self.line_ids += create_method(dict)
-                                                # Updation of Invoice Line Id
-                                                duplicate_id = self.invoice_line_ids.filtered(
-                                                    lambda line: line.name and line.name.find(lineName) == 0)
-                                                self.invoice_line_ids = self.invoice_line_ids - duplicate_id
-                                            else:
-                                                dict.update({
-                                                'price_unit': 0.0,
-                                                'debit': 0.0,
-                                                'credit': 0.0,
-                                                    })
-                                                self.line_ids = [(0, 0, dict)]
-                                    if in_draft_mode:
-                                        print("in draft mode 2")
-                                        # Update the payement account amount
-                                        terms_lines = self.line_ids.filtered(
-                                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                        other_lines = self.line_ids.filtered(
-                                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                                        total_balance = sum(other_lines.mapped('balance'))  
-                                        print("total balance: "+ str(total_balance))
-                                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                        print("exists? " + str(exists))
-                                        if(exists):
-                                            total_balance = sum(other_lines.mapped('balance'))
-                                        else:
-                                            total_balance = sum(other_lines.mapped('balance')) 
-                                        terms_lines.update({
-                                            'amount_currency': -total_amount_currency,
-                                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                                            # 'price_unit': total_balance,
-                                            })
-                                    else: 
-                                        print("not in draft mode final")
-                                        already_exists = self.line_ids.filtered(
-                                                lambda line: line.name and line.name.find(newLineName) == 0)
-                                        terms_lines = self.line_ids.filtered(
-                                                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                        other_lines = self.line_ids.filtered(
-                                                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                                        total_balance = sum(other_lines.mapped('balance'))  
-                                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                                        if(exists):
-                                            total_balance = sum(other_lines.mapped('balance'))
-                                        else:
-                                            total_balance = sum(other_lines.mapped('balance')) + amount
-                                        dict1 = {
-                                                'debit': amount > 0.0 and amount or 0.0, 
-                                                'credit': amount < 0.0 and -amount or 0.0,
-                                                }
-                                        dict2 = {
-                                                'debit': total_balance < 0.0 and -total_balance or 0.0,
-                                                'credit': total_balance > 0.0 and total_balance or 0.0,
-                                        }
-                                        # ipdb.set_trace()
-                                        self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
-                        
-                                        print()
-                            
-
-
-    #Remove regular discount line per product when discount == 0
-    @api.onchange('invoice_line_ids')
-    def remove_lines_disc(self):
-        print("checking lines to remove")
-        for move in self:
-            for line in move.invoice_line_ids:
-                if line.discount == 0:
-                    lineName = line.name[:64]+" discount "
-                    already_exists = self.line_ids.filtered(
-                                lambda line: line.name and line.name.find(lineName) == 0)
-                    if already_exists:
-                        print("found and removing: "+already_exists.name)
-                        # ipdb.set_trace()
-                        self.line_ids -= already_exists
-                        terms_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                        other_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                        total_balance = sum(other_lines.mapped('balance'))
-                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                        terms_lines.update({
-                            'amount_currency': -total_amount_currency,
-                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                            # 'price_unit': total_balance,
-                        })
-                        # self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
-    
-  
  
     def _check_balanced(self):
         ''' Assert the move is fully balanced debit = credit.
         An error is raised if it's not the case.
-        '''
+        '''      
         moves = self.filtered(lambda move: move.line_ids)
         if not moves:
             return
@@ -920,7 +243,7 @@ class YDSAccountMove(models.Model):
             print ("---------Start _check_balanced---------")
             for line in move.line_ids:
                 print ("Line Name: "+str(line.name))
-                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit))
+                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit)+" - "+"balance: "+ str(line.balance)+" - "+"amount_currency: "+ str(line.amount_currency))
             print ("---------End _check_balanced---------")
         # /!\ As this method is called in create / write, we can't make the assumption the computed stored fields
         # are already done. Then, this query MUST NOT depend of computed stored fields (e.g. balance).
@@ -945,7 +268,8 @@ class YDSAccountMove(models.Model):
             ids = [res[0] for res in query_res]
             sums = [res[1] for res in query_res]
             raise UserError(_("Cannot create unbalanced journal entry. Ids: %s\nDifferences debit - credit: %s") % (ids, sums))
-
+    
+    #Had to override this function to add universal discount to tax calculations
     def _recompute_tax_lines(self, recompute_tax_base_amount=False):
         ''' Compute the dynamic tax lines of the journal entry.
 
@@ -1011,7 +335,7 @@ class YDSAccountMove(models.Model):
 
         taxes_map = {}
 
-        # ==== Add tax lines ====
+        # ==== Add tax lines ==== 
         to_remove = self.env['account.move.line']
         for line in self.line_ids.filtered('tax_repartition_line_id'):
             grouping_dict = self._get_tax_grouping_key_from_tax_line(line)
@@ -1123,7 +447,7 @@ class YDSAccountMove(models.Model):
 
             if in_draft_mode:
                 taxes_map_entry['tax_line'].update(taxes_map_entry['tax_line']._get_fields_onchange_balance(force_computation=True))
-  
+
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
@@ -1143,179 +467,30 @@ class YDSAccountMoveLine(models.Model):
         # Compute 'price_total'.
         if taxes:
             #Use price_unit instead of Odoo's DEFAULT line_discount_price_unit to calc tax without discount
+            #To seperate discount from net sales
             taxes_res = taxes._origin.compute_all(price_unit,
                 quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
             
             res['price_subtotal'] = taxes_res['total_excluded']
             res['price_total'] = taxes_res['total_included']
 
-            #YDS Specific fields
+            #YDS Specific fields to store all values (INCASE we need them in the future)
             yds_taxes_res = taxes._origin.compute_all(line_discount_price_unit,
                 quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
             res['yds_price_subtotal'] = yds_taxes_res['total_excluded'] 
             res['yds_price_total'] = yds_taxes_res['total_included']
         else:
             res['price_total'] = res['price_subtotal'] = subtotal
-
             res['yds_price_total'] = res['yds_price_subtotal'] = yds_subtotal
         #In case of multi currency, round before it's use for computing debit credit
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
  
-    def write(self, vals):
-        # OVERRIDE
-        ACCOUNTING_FIELDS = ('debit', 'credit', 'amount_currency')
-        BUSINESS_FIELDS = ('price_unit', 'quantity', 'discount', 'tax_ids')
-        PROTECTED_FIELDS_TAX_LOCK_DATE = ['debit', 'credit', 'tax_line_id', 'tax_ids', 'tax_tag_ids']
-        PROTECTED_FIELDS_LOCK_DATE = PROTECTED_FIELDS_TAX_LOCK_DATE + ['account_id', 'journal_id', 'amount_currency', 'currency_id', 'partner_id']
-        PROTECTED_FIELDS_RECONCILIATION = ('account_id', 'date', 'debit', 'credit', 'amount_currency', 'currency_id')
-        
-        account_to_write = self.env['account.account'].browse(vals['account_id']) if 'account_id' in vals else None
-
-        # Check writing a deprecated account.
-        if account_to_write and account_to_write.deprecated:
-            raise UserError(_('You cannot use a deprecated account.'))
-
-        for line in self:
-            if line.parent_state == 'posted':
-                if line.move_id.restrict_mode_hash_table and set(vals).intersection(INTEGRITY_HASH_LINE_FIELDS):
-                    raise UserError(_("You cannot edit the following fields due to restrict mode being activated on the journal: %s.") % ', '.join(INTEGRITY_HASH_LINE_FIELDS))
-                if any(key in vals for key in ('tax_ids', 'tax_line_ids')):
-                    raise UserError(_('You cannot modify the taxes related to a posted journal item, you should reset the journal entry to draft to do so.'))
-
-            # Check the lock date.
-            if any(self.env['account.move']._field_will_change(line, vals, field_name) for field_name in PROTECTED_FIELDS_LOCK_DATE):
-                line.move_id._check_fiscalyear_lock_date()
-
-            # Check the tax lock date.
-            if any(self.env['account.move']._field_will_change(line, vals, field_name) for field_name in PROTECTED_FIELDS_TAX_LOCK_DATE):
-                line._check_tax_lock_date()
-
-            # Check the reconciliation.
-            if any(self.env['account.move']._field_will_change(line, vals, field_name) for field_name in PROTECTED_FIELDS_RECONCILIATION):
-                line._check_reconciliation()
-
-            # Check switching receivable / payable accounts.
-            if account_to_write:
-                account_type = line.account_id.user_type_id.type
-                if line.move_id.is_sale_document(include_receipts=True):
-                    if (account_type == 'receivable' and account_to_write.user_type_id.type != account_type) \
-                            or (account_type != 'receivable' and account_to_write.user_type_id.type == 'receivable'):
-                        raise UserError(_("You can only set an account having the receivable type on payment terms lines for customer invoice."))
-                if line.move_id.is_purchase_document(include_receipts=True):
-                    if (account_type == 'payable' and account_to_write.user_type_id.type != account_type) \
-                            or (account_type != 'payable' and account_to_write.user_type_id.type == 'payable'):
-                        raise UserError(_("You can only set an account having the payable type on payment terms lines for vendor bill."))
-
-        # Get all tracked fields (without related fields because these fields must be manage on their own model)
-        tracking_fields = []
-        for value in vals:
-            field = self._fields[value]
-            if hasattr(field, 'related') and field.related:
-                continue # We don't want to track related field.
-            if hasattr(field, 'tracking') and field.tracking:
-                tracking_fields.append(value)
-        ref_fields = self.env['account.move.line'].fields_get(tracking_fields)
-
-        # Get initial values for each line
-        move_initial_values = {}
-        for line in self.filtered(lambda l: l.move_id.posted_before): # Only lines with posted once move.
-            for field in tracking_fields:
-                # Group initial values by move_id
-                if line.move_id.id not in move_initial_values:
-                    move_initial_values[line.move_id.id] = {}
-                move_initial_values[line.move_id.id].update({field: line[field]})
-
-        # Create the dict for the message post
-        tracking_values = {} # Tracking values to write in the message post
-        for move_id, modified_lines in move_initial_values.items():
-            tmp_move = {move_id: []}
-            for line in self.filtered(lambda l: l.move_id.id == move_id):
-                changes, tracking_value_ids = line._mail_track(ref_fields, modified_lines) # Return a tuple like (changed field, ORM command)
-                tmp = {'line_id': line.id}
-                if tracking_value_ids:
-                    selected_field = tracking_value_ids[0][2] # Get the last element of the tuple in the list of ORM command. (changed, [(0, 0, THIS)])
-                    tmp.update({
-                        **{'field_name': selected_field.get('field_desc')},
-                        **self._get_formated_values(selected_field)
-                    })
-                elif changes:
-                    field_name = line._fields[changes.pop()].string # Get the field name
-                    tmp.update({
-                        'error': True,
-                        'field_error': field_name
-                    })
-                else:
-                    continue
-                tmp_move[move_id].append(tmp)
-            if len(tmp_move[move_id]) > 0:
-                tracking_values.update(tmp_move)
-        # Write in the chatter.
-        for move in self.mapped('move_id'):
-            fields = tracking_values.get(move.id, [])
-            if len(fields) > 0:
-                msg = self._get_tracking_field_string(tracking_values.get(move.id))
-                move.message_post(body=msg) # Write for each concerned move the message in the chatter
-
-        result = True
-        for line in self:
-            cleaned_vals = line.move_id._cleanup_write_orm_values(line, vals)
-            ipdb.set_trace()
-            if not cleaned_vals:
-                continue
-            # Auto-fill amount_currency if working in single-currency.
-            if 'currency_id' not in cleaned_vals \
-                and line.currency_id == line.company_currency_id \
-                and any(field_name in cleaned_vals for field_name in ('debit', 'credit')):
-                cleaned_vals.update({
-                    'amount_currency': vals.get('debit', 0.0) - vals.get('credit', 0.0),
-                })
-            if not line.name:
-                print("1111111111111")
-                print(cleaned_vals)
-                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit)+" - "+"amount_currency: "+ str(line.amount_currency)+" - "+"price_unit: "+ str(line.price_unit))
-            
-            result |= super(YDSAccountMoveLine, line).write(cleaned_vals)
-
-            if not line.move_id.is_invoice(include_receipts=True):
-                continue
-
-            # Ensure consistency between accounting & business fields.
-            # As we can't express such synchronization as computed fields without cycling, we need to do it both
-            # in onchange and in create/write. So, if something changed in accounting [resp. business] fields,
-            # business [resp. accounting] fields are recomputed.
-            if any(field in cleaned_vals for field in ACCOUNTING_FIELDS):
-                price_subtotal = line._get_price_total_and_subtotal().get('price_subtotal', 0.0)
-                
-                to_write = line._get_fields_onchange_balance(price_subtotal=price_subtotal)
-                to_write.update(line._get_price_total_and_subtotal(
-                    price_unit=to_write.get('price_unit', line.price_unit),
-                    quantity=to_write.get('quantity', line.quantity),
-                    discount=to_write.get('discount', line.discount),
-                ))
-                result |= super(YDSAccountMoveLine, line).write(to_write)
-            elif any(field in cleaned_vals for field in BUSINESS_FIELDS):
-                to_write = line._get_price_total_and_subtotal()
-                to_write.update(line._get_fields_onchange_subtotal(
-                    price_subtotal=to_write['price_subtotal'],
-                ))
-                result |= super(YDSAccountMoveLine, line).write(to_write)
-       
-        # Check total_debit == total_credit in the related moves.
-        if self._context.get('check_move_validity', True):
-           self.mapped('move_id')._check_balanced()
-       
-
-
-        self.mapped('move_id')._synchronize_business_models({'line_ids'})
-
-        return result
-
-   
-
+    #Recalc tax if line discount value has changed
     @api.onchange('discount')
     def recalcTax(self):
-        for line in self:
-           line.move_id._recompute_tax_lines()
+       for line in self:
+            if not line.tax_repartition_line_id:
+                line.recompute_tax_line = True
 
