@@ -106,11 +106,13 @@ class YDSAccountMove(models.Model):
                                 already_exists.update({
                                     'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
+                                    'amount_currency': amount,
                                 })
                             else:
                                 already_exists.update({
                                     'debit': amount < 0.0 and -amount or 0.0,
                                     'credit': amount > 0.0 and amount or 0.0,
+                                    'amount_currency': -amount,
                                 })
                         if purchase_uni_discount_account \
                                 and (move.move_type == "in_invoice"
@@ -120,11 +122,13 @@ class YDSAccountMove(models.Model):
                                 already_exists.update({
                                     'debit': amount < 0.0 and -amount or 0.0,
                                     'credit': amount > 0.0 and amount or 0.0,
+                                    'amount_currency': amount,
                                 })
                             else:
                                 already_exists.update({
                                     'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
+                                    'amount_currency': -amount,
                                 })
                         already_exists.update({
                                 'analytic_account_id': line.analytic_account_id.id,
@@ -170,11 +174,13 @@ class YDSAccountMove(models.Model):
                                         dict.update({
                                         'debit': amount > 0.0 and amount or 0.0,
                                         'credit': amount < 0.0 and -amount or 0.0,
+                                        'amount_currency': amount,
                                         })
                                     else:
                                         dict.update({
                                             'debit': amount < 0.0 and -amount or 0.0,
                                             'credit': amount > 0.0 and amount or 0.0,
+                                            'amount_currency': -amount,
                                         })
                                     if in_draft_mode:
                                         # print("in Uni draft mode 1 sale")
@@ -220,11 +226,13 @@ class YDSAccountMove(models.Model):
                                         dict.update({
                                             'debit': amount < 0.0 and -amount or 0.0,
                                             'credit': amount > 0.0 and amount or 0.0,
+                                            'amount_currency': -amount,
                                         })
                                     else:
                                         dict.update({
                                             'debit': amount > 0.0 and amount or 0.0,
                                             'credit': amount < 0.0 and -amount or 0.0,
+                                            'amount_currency': amount,
                                         })
                                         duplicate_id = move.line_ids.filtered(
                                             lambda line: line.name and line.name.find(lineName) == 0)
@@ -243,6 +251,7 @@ class YDSAccountMove(models.Model):
                                     already_exists.with_context(check_move_validity=False).update({
                                         'debit': amount > 0.0 and amount or 0.0, 
                                         'credit': amount < 0.0 and -amount or 0.0,
+                                        'amount_currency': amount,
                                         })
                                     # ipdb.set_trace()
                                     move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
@@ -332,11 +341,13 @@ class YDSAccountMove(models.Model):
                                     already_exists.update({
                                         'debit': amount > 0.0 and amount or 0.0,
                                         'credit': amount < 0.0 and -amount or 0.0,
+                                        'amount_currency': amount,
                                     })
                                 else:
                                     already_exists.update({
                                         'debit': amount < 0.0 and -amount or 0.0,
                                         'credit': amount > 0.0 and amount or 0.0,
+                                        'amount_currency': -amount,
                                     })
                                 already_exists.update({
                                     'analytic_account_id': line.analytic_account_id.id,
@@ -385,11 +396,14 @@ class YDSAccountMove(models.Model):
                                             dict.update({
                                             'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
                                             'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
+                                            'amount_currency': pricelist_discount_line_amount,
                                             })
                                         else:
                                             dict.update({
                                                 'debit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
                                                 'credit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
+                                                'amount_currency': -pricelist_discount_line_amount,
+                                                
                                             })
                                         if in_draft_mode:
                                             print("in draft mode 1")
@@ -422,6 +436,7 @@ class YDSAccountMove(models.Model):
                                         already_exists.with_context(check_move_validity=False).update({
                                                 'debit': amount > 0.0 and amount or 0.0, 
                                                 'credit': amount < 0.0 and -amount or 0.0,
+                                                'amount_currency': pricelist_discount_line_amount,
                                                 })
                                         move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
                                         # ipdb.set_trace()
