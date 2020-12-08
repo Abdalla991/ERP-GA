@@ -24,7 +24,11 @@ class YDSAccountMovePricelist(models.Model):
             self.show_update_pricelist = True
         else:
             self.show_update_pricelist = False
-
+    
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        self.pricelist_id= self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+        
     def update_prices(self):
         
         # (lambda line: not line.display_type)
