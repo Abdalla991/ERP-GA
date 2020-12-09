@@ -150,13 +150,14 @@
                                 </td>
                             </tr>
                             <tr class="border-black o_subtotal" style="">
-                                <td name="td_total_discount_label">Total discount</td>
+                                <td name="td_total_discount_label"><span>Total discount</span></td>
                                 <td name="td_total_discount" class="text-right">
-                                    <span t-field="doc.x_total_discount"/>
+                                    <span t-field="doc.x_total_discount"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                 </td>
                             </tr>
                             <tr class="border-black o_subtotal" style="">
-                                <td name="td_amount_untaxed_after_discount_label">Subtotal after discount</td>
+                                <td name="td_amount_untaxed_after_discount_label"><span>Subtotal After Discount</span></td>
                                 <td name="td_amount_untaxed_after_discount" class="text-right">
                                     <span t-field="doc.amount_untaxed"/>
                                 </td>

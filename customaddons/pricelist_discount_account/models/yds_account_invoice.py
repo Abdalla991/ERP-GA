@@ -31,7 +31,7 @@ class YDSAccountMove(models.Model):
     yds_pricelist_account_id = fields.Integer(string='Pricelist account ID',  readonly=True,store=True)
     yds_pricelist_name = fields.Char(string ='Pricelist Name',readonly=True,store=True)
     yds_amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True)
-    yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True, currency_field='company_currency_id')
+    yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True)
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
     yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',compute='_calc_line_count',store=True)
@@ -79,8 +79,11 @@ class YDSAccountMove(models.Model):
 
                 # move._recompute_tax_lines()
                 for line in move.line_ids:
+                    print(str(line.name))
+                    print(str(line.currency_id.name))
                     if line.currency_id:
                         currencies.add(line.currency_id)
+                        # ipdb.set_trace()
 
                     if move.is_invoice(include_receipts=True):
                         # === Invoices ===
@@ -91,7 +94,7 @@ class YDSAccountMove(models.Model):
                             total_untaxed_currency += line.amount_currency
                             total += line.balance
                             total_currency += line.amount_currency
-                        elif line.tax_line_id:
+                        elif line.tax_line_id:  
                             # Tax amount.
                             total_tax += line.balance
                             total_tax_currency += line.amount_currency
@@ -462,6 +465,69 @@ class YDSAccountMove(models.Model):
 
             if in_draft_mode:
                 taxes_map_entry['tax_line'].update(taxes_map_entry['tax_line']._get_fields_onchange_balance(force_computation=True))
+
+    def _stock_account_prepare_anglo_saxon_out_lines_vals(self):
+        
+        lines_vals_list = []
+        for move in self:
+            if not move.is_sale_document(include_receipts=True) or not move.company_id.anglo_saxon_accounting:
+                continue
+
+            for line in move.invoice_line_ids:
+
+                # Filter out lines being not eligible for COGS.
+                if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
+                    continue
+
+                # Retrieve accounts needed to generate the COGS.
+                accounts = (
+                    line.product_id.product_tmpl_id
+                    .with_company(line.company_id)
+                    .get_product_accounts(fiscal_pos=move.fiscal_position_id)
+                )
+                debit_interim_account = accounts['stock_output']
+                credit_expense_account = accounts['expense'] or self.journal_id.default_account_id
+                if not debit_interim_account or not credit_expense_account:
+                    continue
+
+                # Compute accounting fields.
+                sign = -1 if move.move_type == 'out_refund' else 1
+                price_unit = line._stock_account_get_anglo_saxon_price_unit()
+                balance = sign * line.quantity * price_unit
+
+                # Add interim account line.
+                lines_vals_list.append({
+                    'name': line.name[:64]+ " Stock Value",
+                    'move_id': move.id,
+                    'product_id': line.product_id.id,
+                    'product_uom_id': line.product_uom_id.id,
+                    'quantity': line.quantity,
+                    'price_unit': price_unit,
+                    'debit': balance < 0.0 and -balance or 0.0,
+                    'credit': balance > 0.0 and balance or 0.0,
+                    'account_id': debit_interim_account.id,
+                    'exclude_from_invoice_tab': True,
+                    'is_anglo_saxon_line': True,
+                })
+
+                # Add expense account line.
+                lines_vals_list.append({
+                    'name': line.name[:64] +" Cost",
+                    'move_id': move.id,
+                    'product_id': line.product_id.id,
+                    'product_uom_id': line.product_uom_id.id,
+                    'quantity': line.quantity,
+                    'price_unit': -price_unit,
+                    'debit': balance > 0.0 and balance or 0.0,
+                    'credit': balance < 0.0 and -balance or 0.0,
+                    'account_id': credit_expense_account.id,
+                    'analytic_account_id': line.analytic_account_id.id,
+                    'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
+                    'exclude_from_invoice_tab': True,
+                    'is_anglo_saxon_line': True,
+                })
+        return lines_vals_list
+
 
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"

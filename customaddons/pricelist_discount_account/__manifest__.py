@@ -16,7 +16,6 @@
 
     'data': [
         'views/yds_pricelist_view.xml',
-        'views/report_invoice.xml',
         'views/sale_extension.xml',
         'views/invoice_extension.xml',
         'views/yds_pricelist_invoice.xml',

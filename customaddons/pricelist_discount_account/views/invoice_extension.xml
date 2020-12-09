@@ -295,8 +295,9 @@
                                     <field name="yds_total_discount" widget="monetary"  options="{'currency_field': 'currency_id'}" attrs="{'invisible':[('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))]}"/>
                                     <field name="yds_amount_untaxed_after_discount" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'invisible':[('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))]}" />
 
-                                    <field name="amount_tax" string="Total Taxes" widget="monetary" attrs="{'invisible': [('amount_tax', '=', 0)]}" />
+                                    
                                     <field name="amount_by_group" widget="tax-group-custom-field" nolabel="1" colspan="2" attrs="{'invisible': [('amount_tax', '=', 0)]}" />
+                                    <field name="amount_tax" widget="monetary" attrs="{'invisible': [('amount_tax', '=', 0)]}" />
                                     <field name="amount_total" attrs="{'invisible': [('amount_tax', '!=', 0)]}"/>
                                     <field name="amount_total" class="oe_subtotal_footer_separator" attrs="{'invisible': [('amount_tax', '=', 0)]}"/>
                                     <!-- <field name="yds_amount_total" class="oe_subtotal_footer_separator" attrs="{'invisible': [('amount_tax', '=', 0)]}"/> -->
