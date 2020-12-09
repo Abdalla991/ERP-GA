@@ -30,7 +30,7 @@ class YDSAccountMove(models.Model):
     yds_total_discount = fields.Float(string='Total Discount',readonly=True,store=True)
     yds_pricelist_account_id = fields.Integer(string='Pricelist account ID',  readonly=True,store=True)
     yds_pricelist_name = fields.Char(string ='Pricelist Name',readonly=True,store=True)
-    yds_amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, currency_field='company_currency_id')
+    yds_amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True)
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True, currency_field='company_currency_id')
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
@@ -120,7 +120,7 @@ class YDSAccountMove(models.Model):
 
                 move.yds_total_discount=0
                 move._calculatePricelistDiscount()
-                move.yds_amount_untaxed = move.amount_untaxed
+                move.yds_amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
                 move.yds_amount_untaxed_after_discount = move.yds_amount_untaxed - move.yds_total_discount
 
                 if move.ks_global_discount_type == "percent":
