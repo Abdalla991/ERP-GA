@@ -31,11 +31,10 @@
             <field name="model">mrp.production</field>
             <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
             <field name="arch" type="xml">
-            <xpath expr="//field[@name='bom_id']" position="after">
+            <xpath expr="//group[@name='group_extra_info']" position="after">
                     <field name="yds_bom_expired" invisible="1"/>
-                    <group>
-                    <label for="yds_bom_expired" attrs="{'invisible':[('yds_bom_expired','==',False)]}" style="color:red ! important;" string="Selected Bill of Material has expired" />
-                    </group>    
+                    <label for="yds_bom_expired" attrs="{'invisible':[('yds_bom_expired','==',False)]}" style="color:red ! important;" string="Selected Bill of Material is invalid, please check start/end dates" />
+                    
                     </xpath>
                  </field>
         </record>

@@ -29,6 +29,7 @@
         'views/ks_account_account.xml',
         'views/ks_report.xml',
         'views/yds_res_partner.xml',
+        'views/yds_sale_margin.xml',
         'views/assets.xml',
         
 

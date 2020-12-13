@@ -79,8 +79,6 @@ class YDSAccountMove(models.Model):
 
                 # move._recompute_tax_lines()
                 for line in move.line_ids:
-                    print(str(line.name))
-                    print(str(line.currency_id.name))
                     if line.currency_id:
                         currencies.add(line.currency_id)
                         # ipdb.set_trace()
@@ -236,15 +234,27 @@ class YDSAccountMove(models.Model):
         yds_res['yds_total_discount'] = self.yds_total_discount
         return yds_res
 
-    # @api.depends('invoice_line_ids')
-    # def _calc_line_count(self):
-    #     print("Counting lines")
-    #     count=0
-    #     for line in self.invoice_line_ids:
-    #         count +=1
-    #     if count != self.yds_invoice_line_count:
-    #         self.yds_invoice_line_count = count
-    #     ipdb.set_trace()
+    # @api.onchange('invoice_line_ids')
+    def _calc_line_count(self):
+        print("Counting lines")
+        print(self._origin.invoice_line_ids)
+        print(self.invoice_line_ids)
+        for move in self:
+            if( move._origin.invoice_line_ids <= move.invoice_line_ids):
+                return
+          
+            removedLine = move._origin.invoice_line_ids - move.invoice_line_ids
+            
+            for line in move.line_ids: 
+                if line.name == removedLine.name +" discount " or  line.name == removedLine.name + " Universal discount ":
+                    move.line_ids -= line
+                    
+        # count=0
+        # for line in self.invoice_line_ids:
+        #     count +=1
+        # if count != self.yds_invoice_line_count:
+        #     self.yds_invoice_line_count = count
+        # ipdb.set_trace()
     
     @api.onchange('yds_invoice_line_count')            
     def test(self):
@@ -533,7 +543,7 @@ class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
     yds_price_total = fields.Monetary(string='Total', store=True, readonly=True,currency_field='currency_id')
-
+    yds_parent_id = fields.Many2one('account.move.line', string="Parent Line", ondelete="cascade")
     @api.model
     @api.onchange('move_id.ks_global_discount_rate')
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes, move_type):

@@ -155,6 +155,7 @@ class YDSAccountMove(models.Model):
                                         'move_name': move.name,
                                         'name':lineName,
                                         'move_id': move._origin,
+                                        'yds_parent_id' :line.id,
                                         'product_id': line.product_id.id,
                                         'product_uom_id': line.product_uom_id.id,
                                         'quantity': 1,
@@ -206,6 +207,7 @@ class YDSAccountMove(models.Model):
                                         'move_name': move.name,
                                         'name':lineName,
                                         'move_id': move._origin,
+                                        'yds_parent_id' :line.id,
                                         'product_id': line.product_id.id,
                                         'product_uom_id': line.product_uom_id.id,
                                         'quantity': 1,
@@ -363,8 +365,6 @@ class YDSAccountMove(models.Model):
                                     terms_lines = move.line_ids.filtered(
                                         lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
                                     already_exists = move.line_ids.filtered( lambda line: line.name and line.name.find(newLineName) == 0)
-                                    print("does not exist ")
-                                    new_tax_line = move.env['account.move.line']
                                     create_method = in_draft_mode and \
                                                     move.env['account.move.line'].new or\
                                                     move.env['account.move.line'].create
@@ -373,11 +373,14 @@ class YDSAccountMove(models.Model):
                                             and (move.move_type == "out_invoice"
                                                 or move.move_type == "out_refund"):
                                         amount = pricelist_discount_line_amount
+                                        print("-----------------------------------------------------")
+                                        print(str(line.id))
                                         dict = {
                                             'move_name': move.name,
                                             'name':newLineName,
                                             'move_id': move._origin,
                                             'product_id': line.product_id.id,
+                                            'yds_parent_id' :line.id,
                                             'product_uom_id': line.product_uom_id.id,
                                             'quantity': 1,
                                             'price_unit': pricelist_discount_line_amount,
