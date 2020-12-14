@@ -90,3 +90,10 @@ msgstr "<span>الإجمالي بعد الخصومات</span>"
 msgid "<span>Total Discount</span>"
 msgstr "<span>إجمالي الخصومات</span>"
 
+#. module: pricelist_discount_account
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order__yds_margin
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order_line__yds_margin
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_report__yds_margin
+msgid "Margin"
+msgstr "الهامش"
+
