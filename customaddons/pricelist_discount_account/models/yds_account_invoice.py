@@ -34,7 +34,7 @@ class YDSAccountMove(models.Model):
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True)
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
-    yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',compute='_calc_line_count',store=True)
+    # yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',compute='_calc_line_count',store=True)
     #pricelist_related_fields
     #added because of the change in pricelist subtotal
     # yds_amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_compute_amount2')
