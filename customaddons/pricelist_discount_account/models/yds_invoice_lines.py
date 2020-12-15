@@ -472,3 +472,44 @@ class YDSAccountMove(models.Model):
                         move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
 
                         # self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
+
+    #remove lines when invoice line row is removed
+    @api.onchange('invoice_line_ids')
+    def remove_cached_lines(self):
+        print("Checking lines to remove")
+        for move in self:
+
+            lines_to_be_saved_names = []
+            lines_to_be_removed = move.line_ids
+
+            #remove all non discount / Uni discount lines from the list
+            for line in move.line_ids:
+                if not "discount" in str(line.name):
+                    lines_to_be_removed-= line
+
+            #debugging purposes REMOVE ME
+            print("before cleaning")
+            for l in lines_to_be_removed:
+                print (l.name)
+            
+            #remove existing invoice lines from the list 
+            for invoice_line in move.invoice_line_ids:
+                if invoice_line.discount > 0 :
+                    for l in lines_to_be_removed:
+                        if l.name == invoice_line.name + " discount ":
+                            lines_to_be_removed -= l
+                if move.ks_global_discount_rate > 0:
+                    for l in lines_to_be_removed:
+                        if l.name == invoice_line.name + " Universal discount ":
+                            lines_to_be_removed -= l
+
+            #debugging purposes REMOVE ME
+            print("after cleaning")
+            for l in lines_to_be_removed:
+                print (l.name)
+
+            #remove lines that have been removed
+            move.line_ids -= lines_to_be_removed
+            #rebalance
+            move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+          

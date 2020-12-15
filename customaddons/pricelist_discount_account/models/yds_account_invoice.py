@@ -234,69 +234,22 @@ class YDSAccountMove(models.Model):
         yds_res['yds_total_discount'] = self.yds_total_discount
         return yds_res
 
-    # @api.onchange('invoice_line_ids')
-    def _calc_line_count(self):
-        print("Counting lines")
-        print(self._origin.invoice_line_ids)
-        print(self.invoice_line_ids)
-        for move in self:
-            if( move._origin.invoice_line_ids <= move.invoice_line_ids):
-                return
-          
-            removedLine = move._origin.invoice_line_ids - move.invoice_line_ids
-            
-            for line in move.line_ids: 
-                if line.name == removedLine.name +" discount " or  line.name == removedLine.name + " Universal discount ":
-                    move.line_ids -= line
-                    
-        # count=0
-        # for line in self.invoice_line_ids:
-        #     count +=1
-        # if count != self.yds_invoice_line_count:
-        #     self.yds_invoice_line_count = count
-        # ipdb.set_trace()
-    
-    @api.onchange('yds_invoice_line_count')            
-    def test(self):
-        print("INVOICE LINE COUNT CHANGED")
- 
-    def _check_balanced(self):
-        ''' Assert the move is fully balanced debit = credit.
-        An error is raised if it's not the case.
-        '''      
-        moves = self.filtered(lambda move: move.line_ids)
-        if not moves:
-            return
-        for move in self:
-            print ("---------Start _check_balanced---------")
-            for line in move.line_ids:
-                print ("Line Name: "+str(line.name))
-                print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit)+" - "+"balance: "+ str(line.balance)+" - "+"amount_currency: "+ str(line.amount_currency))
-            print ("---------End _check_balanced---------")
-        # /!\ As this method is called in create / write, we can't make the assumption the computed stored fields
-        # are already done. Then, this query MUST NOT depend of computed stored fields (e.g. balance).
-        # It happens as the ORM makes the create with the 'no_recompute' statement.
-        self.env['account.move.line'].flush(self.env['account.move.line']._fields)
-        self.env['account.move'].flush(['journal_id'])
-        self._cr.execute('''
-            SELECT line.move_id, ROUND(SUM(line.debit - line.credit), currency.decimal_places)
-            FROM account_move_line line
-            JOIN account_move move ON move.id = line.move_id
-            JOIN account_journal journal ON journal.id = move.journal_id
-            JOIN res_company company ON company.id = journal.company_id
-            JOIN res_currency currency ON currency.id = company.currency_id
-            WHERE line.move_id IN %s
-            GROUP BY line.move_id, currency.decimal_places
-            HAVING ROUND(SUM(line.debit - line.credit), currency.decimal_places) != 0.0;
-        ''', [tuple(self.ids)])
 
-        query_res = self._cr.fetchall()
-        if query_res:
-            # ipdb.set_trace()
-            ids = [res[0] for res in query_res]
-            sums = [res[1] for res in query_res]
-            raise UserError(_("Cannot create unbalanced journal entry. Ids: %s\nDifferences debit - credit: %s") % (ids, sums))
-    
+    # def _check_balanced(self):
+    #     ''' Assert the move is fully balanced debit = credit.
+    #     An error is raised if it's not the case.
+    #     '''      
+    #     moves = self.filtered(lambda move: move.line_ids)
+    #     if not moves:
+    #         return
+    #     for move in self:
+    #         print ("---------Start _check_balanced---------")
+    #         for line in move.line_ids:
+    #             print ("Line Name: "+str(line.name))
+    #             print("credit: "+str(line.credit)+" - "+"debit: "+ str(line.debit)+" - "+"balance: "+ str(line.balance)+" - "+"amount_currency: "+ str(line.amount_currency))
+    #         print ("---------End _check_balanced---------")
+
+
     #Had to override this function to add universal discount to tax calculations
     def _recompute_tax_lines(self, recompute_tax_base_amount=False):
         ''' Compute the dynamic tax lines of the journal entry.
@@ -476,6 +429,7 @@ class YDSAccountMove(models.Model):
             if in_draft_mode:
                 taxes_map_entry['tax_line'].update(taxes_map_entry['tax_line']._get_fields_onchange_balance(force_computation=True))
 
+    #Override to change cost/stock value line names
     def _stock_account_prepare_anglo_saxon_out_lines_vals(self):
         
         lines_vals_list = []
@@ -566,7 +520,7 @@ class YDSAccountMoveLine(models.Model):
             res['price_total'] = taxes_res['total_included']
 
             #YDS Specific fields to store all values (INCASE we need them in the future)
-            yds_taxes_res = taxes._origin.compute_all(line_discount_price_unit,
+            yds_taxes_res = taxes._origin.compute_all(price_unit,
                 quantity=quantity, currency=currency, product=product, partner=partner, is_refund=move_type in ('out_refund', 'in_refund'))
             res['yds_price_subtotal'] = yds_taxes_res['total_excluded'] 
             res['yds_price_total'] = yds_taxes_res['total_included']

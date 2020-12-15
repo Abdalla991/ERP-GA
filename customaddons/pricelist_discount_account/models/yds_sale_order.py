@@ -19,7 +19,7 @@ class YDSSaleOrder(models.Model):
             amount_untaxed = amount_tax = x_amount_untaxed = x_amount_untaxed_after_discount = x_total_discount = 0.0
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
-                x_amount_untaxed += line.x_price_subtotal
+                x_amount_untaxed += line.x_price_subtotal_wo_uni
                 x_total_discount += line.price_unit * ( (line.discount or 0.0) / 100.0) * line.product_uom_qty
                 x_amount_untaxed_after_discount = x_amount_untaxed - x_total_discount
                 amount_tax += line.price_tax
@@ -56,6 +56,7 @@ class YDSSaleOrder(models.Model):
                     productCounts.append(1)
                     print(productNames)
                     print(productCounts)
+
     # Send values to account.move
     def _prepare_invoice(self):
         res = super(YDSSaleOrder, self)._prepare_invoice()
@@ -75,6 +76,10 @@ class SaleOrderlineTemplate(models.Model):
     _inherit = 'sale.order.line'
 
     x_price_subtotal = fields.Monetary(compute='_compute_amount', string='Subtotal', readonly=True, store=True)
+    x_price_total = fields.Monetary(compute='_compute_amount', string='Total', readonly=True, store=True)
+    x_price_subtotal_wo_uni = fields.Monetary(compute='_compute_amount', string='Subtotal', readonly=True, store=True)
+    x_price_total_wo_uni = fields.Monetary(compute='_compute_amount', string='Total', readonly=True, store=True)
+
  
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id') 
     def _compute_amount(self):
@@ -82,13 +87,30 @@ class SaleOrderlineTemplate(models.Model):
         Compute the amounts of the SO line.
         """
         for line in self:
-            price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            price = line.price_unit* (1 - (line.discount or 0.0) / 100.0)
+            
+            #original price
+            x_price = line.price_unit
+            x_price_w_uni = line.price_unit * (1 - (line.discount or 0.0) / 100.0) * (1 - (line.order_id.ks_global_discount_rate / 100)) 
+
+            #Use price_unit instead of Odoo's DEFAULT line_discount_price_unit to calc tax without discount
+            #To seperate discount from net sales
             taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_shipping_id)
+            x_taxes = line.tax_id.compute_all(x_price, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_shipping_id)
+            x_taxes_uni = line.tax_id.compute_all(x_price_w_uni, line.order_id.currency_id, line.product_uom_qty, product=line.product_id, partner=line.order_id.partner_shipping_id)
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                #price with normal discount
                 'price_total': taxes['total_included'],
                 'price_subtotal': taxes['total_excluded'],
-                'x_price_subtotal': taxes['total_excluded'] + (line.price_unit * ((line.discount or 0.0) / 100.0) * line.product_uom_qty),
+                
+                #price without any discount
+                'x_price_subtotal_wo_uni': x_taxes['total_excluded'],
+                'x_price_total_wo_uni': x_taxes['total_included'],
+
+                #price with all discounts
+                'x_price_subtotal': x_taxes_uni['total_excluded'],
+                'x_price_total': x_taxes_uni['total_included'],
             })
             if self.env.context.get('import_file', False) and not self.env.user.user_has_groups('account.group_account_manager'):
                 line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])

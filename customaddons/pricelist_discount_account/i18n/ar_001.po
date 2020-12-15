@@ -97,3 +97,14 @@ msgstr "<span>إجمالي الخصومات</span>"
 msgid "Margin"
 msgstr "الهامش"
 
+#. module: pricelist_discount_account
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order_line__x_price_subtotal_wo_uni
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order_line__x_price_subtotal
+msgid "Subtotal"
+msgstr "الإجمالي الفرعي"
+
+#. module: pricelist_discount_account
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order_line__x_price_total_wo_uni
+#: model:ir.model.fields,field_description:pricelist_discount_account.field_sale_order_line__x_price_total
+msgid "Total"
+msgstr "الإجمالي"
