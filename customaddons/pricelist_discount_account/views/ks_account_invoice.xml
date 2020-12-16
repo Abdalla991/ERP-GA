@@ -14,7 +14,7 @@
                                
                     </div>
                     <div class="ks_container">
-                        <label for="ks_global_discount_rate" string="نسبة الخصم الشامل :"
+                        <label for="ks_global_discount_rate" string="Universal Discount rate :"
                                attrs="{'invisible':['|',('ks_enable_discount','!=',True),('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))]}"/>
                         <field name="ks_global_discount_rate" class="oe_inline"
                                attrs="{'invisible':['|',('ks_enable_discount','!=',True),('move_type', 'in', ('in_invoice', 'in_receipt', 'in_refund'))],'readonly':['|','|',('ks_enable_discount','!=',True),('state', 'in', ['posted', 'cancel']), ('ks_global_discount_type', 'in', [None, False])]}"/>

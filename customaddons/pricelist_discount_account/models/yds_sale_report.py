@@ -10,11 +10,11 @@ class YDSSaleReport(models.Model):
 
    
     # x_price_total = fields.Float('YDS Total', readonly=True)
-    x_price_subtotal = fields.Float('YDS Untaxed Total', readonly=True)
+    x_price_subtotal_wo_uni = fields.Float('Raw Subtotal', readonly=True)
     cost =  fields.Float('Cost', readonly=True)
     cost_percentage =  fields.Float('Cost %', readonly=True)
     uni_amount =  fields.Float('Universal Discount Amount', readonly=True)
-    # uni_rate =  fields.Float('Universal Discount %', readonly=True)
+    uni_rate =  fields.Float('Universal Discount %',readonly=True)
 
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     # fields['price_total'] = ", SUM(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_total"
@@ -24,6 +24,8 @@ class YDSSaleReport(models.Model):
     #     fields['uni_amount'] = ", CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount"
     #     # fields['cost_percentage'] = ", CASE WHEN l.product_id IS NOT NULL THEN sum((t.standard_price / l.price_unit / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END))ELSE 0 END as cost_percentage"
     #     return super(YDSSaleReport, self)._query(with_clause, fields, groupby, from_clause)
+
+  
 
 
     def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
@@ -64,7 +66,13 @@ class YDSSaleReport(models.Model):
             CASE WHEN l.product_id IS NOT NULL THEN sum(p.volume * l.product_uom_qty / u.factor * u2.factor) ELSE 0 END as volume,
             l.discount as discount,
             CASE WHEN l.product_id IS NOT NULL THEN sum((l.price_unit * l.product_uom_qty * l.discount / 100.0 / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END))ELSE 0 END as discount_amount,
-            s.id as order_id
+            s.id as order_id,
+            CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(t.standard_price * l.product_uom_qty) ELSE 0 END as cost,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
+            CASE WHEN l.product_id IS NOT NULL THEN (t.standard_price * l.product_uom_qty / l.x_price_subtotal_wo_uni*100) ELSE 0 END as cost_percentage,
+            ks_global_discount_rate as uni_rate
+
         """
 
         for field in fields.values():

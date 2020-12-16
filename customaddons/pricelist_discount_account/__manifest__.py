@@ -21,7 +21,6 @@
         'views/yds_pricelist_invoice.xml',
         'report/sale_report_templates.xml',
         'views/report_invoice.xml',
-        'views/mrp_bom_ext.xml',
         'views/ks_sale_order.xml',
         'views/ks_account_invoice.xml',
         'views/ks_purchase_order.xml',
