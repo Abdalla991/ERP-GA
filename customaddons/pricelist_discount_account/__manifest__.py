@@ -23,7 +23,7 @@
         'views/report_invoice.xml',
         'views/ks_sale_order.xml',
         'views/ks_account_invoice.xml',
-        'views/ks_purchase_order.xml',
+        # 'views/ks_purchase_order.xml',
         'views/ks_account_invoice_supplier_form.xml',
         'views/ks_account_account.xml',
         'views/ks_report.xml',

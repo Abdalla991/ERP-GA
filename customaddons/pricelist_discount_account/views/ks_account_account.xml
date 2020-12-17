@@ -28,19 +28,13 @@
                             <div class="o_setting_right_pane">
                                 <span class="o_form_label">Accounts</span>
                                 <div class="text-muted">
-                                        Set default Universal discount accounts for sale and purchase order.
+                                        Set default Universal discount account for sale order.
                                 </div>
                                 <div class="content-group">
                                     <div class="row mt16" >
                                         <label for="ks_sales_discount_account"
                                                class="col-md-3 o_light_label"/>
                                         <field name="ks_sales_discount_account"
-                                               attrs="{'required': [('ks_enable_discount','==',True)]}"/>
-                                    </div>
-                                    <div class="row mt16" >
-                                        <label for="ks_purchase_discount_account"
-                                               class="col-md-3 o_light_label"/>
-                                        <field name="ks_purchase_discount_account"
                                                attrs="{'required': [('ks_enable_discount','==',True)]}"/>
                                     </div>
                                 </div>
