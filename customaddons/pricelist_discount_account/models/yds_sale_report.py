@@ -5,6 +5,20 @@ from odoo import tools
 from odoo import api, fields, models
 
 
+class YDSProductTemplates(models.Model):
+    _inherit = "product.template"
+
+    #By default odoo does not store the product's cost, we have to create a new field containing the cost and store it
+    standard_price = fields.Float(
+        'Cost', compute='_compute_standard_price',
+        inverse='_set_standard_price', search='_search_standard_price',
+        digits='Product Price', groups="base.group_user",
+        help="""In Standard Price & AVCO: value of the product (automatically computed in AVCO).
+        In FIFO: value of the last unit that left the stock (automatically computed).
+        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).
+        Used to compute margins on sale orders.""",store=True)
+
+
 class YDSSaleReport(models.Model):
     _inherit = "sale.report"
 
@@ -70,7 +84,7 @@ class YDSSaleReport(models.Model):
             CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount,
             CASE WHEN l.product_id IS NOT NULL THEN sum(t.standard_price * l.product_uom_qty) ELSE 0 END as cost,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
-            CASE WHEN l.product_id IS NOT NULL THEN (t.standard_price * l.product_uom_qty / l.x_price_subtotal_wo_uni*100) ELSE 0 END as cost_percentage,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(t.standard_price * l.product_uom_qty / l.x_price_subtotal_wo_uni*100) ELSE 0 END as cost_percentage,
             ks_global_discount_rate as uni_rate
 
         """

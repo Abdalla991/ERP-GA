@@ -62,14 +62,14 @@ class YDSAccountMove(models.Model):
                     count+=1
                     exists = False
                     # Filter out lines being not eligible for discount/universal discount line.
-                    if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
-                        continue
+                    # if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
+                    #     continue
 
                     sale_uni_discount_account = move.ks_sales_discount_account_id
                     purchase_uni_discount_account = move.ks_purchase_discount_account_id
                     # unversal_discount_account = accounts['expense'] or self.journal_id.default_account_id
-                    if not sale_uni_discount_account or not purchase_uni_discount_account:
-                        continue
+                    # if not sale_uni_discount_account or not purchase_uni_discount_account:
+                    #     continue
 
                     sign = -1 if move.move_type == 'out_refund' else 1
 
@@ -303,8 +303,8 @@ class YDSAccountMove(models.Model):
                     # print(count)
                     exists = False
                     # Filter out lines being not eligible for discount line.
-                    if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
-                        continue
+                    # if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
+                    #     continue
 
                     product_discount_account = move.pricelist_id.yds_assigned_discount_account.id
                     if not product_discount_account: 
