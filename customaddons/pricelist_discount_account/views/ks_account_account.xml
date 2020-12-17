@@ -13,7 +13,7 @@
                          attrs="{'invisible': [('has_chart_of_accounts','==',False)]}">
                         <div class="col-xs-12 col-md-6 o_setting_box">
                             <div class="o_setting_left_pane">
-                                <field name="ks_enable_discount" invisible="1"/>
+                                <field name="ks_enable_discount"/>
                             </div>
                             <div class="o_setting_right_pane">
                                 <label for ='ks_enable_discount'/>
