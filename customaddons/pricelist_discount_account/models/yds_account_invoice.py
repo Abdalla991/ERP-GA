@@ -58,62 +58,61 @@ class YDSAccountMove(models.Model):
         'pricelist_id',
         'partner_id')
     def _compute_amount(self):
-            for move in self:
-                if move.payment_state == 'invoicing_legacy':
-                    # invoicing_legacy state is set via SQL when setting setting field
-                    # invoicing_switch_threshold (defined in account_accountant).
-                    # The only way of going out of this state is through this setting,
-                    # so we don't recompute it here.
-                    move.payment_state = move.payment_state
-                    continue
-                total_untaxed = 0.0
-                total_untaxed_currency = 0.0
-                total_tax = 0.0
-                total_tax_currency = 0.0
-                total_to_pay = 0.0
-                total_residual = 0.0
-                total_residual_currency = 0.0
-                total = 0.0
-                total_currency = 0.0    
-                currencies = set()
+        for move in self:
 
-                # move._recompute_tax_lines()
-                for line in move.line_ids:
-                    if line.currency_id:
-                        currencies.add(line.currency_id)
-                        # ipdb.set_trace()
+            if move.payment_state == 'invoicing_legacy':
+                # invoicing_legacy state is set via SQL when setting setting field
+                # invoicing_switch_threshold (defined in account_accountant).
+                # The only way of going out of this state is through this setting,
+                # so we don't recompute it here.
+                move.payment_state = move.payment_state
+                continue
 
-                    if move.is_invoice(include_receipts=True):
-                        # === Invoices ===
+            total_untaxed = 0.0
+            total_untaxed_currency = 0.0
+            total_tax = 0.0
+            total_tax_currency = 0.0
+            total_to_pay = 0.0
+            total_residual = 0.0
+            total_residual_currency = 0.0
+            total = 0.0
+            total_currency = 0.0
+            currencies = set()
 
-                        if not line.exclude_from_invoice_tab:
-                            # Untaxed amount.
-                            total_untaxed += line.balance 
-                            total_untaxed_currency += line.amount_currency
-                            total += line.balance
-                            total_currency += line.amount_currency
-                        elif line.tax_line_id:  
-                            # Tax amount.
-                            total_tax += line.balance
-                            total_tax_currency += line.amount_currency
-                            total += line.balance
-                            total_currency += line.amount_currency
-                        elif line.account_id.user_type_id.type in ('receivable', 'payable'):
-                            # Residual amount.
-                            total_to_pay += line.balance
-                            total_residual += line.amount_residual
-                            total_residual_currency += line.amount_residual_currency
-                    else:
-                        # === Miscellaneous journal entry ===
-                        if line.debit:
-                            total += line.balance
-                            total_currency += line.amount_currency
+            for line in move.line_ids:
+                if line.currency_id and line in move._get_lines_onchange_currency():
+                    currencies.add(line.currency_id)
 
-                if move.move_type == 'entry' or move.is_outbound():
-                    sign = 1
+                if move.is_invoice(include_receipts=True):
+                    # === Invoices ===
+
+                    if not line.exclude_from_invoice_tab:
+                        # Untaxed amount.
+                        total_untaxed += line.balance
+                        total_untaxed_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.tax_line_id:
+                        # Tax amount.
+                        total_tax += line.balance
+                        total_tax_currency += line.amount_currency
+                        total += line.balance
+                        total_currency += line.amount_currency
+                    elif line.account_id.user_type_id.type in ('receivable', 'payable'):
+                        # Residual amount.
+                        total_to_pay += line.balance
+                        total_residual += line.amount_residual
+                        total_residual_currency += line.amount_residual_currency
                 else:
-                    sign = -1
-            
+                    # === Miscellaneous journal entry ===
+                    if line.debit:
+                        total += line.balance
+                        total_currency += line.amount_currency
+
+            if move.move_type == 'entry' or move.is_outbound():
+                sign = 1
+            else:
+                sign = -1
                 move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
                 move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
                 move.amount_untaxed_signed = -total_untaxed
