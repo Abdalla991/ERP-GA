@@ -250,7 +250,9 @@ class YDSAccountMove(models.Model):
     #         print ("---------End _check_balanced---------")
 
 
+
     #Had to override this function to add universal discount to tax calculations
+
     def _recompute_tax_lines(self, recompute_tax_base_amount=False):
         ''' Compute the dynamic tax lines of the journal entry.
 
@@ -284,7 +286,6 @@ class YDSAccountMove(models.Model):
                 sign = -1 if move.is_inbound() else 1
                 quantity = base_line.quantity
                 is_refund = move.move_type in ('out_refund', 'in_refund')
-                #YDS Add all discounts to taxes calculations
                 price_unit_wo_discount = sign * base_line.price_unit * (1 - (base_line.discount / 100.0))*(1 - (move.ks_global_discount_rate / 100)) 
             else:
                 handle_price_include = False
@@ -293,7 +294,7 @@ class YDSAccountMove(models.Model):
                 is_refund = (tax_type == 'sale' and base_line.debit) or (tax_type == 'purchase' and base_line.credit)
                 price_unit_wo_discount = base_line.balance
 
-            balance_taxes_res = base_line.tax_ids._origin.compute_all(
+            balance_taxes_res = base_line.tax_ids._origin.with_context(force_sign=move._get_tax_force_sign()).compute_all(
                 price_unit_wo_discount,
                 currency=base_line.currency_id,
                 quantity=quantity,
@@ -305,7 +306,7 @@ class YDSAccountMove(models.Model):
 
             if move.move_type == 'entry':
                 repartition_field = is_refund and 'refund_repartition_line_ids' or 'invoice_repartition_line_ids'
-                repartition_tags = base_line.tax_ids.mapped(repartition_field).filtered(lambda x: x.repartition_type == 'base').tag_ids
+                repartition_tags = base_line.tax_ids.flatten_taxes_hierarchy().mapped(repartition_field).filtered(lambda x: x.repartition_type == 'base').tag_ids
                 tags_need_inversion = (tax_type == 'sale' and not is_refund) or (tax_type == 'purchase' and is_refund)
                 if tags_need_inversion:
                     balance_taxes_res['base_tags'] = base_line._revert_signed_tags(repartition_tags).ids
@@ -316,7 +317,7 @@ class YDSAccountMove(models.Model):
 
         taxes_map = {}
 
-        # ==== Add tax lines ==== 
+        # ==== Add tax lines ====
         to_remove = self.env['account.move.line']
         for line in self.line_ids.filtered('tax_repartition_line_id'):
             grouping_dict = self._get_tax_grouping_key_from_tax_line(line)
@@ -344,7 +345,7 @@ class YDSAccountMove(models.Model):
             compute_all_vals = _compute_base_line_taxes(line)
 
             # Assign tags on base line
-            line.tax_tag_ids = compute_all_vals['base_tags']
+            line.tax_tag_ids = compute_all_vals['base_tags'] or [(5, 0, 0)]
 
             tax_exigible = True
             for tax_vals in compute_all_vals['taxes']:
@@ -364,7 +365,7 @@ class YDSAccountMove(models.Model):
                     'grouping_dict': False,
                 })
                 taxes_map_entry['amount'] += tax_vals['amount']
-                taxes_map_entry['tax_base_amount'] += self._get_base_amount_to_display(tax_vals['base'], tax_repartition_line)
+                taxes_map_entry['tax_base_amount'] += self._get_base_amount_to_display(tax_vals['base'], tax_repartition_line, tax_vals['group'])
                 taxes_map_entry['grouping_dict'] = grouping_dict
             line.tax_exigible = tax_exigible
 
@@ -431,7 +432,6 @@ class YDSAccountMove(models.Model):
 
     #Override to change cost/stock value line names
     def _stock_account_prepare_anglo_saxon_out_lines_vals(self):
-        
         lines_vals_list = []
         for move in self:
             if not move.is_sale_document(include_receipts=True) or not move.company_id.anglo_saxon_accounting:
@@ -491,7 +491,6 @@ class YDSAccountMove(models.Model):
                     'is_anglo_saxon_line': True,
                 })
         return lines_vals_list
-
 
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"

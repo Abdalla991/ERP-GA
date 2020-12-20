@@ -66,7 +66,6 @@ class YDSAccountMove(models.Model):
                     #     continue
 
                     sale_uni_discount_account = move.ks_sales_discount_account_id
-                    purchase_uni_discount_account = move.ks_purchase_discount_account_id
                     # unversal_discount_account = accounts['expense'] or self.journal_id.default_account_id
                     # if not sale_uni_discount_account or not purchase_uni_discount_account:
                     #     continue
@@ -114,23 +113,7 @@ class YDSAccountMove(models.Model):
                                     'credit': amount > 0.0 and amount or 0.0,
                                     'amount_currency': -amount,
                                 })
-                        if purchase_uni_discount_account \
-                                and (move.move_type == "in_invoice"
-                                        or move.move_type == "in_refund")\
-                                and amount > 0:
-                            if move.move_type == "in_invoice":
-                                already_exists.update({
-                                    'debit': amount < 0.0 and -amount or 0.0,
-                                    'credit': amount > 0.0 and amount or 0.0,
-                                    'amount_currency': amount,
-                                })
-                            else:
-                                already_exists.update({
-                                    'debit': amount > 0.0 and amount or 0.0,
-                                    'credit': amount < 0.0 and -amount or 0.0,
-                                    'amount_currency': -amount,
-                                })
-                        already_exists.update({
+                            already_exists.update({
                                 'analytic_account_id': line.analytic_account_id.id,
                             })
                         move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
@@ -198,50 +181,6 @@ class YDSAccountMove(models.Model):
                                         'credit': 0.0,
                                             })
                                         move.line_ids = [(0, 0, dict)]
-
-                                if purchase_uni_discount_account\
-                                        and (move.move_type == "in_invoice"
-                                            or move.move_type == "in_refund"):
-                                    amount = universal_discount_line_amount
-                                    dict = {
-                                        'move_name': move.name,
-                                        'name':lineName,
-                                        'move_id': move._origin,
-                                        'yds_parent_id' :line.id,
-                                        'product_id': line.product_id.id,
-                                        'product_uom_id': line.product_uom_id.id,
-                                        'quantity': 1,
-                                        'price_unit': amount,
-                                        'debit': amount > 0.0 and amount or 0.0,
-                                        'credit': amount < 0.0 and -amount or 0.0,
-                                        'account_id': purchase_uni_discount_account,
-                                        'analytic_account_id': line.analytic_account_id.id,
-                                        'analytic_tag_ids': [(6, 0, line.analytic_tag_ids.ids)],
-                                        'exclude_from_invoice_tab': True,
-                                        'partner_id': terms_lines.partner_id.id,
-                                        'company_id': terms_lines.company_id.id,
-                                        'company_currency_id': terms_lines.company_currency_id.id,
-                                        'date': move.date,
-                                        }
-
-                                    if move.move_type == "in_invoice":
-                                        dict.update({
-                                            'debit': amount < 0.0 and -amount or 0.0,
-                                            'credit': amount > 0.0 and amount or 0.0,
-                                            'amount_currency': -amount,
-                                        })
-                                    else:
-                                        dict.update({
-                                            'debit': amount > 0.0 and amount or 0.0,
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            'amount_currency': amount,
-                                        })
-                                        duplicate_id = move.line_ids.filtered(
-                                            lambda line: line.name and line.name.find(lineName) == 0)
-                                        move.line_ids = move.line_ids - duplicate_id
-                                        move.line_ids += create_method(dict)
-                                        move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
-                                        # Updation of Invoice Line Id
                                 if in_draft_mode:
                                     # print("Uni in draft mode 2")
                                     # Update the payement account amount
