@@ -495,7 +495,6 @@ class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
     yds_price_total = fields.Monetary(string='Total', store=True, readonly=True,currency_field='currency_id')
-    yds_parent_id = fields.Many2one('account.move.line', string="Parent Line", ondelete="cascade")
     @api.model
     @api.onchange('move_id.ks_global_discount_rate')
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes, move_type):

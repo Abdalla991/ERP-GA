@@ -24,28 +24,6 @@ class YDSAccountMove(models.Model):
                     productNames.append(line.product_id.name)
                     productCounts.append(1)
 
-    #On row deletion or addition readd lines
-    #FIX
-    # @api.onchange('invoice_line_ids')
-    def reInsert_lines(self):
-        print("reInsert_lines called")
-        for move in self:
-            for line in move.line_ids:
-                if line.name:
-                    if "discount" in line.name:
-                        self.line_ids -= line
-                        terms_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                        other_lines = self.line_ids.filtered(
-                            lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                        total_balance = sum(other_lines.mapped('balance'))
-                        total_amount_currency = sum(other_lines.mapped('amount_currency'))
-                        terms_lines.update({
-                            'amount_currency': -total_amount_currency,
-                            'debit': total_balance < 0.0 and -total_balance or 0.0,
-                            'credit': total_balance > 0.0 and total_balance or 0.0,
-                        })
-            move.add_lines()
 
 
     #Add Universal discount lines per product
@@ -75,8 +53,10 @@ class YDSAccountMove(models.Model):
                     #Calculations
                     uni_discount_rate=move.ks_global_discount_rate/100
                     amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(line.price_unit * ( (line.discount or 0.0) / 100.0) *line.quantity)
+                    pricelist_discount_line_amount =(amount*( (line.discount or 0.0) / 100.0))
                     hasDiscount = uni_discount_rate > 0
+                    
+                    amount_currency =(line.amount_currency-(line.amount_currency*(line.discount/100)))*uni_discount_rate
 
                     if(hasDiscount):
                         universal_discount_line_amount = ((amount-pricelist_discount_line_amount)*uni_discount_rate)
@@ -105,13 +85,13 @@ class YDSAccountMove(models.Model):
                                 already_exists.update({
                                     'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
-                                    'amount_currency': amount,
+                                    'amount_currency': -amount_currency,
                                 })
                             else:
                                 already_exists.update({
                                     'debit': amount < 0.0 and -amount or 0.0,
                                     'credit': amount > 0.0 and amount or 0.0,
-                                    'amount_currency': -amount,
+                                    'amount_currency': amount_currency,
                                 })
                             already_exists.update({
                                 'analytic_account_id': line.analytic_account_id.id,
@@ -138,7 +118,6 @@ class YDSAccountMove(models.Model):
                                         'move_name': move.name,
                                         'name':lineName,
                                         'move_id': move._origin,
-                                        'yds_parent_id' :line.id,
                                         'product_id': line.product_id.id,
                                         'product_uom_id': line.product_uom_id.id,
                                         'quantity': 1,
@@ -151,6 +130,7 @@ class YDSAccountMove(models.Model):
                                         'exclude_from_invoice_tab': True,
                                         'partner_id': terms_lines.partner_id.id,
                                         'company_id': terms_lines.company_id.id,
+                                        'currency_id': line.currency_id,
                                         'company_currency_id': terms_lines.company_currency_id.id,
                                         'date': move.date,
                                         }
@@ -158,13 +138,13 @@ class YDSAccountMove(models.Model):
                                         dict.update({
                                         'debit': amount > 0.0 and amount or 0.0,
                                         'credit': amount < 0.0 and -amount or 0.0,
-                                        'amount_currency': amount,
+                                        'amount_currency': -amount_currency,
                                         })
                                     else:
                                         dict.update({
                                             'debit': amount < 0.0 and -amount or 0.0,
                                             'credit': amount > 0.0 and amount or 0.0,
-                                            'amount_currency': -amount,
+                                            'amount_currency': amount_currency,
                                         })
                                     if in_draft_mode:
                                         # print("in Uni draft mode 1 sale")
@@ -192,7 +172,7 @@ class YDSAccountMove(models.Model):
                                     already_exists.with_context(check_move_validity=False).update({
                                         'debit': amount > 0.0 and amount or 0.0, 
                                         'credit': amount < 0.0 and -amount or 0.0,
-                                        'amount_currency': amount,
+                                        'amount_currency': -amount_currency,
                                         })
                                     # ipdb.set_trace()
                                     move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
@@ -252,8 +232,11 @@ class YDSAccountMove(models.Model):
                     sign = -1 if move.move_type == 'out_refund' else 1
                     #Calculations
                     amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(line.price_unit * ( (line.discount or 0.0) / 100.0) *line.quantity)
+                    pricelist_discount_line_amount =(amount* ( (line.discount or 0.0) / 100.0))
                     hasDiscount = pricelist_discount_line_amount > 0  
+                    amount_currency = (line.amount_currency*line.discount/100)
+                    
+                    # ipdb.set_trace()
 
                     lineName = line.name[:64]+" discount "
                     print("------Existing Lines ------")
@@ -282,13 +265,13 @@ class YDSAccountMove(models.Model):
                                     already_exists.update({
                                         'debit': amount > 0.0 and amount or 0.0,
                                         'credit': amount < 0.0 and -amount or 0.0,
-                                        'amount_currency': amount,
+                                        'amount_currency': -amount_currency,
                                     })
                                 else:
                                     already_exists.update({
                                         'debit': amount < 0.0 and -amount or 0.0,
                                         'credit': amount > 0.0 and amount or 0.0,
-                                        'amount_currency': -amount,
+                                        'amount_currency': amount_currency,
                                     })
                                 already_exists.update({
                                     'analytic_account_id': line.analytic_account_id.id,
@@ -319,7 +302,6 @@ class YDSAccountMove(models.Model):
                                             'name':newLineName,
                                             'move_id': move._origin,
                                             'product_id': line.product_id.id,
-                                            'yds_parent_id' :line.id,
                                             'product_uom_id': line.product_uom_id.id,
                                             'quantity': 1,
                                             'price_unit': pricelist_discount_line_amount,
@@ -331,6 +313,7 @@ class YDSAccountMove(models.Model):
                                             'exclude_from_invoice_tab': True,
                                             'partner_id': terms_lines.partner_id.id,
                                             'company_id': terms_lines.company_id.id,
+                                            'currency_id': line.currency_id,
                                             'company_currency_id': terms_lines.company_currency_id.id,
                                             'date': move.date,
                                             }
@@ -338,13 +321,13 @@ class YDSAccountMove(models.Model):
                                             dict.update({
                                             'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
                                             'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
-                                            'amount_currency': pricelist_discount_line_amount,
+                                            'amount_currency': -amount_currency,
                                             })
                                         else:
                                             dict.update({
                                                 'debit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
                                                 'credit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
-                                                'amount_currency': -pricelist_discount_line_amount,
+                                                'amount_currency': amount_currency,
                                                 
                                             })
                                         if in_draft_mode:
@@ -378,7 +361,7 @@ class YDSAccountMove(models.Model):
                                         already_exists.with_context(check_move_validity=False).update({
                                                 'debit': amount > 0.0 and amount or 0.0, 
                                                 'credit': amount < 0.0 and -amount or 0.0,
-                                                'amount_currency': pricelist_discount_line_amount,
+                                                'amount_currency': -amount_currency,
                                                 })
                                         move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
                                         # ipdb.set_trace()
