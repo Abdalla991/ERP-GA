@@ -34,10 +34,6 @@ class YDSAccountMove(models.Model):
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True)
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
-    # yds_invoice_line_count = fields.Integer(string='yds_invoice_line_count',compute='_calc_line_count',store=True)
-    #pricelist_related_fields
-    #added because of the change in pricelist subtotal
-    # yds_amount_total = fields.Monetary(string='Total', store=True, readonly=True, compute='_compute_amount2')
     @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
@@ -168,6 +164,9 @@ class YDSAccountMove(models.Model):
                     move.add_all_lines()
                     move.yds_is_sales_order=False
                         
+    @api.onchange('pricelist_id')
+    def change_currency(self):
+        self.currency_id=self.pricelist_id.currency_id
 
     @api.onchange('invoice_line_ids',
                     'ks_global_discount_rate',
