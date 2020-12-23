@@ -8,15 +8,15 @@ from odoo import api, fields, models
 class YDSProductTemplates(models.Model):
     _inherit = "product.template"
 
-    #By default odoo does not store the product's cost, we have to create a new field containing the cost and store it
-    standard_price = fields.Float(
-        'Cost', compute='_compute_standard_price',
-        inverse='_set_standard_price', search='_search_standard_price',
-        digits='Product Price', groups="base.group_user",
-        help="""In Standard Price & AVCO: value of the product (automatically computed in AVCO).
-        In FIFO: value of the last unit that left the stock (automatically computed).
-        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).
-        Used to compute margins on sale orders.""",store=True)
+    # #By default odoo does not store the product's cost, we have to create a new field containing the cost and store it
+    # standard_price = fields.Float(
+    #     'Cost', compute='_compute_standard_price',
+    #     inverse='_set_standard_price', search='_search_standard_price',
+    #     digits='Product Price', groups="base.group_user",
+    #     help="""In Standard Price & AVCO: value of the product (automatically computed in AVCO).
+    #     In FIFO: value of the last unit that left the stock (automatically computed).
+    #     Used to value the product when the purchase cost is not known (e.g. inventory adjustment).
+    #     Used to compute margins on sale orders.""",store=True)
 
 
 class YDSSaleReport(models.Model):
@@ -24,7 +24,7 @@ class YDSSaleReport(models.Model):
 
    
     # x_price_total = fields.Float('YDS Total', readonly=True)
-    x_price_subtotal_wo_uni = fields.Float('Raw Subtotal', readonly=True)
+    x_price_subtotal_wo_uni = fields.Float('Sale Price', readonly=True)
     cost =  fields.Float('Cost', readonly=True)
     cost_percentage =  fields.Float('Cost %', readonly=True)
     uni_amount =  fields.Float('Universal Discount Amount', readonly=True)
@@ -55,8 +55,8 @@ class YDSSaleReport(models.Model):
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.qty_to_invoice / u.factor * u2.factor) ELSE 0 END as qty_to_invoice,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as price_total,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as price_subtotal,
-            CASE WHEN l.product_id IS NOT NULL THEN sum(l.untaxed_amount_to_invoice / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as untaxed_amount_to_invoice,
-            CASE WHEN l.product_id IS NOT NULL THEN sum(l.untaxed_amount_invoiced / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as untaxed_amount_invoiced,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(l.yds_untaxed_amount_to_invoice / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as untaxed_amount_to_invoice,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(l.yds_untaxed_amount_invoiced / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as untaxed_amount_invoiced,
             count(*) as nbr,
             s.name as name,
             s.date_order as date,
@@ -83,12 +83,12 @@ class YDSSaleReport(models.Model):
             s.id as order_id,
             CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount,
             CASE WHEN l.product_id IS NOT NULL THEN sum(t.standard_price * l.product_uom_qty) ELSE 0 END as cost,
+            l.yds_cost_percentage as cost_percentage,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
-            CASE WHEN l.product_id IS NOT NULL THEN sum(t.standard_price * l.product_uom_qty / l.x_price_subtotal_wo_uni*100) ELSE 0 END as cost_percentage,
-            ks_global_discount_rate as uni_rate
+            s.ks_global_discount_rate as uni_rate
 
         """
-
+            # CASE WHEN l.product_id IS NOT NULL THEN sum((t.standard_price * l.product_uom_qty / NULLIF(SUM(l.x_price_subtotal_wo_uni),0))*100/ CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as cost_percentage,
         for field in fields.values():
             select_ += field
 
@@ -126,6 +126,7 @@ class YDSSaleReport(models.Model):
             partner.industry_id,
             partner.commercial_partner_id,
             l.discount,
+            l.yds_cost_percentage,
             s.id %s
         """ % (groupby)
 

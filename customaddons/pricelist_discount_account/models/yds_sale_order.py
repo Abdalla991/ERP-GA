@@ -80,7 +80,34 @@ class SaleOrderlineTemplate(models.Model):
     x_price_subtotal_wo_uni = fields.Monetary(compute='_compute_amount', string='Subtotal', readonly=True, store=True)
     x_price_total_wo_uni = fields.Monetary(compute='_compute_amount', string='Total', readonly=True, store=True)
 
- 
+    yds_untaxed_amount_invoiced = fields.Monetary("Untaxed Invoiced Amount", compute='_compute_yds_untaxed_amount_invoiced', compute_sudo=True, store=True)
+    yds_untaxed_amount_to_invoice = fields.Monetary("Untaxed Amount To Invoice", compute='_compute_yds_untaxed_amount_to_invoice', compute_sudo=True, store=True)
+    yds_cost_percentage = fields.Float('Cost %', compute='_compute_yds_cost_percentage',store=True, readonly=True )
+
+    @api.depends('price_unit','product_id')
+    def _compute_yds_cost_percentage(self):
+        for line in self:
+            product = line.product_id
+            product_cost = product.standard_price
+            if (line.price_unit > 0):
+                line.yds_cost_percentage= (product_cost / line.price_unit)*100
+
+    @api.onchange('untaxed_amount_invoiced')
+    def _compute_yds_untaxed_amount_invoiced(self):
+        for line in self:
+            if line.untaxed_amount_invoiced == 0:
+                line.yds_untaxed_amount_invoiced =0
+            else:
+                line.yds_untaxed_amount_invoiced = line.untaxed_amount_invoiced - line.price_subtotal*(line.order_id.ks_global_discount_rate/100)
+
+    @api.onchange('untaxed_amount_to_invoice')
+    def _compute_yds_untaxed_amount_to_invoice(self):
+        for line in self:
+            if line.untaxed_amount_to_invoice == 0:
+                line.yds_untaxed_amount_to_invoice = 0
+            else:
+                line.yds_untaxed_amount_to_invoice = line.untaxed_amount_to_invoice - line.price_subtotal*(line.order_id.ks_global_discount_rate/100)
+
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id') 
     def _compute_amount(self):
         """

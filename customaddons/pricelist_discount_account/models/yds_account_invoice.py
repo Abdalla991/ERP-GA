@@ -34,6 +34,7 @@ class YDSAccountMove(models.Model):
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True)
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
+
     @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
@@ -494,6 +495,7 @@ class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
     yds_price_subtotal = fields.Monetary(string='Subtotal', store=True, readonly=True, currency_field='currency_id')
     yds_price_total = fields.Monetary(string='Total', store=True, readonly=True,currency_field='currency_id')
+    yds_analytic_group_id = fields.Many2one('account.analytic.group',string='Analytic Group', readonly=True, store=True,related='analytic_account_id.group_id')
     @api.model
     @api.onchange('move_id.ks_global_discount_rate')
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes, move_type):
@@ -535,4 +537,13 @@ class YDSAccountMoveLine(models.Model):
             if not line.tax_repartition_line_id:
                 line.recompute_tax_line = True
 
+    #add yds_analytic_group_id to Filters and Group By  (For reporting purposes)
+    @api.model
+    def fields_get(self, fields=None):
+        show = ['yds_analytic_group_id']
+        res = super(YDSAccountMoveLine, self).fields_get()
+        for field in show:
+            res[field]['selectable'] = True
+            res[field]['sortable'] = True
+        return res
 
