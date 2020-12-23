@@ -55,7 +55,8 @@ class YDSAccountMove(models.Model):
         'partner_id')
     def _compute_amount(self):
         for move in self:
-
+            
+            
             if move.payment_state == 'invoicing_legacy':
                 # invoicing_legacy state is set via SQL when setting setting field
                 # invoicing_switch_threshold (defined in account_accountant).
@@ -81,7 +82,7 @@ class YDSAccountMove(models.Model):
 
                 if move.is_invoice(include_receipts=True):
                     # === Invoices ===
-
+                    
                     if not line.exclude_from_invoice_tab:
                         # Untaxed amount.
                         total_untaxed += line.balance
@@ -109,60 +110,59 @@ class YDSAccountMove(models.Model):
                 sign = 1
             else:
                 sign = -1
-                move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
-                move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
-                move.amount_untaxed_signed = -total_untaxed
-                move.amount_tax_signed = -total_tax
+            move.amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
+            move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
+            move.amount_untaxed_signed = -total_untaxed
+            move.amount_tax_signed = -total_tax
 
-                move.yds_total_discount=0
-                move._calculatePricelistDiscount()
-                move.yds_amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
-                move.yds_amount_untaxed_after_discount = move.yds_amount_untaxed - move.yds_total_discount
+            move.yds_total_discount=0
+            move._calculatePricelistDiscount()
+            move.yds_amount_untaxed = sign * (total_untaxed_currency if len(currencies) == 1 else total_untaxed)
+            move.yds_amount_untaxed_after_discount = move.yds_amount_untaxed - move.yds_total_discount
 
-                if move.ks_global_discount_type == "percent":
-                    if move.ks_global_discount_rate != 0.0:
-                        move.ks_amount_discount = (move.yds_amount_untaxed_after_discount) * move.ks_global_discount_rate / 100
-                    else:
-                        move.ks_amount_discount = 0
-                elif not move.ks_global_discount_type:
-                    move.ks_global_discount_rate = 0
+            if move.ks_global_discount_type == "percent":
+                if move.ks_global_discount_rate != 0.0:
+                    move.ks_amount_discount = (move.yds_amount_untaxed_after_discount) * move.ks_global_discount_rate / 100
+                else:
                     move.ks_amount_discount = 0
+            elif not move.ks_global_discount_type:
+                move.ks_global_discount_rate = 0
+                move.ks_amount_discount = 0
 
+            
+            
+            move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount
+            move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+            move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total- move.yds_total_discount - move.ks_amount_discount
+            move.amount_residual_signed = total_residual
+            currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
+            # Compute 'payment_state'.
+            new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
 
-                
-                move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount
-                move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
-                move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total- move.yds_total_discount - move.ks_amount_discount
-                move.amount_residual_signed = total_residual
-                currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
+            if move.is_invoice(include_receipts=True) and move.state == 'posted':
 
-                # Compute 'payment_state'.
-                new_pmt_state = 'not_paid' if move.move_type != 'entry' else False
+                if currency.is_zero(move.amount_residual):
+                    if all(payment.is_matched for payment in move._get_reconciled_payments()):
+                        new_pmt_state = 'paid'
+                    else:
+                        new_pmt_state = move._get_invoice_in_payment_state()
+                elif currency.compare_amounts(total_to_pay, total_residual) != 0:
+                    new_pmt_state = 'partial'
 
-                if move.is_invoice(include_receipts=True) and move.state == 'posted':
+            if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
+                reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
+                reverse_moves = self.env['account.move'].search([('reversed_entry_id', '=', move.id), ('state', '=', 'posted'), ('move_type', '=', reverse_type)])
 
-                    if currency.is_zero(move.amount_residual):
-                        if all(payment.is_matched for payment in move._get_reconciled_payments()):
-                            new_pmt_state = 'paid'
-                        else:
-                            new_pmt_state = move._get_invoice_in_payment_state()
-                    elif currency.compare_amounts(total_to_pay, total_residual) != 0:
-                        new_pmt_state = 'partial'
+                # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
+                reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
+                if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
+                    new_pmt_state = 'reversed'
 
-                if new_pmt_state == 'paid' and move.move_type in ('in_invoice', 'out_invoice', 'entry'):
-                    reverse_type = move.move_type == 'in_invoice' and 'in_refund' or move.move_type == 'out_invoice' and 'out_refund' or 'entry'
-                    reverse_moves = self.env['account.move'].search([('reversed_entry_id', '=', move.id), ('state', '=', 'posted'), ('move_type', '=', reverse_type)])
-
-                    # We only set 'reversed' state in cas of 1 to 1 full reconciliation with a reverse entry; otherwise, we use the regular 'paid' state
-                    reverse_moves_full_recs = reverse_moves.mapped('line_ids.full_reconcile_id')
-                    if reverse_moves_full_recs.mapped('reconciled_line_ids.move_id').filtered(lambda x: x not in (reverse_moves + reverse_moves_full_recs.mapped('exchange_move_id'))) == move:
-                        new_pmt_state = 'reversed'
-
-                move.payment_state = new_pmt_state
-                #call add lines once when coming from a sale order
-                if(move.yds_is_sales_order):
-                    move.add_all_lines()
-                    move.yds_is_sales_order=False
+            move.payment_state = new_pmt_state
+            #call add lines once when coming from a sale order
+            if(move.yds_is_sales_order):
+                move.add_all_lines()
+                move.yds_is_sales_order=False
                         
     @api.onchange('pricelist_id')
     def change_currency(self):
