@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../../../usr/lib/python3/dist-packages/odoo/addons"
+		},
+		{
+			"path": "../pricelist_discount_account"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

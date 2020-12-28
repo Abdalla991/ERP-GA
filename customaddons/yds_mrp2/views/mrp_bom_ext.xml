@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mrp_bom_form_view_ext" model="ir.ui.view">
+            <field name="name">mrp.bom.form.view.ext</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//form/sheet/group/group/field[@name='type']" position="after">
+                    <field name="start_date"/>
+                    <field name="end_date" />
+
+                </xpath>
+
+                <xpath expr="//form/sheet/notebook/page[1]/field/tree/field[@name='product_qty']" position="after">
+                    <field name="yds_product_percent" optional="hidden"/>
+
+                    <field name="yds_product_qty" invisible="1"/>
+                    <field name="yds_record_product_uom_id" invisible="1"/>
+                    <field name="yds_record_product_qty" invisible="1"/>
+                    <field name="yds_product_uom_id" invisible="1"/>
+                </xpath>
+                
+            </field>
+        </record>
+
+        <record id="mrp_production_form_view_ext" model="ir.ui.view">
+            <field name="name">mrp.production.form.view.ext</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_extra_info']" position="after">
+                    <field name="yds_bom_expired" invisible="1"/>
+                    <label for="yds_bom_expired" attrs="{'invisible':[('yds_bom_expired','==',False)]}" style="color:red ! important;" string="Selected Bill of Material is invalid, please check start/end dates" />
+                    
+                    </xpath>
+                 </field>
+        </record>
+
+    </data>
+</odoo>

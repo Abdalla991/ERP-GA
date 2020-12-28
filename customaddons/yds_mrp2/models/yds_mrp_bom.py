@@ -9,13 +9,23 @@ class YdsMrpBom(models.Model):
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
 
+    @api.model
+    def _count_boms(self):
+        no_of_boms = len(self.env['mrp.bom'].search([]))
+        print(no_of_boms)
+        ipdb.set_trace()    
+
+
 
     @api.onchange('bom_line_ids','product_tmpl_id', 'product_qty','product_uom_id')
     def _update_bom_line_custom_fields(self):
+
+
         for bom in self:
             for bom_line in bom.bom_line_ids:
                 bom_line.yds_record_product_uom_id = bom.product_uom_id
                 bom_line.yds_record_product_qty = bom.product_qty
+                bom_line._yds_compute_qty()
 
 
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.actions.act_window" id="mrp_report">
+      <field name="name">MRP Report</field>
+      <field name="res_model">mrp.report</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_mrp_report" parent="mrp.menu_mrp_reporting" name="MRP Report" sequence="10"
+          action="mrp_report"/>
+
+    <record model="ir.ui.view" id="mrp_report_tree_view">
+      <field name="name">view.tree</field>
+      <field name="model">mrp.report</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+        <tree>
+            <!-- <field name="name"/> -->
+            <field name="product_id"  />
+            <field name="bom_id"    />
+            <!-- attrs="{'readonly': [('state', '!=', 'draft')]}" -->
+            <!-- context="{'default_type': 'product'}" -->
+            <!-- context="{'default_product_tmpl_id': product_tmpl_id}" -->
+
+
+
+        </tree>
+      </field>
+    </record>
+
+      <record model="ir.ui.view" id="mrp_report_form_view">
+      <field name="name">view.form</field>
+      <field name="model">mrp.report</field>
+      <field name="priority" eval="16"/>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+            <form string="MRP Report">
+                <group>
+                    <group>
+                        <field name="product_id"  />
+                    </group>
+                    <group>
+                        <field name="bom_id"    />
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="print_mrp_report" string="Display" type="object" class="oe_highlight"/>
+
+                    <!-- <button string="Cancel" special="cancel"/> -->
+                </footer>
+            </form>
+      </field>
+    </record>
+</odoo>

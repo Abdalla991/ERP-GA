@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model="ir.actions.act_window" id="mrp_report">
+      <field name="name">MRP Report</field>
+      <field name="res_model">mrp.report</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_mrp_report" parent="mrp.menu_mrp_reporting" name="MRP Report" sequence="10"
+          action="mrp_report"/>
+
+    <record model="ir.ui.view" id="mrp_report_tree_view">
+      <field name="name">view.tree</field>
+      <field name="model">mrp.report</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+          <!-- view content: <form>, <tree>, <graph>, ... -->
+        <tree>
+            <!-- <field name="name"/> -->
+            <field name="product_id"  />
+            <field name="bom_id"    />
+            <!-- attrs="{'readonly': [('state', '!=', 'draft')]}" -->
+            <!-- context="{'default_type': 'product'}" -->
+            <!-- context="{'default_product_tmpl_id': product_tmpl_id}" -->
+
+        <!-- <button name="print_mrp_report" string="Display" type="object" class="oe_highlight"/> -->
+
+
+        </tree>
+      </field>
+    </record>
+
+      <!-- <record model="ir.ui.view" id="geo_form_view">
+      <field name="name">view.form</field>
+      <field name="model">geolocation</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+      <form>
+        <group colspan="2" >
+            <field name="name"/>
+            <field name="sales_person" options="{'no_open': True}" context="{'default_groups_ref': ['sales_team.group_sale_salesman']}"/>
+        </group>
+        </form>
+      </field>
+    </record> -->
+</odoo>
