@@ -27,7 +27,8 @@ class YDSAccountMovePricelist(models.Model):
     
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
-        self.pricelist_id= self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+        if self.move_type in ['out_invoice', 'out_refund','out_receipt']:
+            self.pricelist_id= self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
         
     def update_prices(self):
         
