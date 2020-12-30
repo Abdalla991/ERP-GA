@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="mrp_report_view">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <style>
+                    .table, .table td, .table th {
+                      border: 1px solid #ddd;
+                      text-align: left;
+                    }
+
+                    .table {
+                      border-collapse: collapse;
+                      width: 100%;
+                    }
+
+                    .table th, .table td {
+                      padding: 10px;
+                    }
+
+                    .salesperson{
+                        padding: 50px
+                    }
+                </style>
+
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <center>
+                        <b>
+                            <h3>MRP Report</h3>
+                        </b>
+                    </center>
+
+                    <br/>
+                    <!-- <t t-foreach="data.keys()" t-as="user"> -->
+                        <br/>
+
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity to produce</th>
+                                    <th>Product uom</th>
+                                    <th>Reference</th>
+                                    <th>BoM Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Company </th>
+                                </tr>
+                                <tr t-foreach="data['bom']" t-as="order">
+                                    <td>
+                                        <span>[</span>
+                                        <span t-esc="order[8]"/>
+                                        <span>]</span>
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <td >
+                                        <span t-esc="order[1]"/>
+                                    </td>
+                                    <td >
+                                        <span t-esc="order[2]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[3]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[4]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[5]" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[6]" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[7]"/>
+                                    </td>
+
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <br/>
+                        <center>
+                            <b  class="salesperson">
+                                <span>Components</span>
+                            </b>
+                        </center>
+                        <br/>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th>Quantity to consume</th>
+                                    <th>Available Quantity</th>
+                                    <th>Percentage</th>
+                                    <th>Product uom</th>
+                                    <th>Quantity to produce</th>
+                                </tr>
+                                <tr t-foreach="data['bom_lines']" t-as="order">
+                                    <td>
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <td >
+                                        <span t-esc="order[1]"/>
+                                    </td>
+                                    <td >
+                                        <span t-esc="order[2]"/>
+                                    </td>
+                                    <td>
+                                        <span t-if="not order[3] == 0" t-esc="order[3]"/>
+                                        <span t-if="not order[3] == 0">%</span>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[4]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="order[5]"/>
+                                    </td>
+
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <t t-foreach="data['bom']" t-as="order">
+                        <br/>
+                        <center>
+                            <b  class="salesperson">
+                                <span>Final quantity to produce: </span>
+                                <span t-esc="order[9]"/>
+                                <span t-esc="order[2]"/>
+                            </b>
+                        </center>
+                        <br/>
+                        </t>
+
+                    <!-- </t> -->
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

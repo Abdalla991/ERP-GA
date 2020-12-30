@@ -8,12 +8,18 @@ class YdsMrpBom(models.Model):
     _inherit = "mrp.bom"
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
+    bom_count = fields.Integer(string="Number of invoices", compute="_count_boms", readonly=True)
 
-    @api.model
+    @api.depends('bom_line_ids')
     def _count_boms(self):
-        no_of_boms = len(self.env['mrp.bom'].search([]))
-        print(no_of_boms)
-        ipdb.set_trace()    
+        self.bom_count = len(self.env['mrp.bom'].search([]))
+        # print("count boms entered")
+        # print("product", self.bom_line_ids)
+        # ipdb.set_trace()
+        for bom in self:
+            bom._update_bom_line_custom_fields()
+            for bom_line in bom.bom_line_ids:
+              bom_line._yds_compute_qty()  
 
 
 
@@ -26,6 +32,7 @@ class YdsMrpBom(models.Model):
                 bom_line.yds_record_product_uom_id = bom.product_uom_id
                 bom_line.yds_record_product_qty = bom.product_qty
                 bom_line._yds_compute_qty()
+                print(self.bom_count)
 
 
 
@@ -42,14 +49,23 @@ class YdsMrpBomLine(models.Model):
     yds_product_uom_id = fields.Integer('Product Unit of Measure2')
 
 
-    @api.onchange('yds_product_percent', 'product_uom_id', 'yds_record_product_uom_id', 'yds_record_product_qty')
+    @api.onchange('product_qty','yds_product_percent', 'product_uom_id', 'yds_record_product_uom_id', 'yds_record_product_qty')
     def _yds_compute_qty(self):
         for bom_line in self:
             bom_line.yds_product_uom_id = bom_line.product_uom_id
-            if bom_line.yds_product_percent != 0.0:
+            if bom_line.yds_product_percent != 0:
                 # if bom_line.yds_product_uom_id == bom_line.yds_record_product_uom_id:
-                bom_line.yds_product_qty = bom_line.yds_product_percent / 100 * bom_line.yds_record_product_qty
-                bom_line.product_qty = bom_line.yds_product_qty
+                bom_line.product_qty = bom_line.yds_product_percent / 100 * bom_line.yds_record_product_qty
+            if bom_line.yds_record_product_qty != 0:
+                bom_line.yds_product_percent = bom_line.product_qty * 100 / bom_line.yds_record_product_qty
+            # bom_line.product_qty = bom_line.yds_product_qty
+
+    @api.onchange('product_qty')
+    def _yds_compute_percent(self):
+        for bom_line in self:
+            bom_line.yds_product_uom_id = bom_line.product_uom_id
+            if bom_line.yds_record_product_qty != 0:
+                bom_line.yds_product_percent = bom_line.product_qty * 100 / bom_line.yds_record_product_qty
 
     # @api.onchange('yds_product_percent','product_uom_id', 'yds_record_product_uom_id')
     # def _yds_check_uom(self):

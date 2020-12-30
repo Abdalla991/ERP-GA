@@ -37,17 +37,27 @@
             <form string="MRP Report">
                 <group>
                     <group>
-                        <field name="product_id"  />
+                        <field name="product_id"/>
+
+                        <label for="product_qty" string="Quantity"/>
+                        <div class="o_row no-gutters d-flex">
+                            <div  class="o_row">
+                                <field name="qty_producing"/>
+                            </div> / 
+                            <field name="product_qty" class="oe_inline text-left" attrs="{'readonly': 1}"/>
+                            <!-- <button type="action" name="487" context="{'default_mo_id': id}" class="oe_link oe_inline" attrs="{'invisible': ['|', ('state', 'in', ('draft', 'done','cancel')), ('id', '=', False)]}">
+                                <field name="product_qty" class="oe_inline" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </button> -->
+                        </div>
+
                     </group>
                     <group>
-                        <field name="bom_id"    />
+                        <field name="bom_id"/>
                     </group>
                 </group>
 
                 <footer>
                     <button name="print_mrp_report" string="Display" type="object" class="oe_highlight"/>
-
-                    <!-- <button string="Cancel" special="cancel"/> -->
                 </footer>
             </form>
       </field>
