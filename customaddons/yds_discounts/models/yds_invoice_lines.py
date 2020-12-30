@@ -130,7 +130,6 @@ class YDSAccountMove(models.Model):
                                     'exclude_from_invoice_tab': True,
                                     'partner_id': terms_lines.partner_id.id,
                                     'company_id': terms_lines.company_id.id,
-                                    'currency_id': line.currency_id,
                                     'company_currency_id': terms_lines.company_currency_id.id,
                                     'date': move.date,
                                     }
@@ -313,7 +312,6 @@ class YDSAccountMove(models.Model):
                                         'exclude_from_invoice_tab': True,
                                         'partner_id': terms_lines.partner_id.id,
                                         'company_id': terms_lines.company_id.id,
-                                        'currency_id': line.currency_id,
                                         'company_currency_id': terms_lines.company_currency_id.id,
                                         'date': move.date,
                                         }
