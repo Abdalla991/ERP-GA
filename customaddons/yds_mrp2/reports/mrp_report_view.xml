@@ -43,9 +43,9 @@
                                     <th>Quantity to produce</th>
                                     <th>Product uom</th>
                                     <th>Reference</th>
-                                    <th>BoM Type</th>
+                                    <!-- <th>BoM Type</th>
                                     <th>Start Date</th>
-                                    <th>End Date</th>
+                                    <th>End Date</th> -->
                                     <th>Company </th>
                                 </tr>
                                 <tr t-foreach="data['bom']" t-as="order">
@@ -64,7 +64,7 @@
                                     <td>
                                         <span t-esc="order[3]"/>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <span t-esc="order[4]"/>
                                     </td>
                                     <td>
@@ -72,7 +72,7 @@
                                     </td>
                                     <td>
                                         <span t-esc="order[6]" t-options='{"widget": "date"}'/>
-                                    </td>
+                                    </td> -->
                                     <td>
                                         <span t-esc="order[7]"/>
                                     </td>

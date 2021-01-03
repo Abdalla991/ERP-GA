@@ -12,7 +12,7 @@
     'category': 'Manufactoring',
     'version': '90.1',
     'license': 'LGPL-3',
-    'depends': ['mrp','product'],
+    'depends': ['mrp','product','percent_field'],
 
     'data': [
         'security/ir.model.access.csv',

@@ -74,7 +74,8 @@ class mrpReport(models.TransientModel):
             if bom_line.product_qty == 0:
                 raise ValidationError('Component quantity cannot be zero')
 
-            required_qty_for_one_kg =  bom_line.product_qty / chosen_product_qty 
+            required_qty_for_one_kg =  bom_line.product_qty / chosen_bom.product_qty 
+            chosen_component_quantity = bom_line.product_qty * chosen_product_qty / chosen_bom.product_qty
 
             #calculations
             if bom_line.product_id.qty_available <= 0:
@@ -91,7 +92,7 @@ class mrpReport(models.TransientModel):
             
 
             bom_line_data.append(bom_line.product_id.name)
-            bom_line_data.append(bom_line.product_qty)
+            bom_line_data.append(chosen_component_quantity)
             bom_line_data.append(bom_line.product_id.qty_available)
             bom_line_data.append(bom_line.yds_product_percent)
             bom_line_data.append(bom_line.product_uom_id.name)

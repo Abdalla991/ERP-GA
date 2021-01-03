@@ -15,12 +15,21 @@
                 </xpath>
 
                 <xpath expr="//form/sheet/notebook/page[1]/field/tree/field[@name='product_qty']" position="after">
-                    <field name="yds_product_percent" optional="hidden"/>
+                    <field name="yds_product_percent" widget="Percent" optional="hidden"/>
 
                     <field name="yds_product_qty" invisible="1"/>
                     <field name="yds_record_product_uom_id" invisible="1"/>
                     <field name="yds_record_product_qty" invisible="1"/>
                     <field name="yds_product_uom_id" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//form/sheet/notebook/page[1]/field" position="after">
+                    <group col="5">
+                        <group class="oe_subtotal_footer oe_right" colspan="2">
+                            <field name="yds_total_percent" widget="Percent"/>
+                            <field name="yds_total_quantity" widget="monetary"/>
+                        </group>
+                    </group>
                 </xpath>
                 
             </field>
