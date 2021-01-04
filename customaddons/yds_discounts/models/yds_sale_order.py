@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 # sale.order -- sale.order.line
@@ -31,9 +31,10 @@ class YDSSaleOrder(models.Model):
                 'x_total_discount': x_total_discount,
                 'amount_total': amount_untaxed + amount_tax,
             })
+ 
 
     #fixed double id  issues
-    @api.onchange('order_line')
+    # @api.onchange('order_line')
     def rename_line(self):
         print("rename_lines")
         productNames = [] 
@@ -70,7 +71,6 @@ class YDSSaleOrder(models.Model):
 
             
         return res
-
 
 class SaleOrderlineTemplate(models.Model):
     _inherit = 'sale.order.line'
@@ -142,4 +142,19 @@ class SaleOrderlineTemplate(models.Model):
             if self.env.context.get('import_file', False) and not self.env.user.user_has_groups('account.group_account_manager'):
                 line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])
 
+    #Ensure no lines have the same label to avoid discount lines not being created 
+    def write(self, vals):
+        print("WRITE CALLED")
+        for line in self.order_id.order_line:
+            for l in self.order_id.order_line - line:
+                if line.name and line.name == l.name:
+                    raise UserError(_("One or more line have the same Label."))
+        return super(SaleOrderlineTemplate, self).write(vals)
 
+    @api.onchange('product_id')
+    def rename_description(self):
+        if not self.product_id:
+            return
+        self.name = self.product_id.display_name
+        if self.product_id.description_sale:
+            self.name = self.product_id.description_sale

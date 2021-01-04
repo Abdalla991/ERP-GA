@@ -1,7 +1,7 @@
 
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* account
+# 	* yds_discounts
 # 
 # Translators:
 # Hesham Yasser <heshamy27@gmail.com>, 2020
@@ -108,3 +108,16 @@ msgstr "الإجمالي الفرعي"
 #: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_total
 msgid "Total"
 msgstr "الإجمالي"
+
+
+#. module: yds_discounts
+#: code:addons/yds_discounts/models/yds_invoice_lines.py:0
+#, python-format
+msgid "One or more line have the same Label."
+msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان ."
+
+#. module: yds_discounts
+#: code:addons/yds_discounts/models/yds_sale.py:0
+#, python-format
+msgid "One or more line have the same Label."
+msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان ."

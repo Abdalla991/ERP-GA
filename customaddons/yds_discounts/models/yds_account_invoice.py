@@ -174,7 +174,7 @@ class YDSAccountMove(models.Model):
                     'pricelist_id')
     def add_all_lines(self):
         for move in self:
-            move.rename_lines()   
+            # move.rename_lines()   
             print("Calling add lines") 
             #Ensure no discount lines are added unless move_type is an invoice
             if move.move_type in ['out_invoice', 'out_refund']:

@@ -8,7 +8,7 @@ class YDSAccountMove(models.Model):
     _inherit = "account.move"
 
     #Rename lines with an already existing product to avoid ignoring of discount lines due to duplicate line names
-    @api.onchange('invoice_line_ids')
+    # @api.onchange('invoice_line_ids')
     def rename_lines(self):
         productNames = [] 
         productCounts = []
@@ -431,4 +431,28 @@ class YDSAccountMove(models.Model):
             move.line_ids -= lines_to_be_removed
             #rebalance
             move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
-          
+
+    #Ensure no lines have the same label to avoid discount lines not being created
+    def write(self, vals):
+        for line in self.line_ids:
+            for l in self.line_ids - line:
+                if line.name and line.name == l.name:
+                    raise UserError(_("One or more line have the same Label."))
+        return super(YDSAccountMove, self).write(vals)
+
+
+class YDSAccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+                    
+    #Change how label field is computed
+    @api.onchange('product_id')
+    def rename_description(self):
+        if not self.product_id:
+            return
+        self.name = self.product_id.display_name
+        if self.product_id.description_sale:
+            self.name = self.product_id.description_sale
+
+                     
+
+        
