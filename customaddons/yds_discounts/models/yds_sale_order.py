@@ -143,13 +143,13 @@ class SaleOrderlineTemplate(models.Model):
                 line.tax_id.invalidate_cache(['invoice_repartition_line_ids'], [line.tax_id.id])
 
     #Ensure no lines have the same label to avoid discount lines not being created 
-    # def write(self, vals):
-    #     print("Sale WRITE CALLED")
-    #     for line in self.order_id.order_line:
-    #         for l in self.order_id.order_line - line:
-    #             if line.name and line.name == l.name:
-    #                 raise UserError(_("One or more line have the same Label."))
-    #     return super(SaleOrderlineTemplate, self).write(vals)
+        # def write(self, vals):
+        #     print("Sale WRITE CALLED")
+        #     for line in self.order_id.order_line:
+        #         for l in self.order_id.order_line - line:
+        #             if line.name and line.name == l.name:
+        #                 raise UserError(_("One or more line have the same Label."))
+        #     return super(SaleOrderlineTemplate, self).write(vals)
 
     @api.onchange('product_id')
     def rename_description(self):
