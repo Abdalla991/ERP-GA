@@ -433,12 +433,13 @@ class YDSAccountMove(models.Model):
             move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
 
     #Ensure no lines have the same label to avoid discount lines not being created
-    def write(self, vals):
-        for line in self.line_ids:
-            for l in self.line_ids - line:
-                if line.name and line.name == l.name:
-                    raise UserError(_("One or more line have the same Label."))
-        return super(YDSAccountMove, self).write(vals)
+    # def write(self, vals):
+    #     print("Move WRITE CALLED")
+    #     for line in self.line_ids:
+    #         for l in self.line_ids - line:
+    #             if line.name and line.name == l.name and not line.exclude_from_invoice_tab:
+    #                 raise UserError(_("One or more line have the same Label."))
+    #     return super(YDSAccountMove, self).write(vals)
 
 
 class YDSAccountMoveLine(models.Model):
@@ -455,4 +456,18 @@ class YDSAccountMoveLine(models.Model):
 
                      
 
-        
+#TODO: Change my location    
+class YDSAccountMoveLine(models.Model):
+    _inherit = "stock.valuation.layer"
+
+    categ_id = fields.Many2one('product.category', related='product_id.categ_id', store=True)
+    @api.model
+    def fields_get(self, fields=None):
+        #Fields to be added in Filters/Group By
+        show = ['categ_id']
+        res = super(YDSAccountMoveLine, self).fields_get()
+        #True = add fields, False = Remove fields
+        for field in show:
+            res[field]['selectable'] = True
+            res[field]['sortable'] = True
+        return res
