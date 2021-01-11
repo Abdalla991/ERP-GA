@@ -151,10 +151,10 @@ class SaleOrderlineTemplate(models.Model):
         #                 raise UserError(_("One or more line have the same Label."))
         #     return super(SaleOrderlineTemplate, self).write(vals)
 
-    @api.onchange('product_id')
-    def rename_description(self):
-        if not self.product_id:
-            return
-        self.name = self.product_id.display_name
-        if self.product_id.description_sale:
-            self.name = self.product_id.description_sale
+    # @api.onchange('product_id')
+    # def rename_description(self):
+    #     if not self.product_id:
+    #         return
+    #     self.name = self.product_id.display_name
+    #     if self.product_id.description_sale:
+    #         self.name = self.product_id.description_sale
