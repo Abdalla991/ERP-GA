@@ -445,14 +445,14 @@ class YDSAccountMove(models.Model):
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
                     
-    # #Change how label field is computed
-    # @api.onchange('product_id')
-    # def rename_description(self):
-    #     if not self.product_id:
-    #         return
-    #     self.name = self.product_id.display_name
-    #     if self.product_id.description_sale:
-    #         self.name = self.product_id.description_sale
+    #Change how label field is computed
+    @api.onchange('product_id')
+    def rename_description(self):
+        if not self.product_id:
+            return
+        self.name = self.product_id.name
+        if self.product_id.description_sale:
+            self.name = self.product_id.name + " - " + self.product_id.description_sale
 
                      
 
