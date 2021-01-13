@@ -21,8 +21,8 @@ class mrpReport(models.TransientModel):
         check_company=True,
         help="Bill of Materials allow you to define the list of required components to make a finished product.")
 
-    start_date = fields.Date(string='Start Date',related='bom_id.start_date')
-    end_date = fields.Date(string='End Date',related='bom_id.end_date')
+    start_date = fields.Date(string='Start Date',related='bom_id.yds_start_date')
+    end_date = fields.Date(string='End Date',related='bom_id.yds_end_date')
     product_qty = fields.Float(string='Quantity', related='bom_id.product_qty')
 
 
