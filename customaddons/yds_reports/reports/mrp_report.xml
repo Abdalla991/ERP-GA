@@ -6,8 +6,8 @@
                 string="MRP Report"
                 model="mrp.report"
                 report_type="qweb-html"
-                file="yds_mrp2.mrp_report_view"
-                name="yds_mrp2.mrp_report_view"
+                file="yds_reports.mrp_report_view"
+                name="yds_reports.mrp_report_view"
         />
     </data>
 </odoo>

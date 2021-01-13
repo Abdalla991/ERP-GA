@@ -124,7 +124,7 @@ class YdsMrpProduction(models.Model):
     def button_mark_done(self):
         for move in self.move_raw_ids:
             if move.forecast_availability < move.quantity_done:
-                raise ValidationError('Please check the availability for all components.')
+                raise ValidationError(_('Please check the availability for all components.'))
                 return
         res = super(YdsMrpProduction, self).button_mark_done()
         return res		

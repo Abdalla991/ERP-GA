@@ -1,0 +1,228 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* yds_reports
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e-20201220\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-13 09:01+0000\n"
+"PO-Revision-Date: 2021-01-13 09:01+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid ""
+"<b class=\"salesperson\">\n"
+"                                <span>Components</span>\n"
+"                            </b>"
+msgstr ""
+"<b class=\"salesperson\">\n"
+"                                <span>المكونات</span>\n"
+"                            </b>"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "<span>Final quantity to produce: </span>"
+msgstr "<span>الكمية النهائية المتاحة للانتاج: </span>"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_account_move_line__yds_analytic_group_id
+msgid "Analytic Group"
+msgstr ""
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Available Quantity"
+msgstr "الكمية المتاحة"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__bom_id
+msgid "Bill of Material"
+msgstr "فاتورة المواد"
+
+#. module: yds_reports
+#: model:ir.model.fields,help:yds_reports.field_mrp_report__bom_id
+msgid ""
+"Bill of Materials allow you to define the list of required components to "
+"make a finished product."
+msgstr ""
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Company"
+msgstr "الشركة"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Component"
+msgstr "المكون"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__cost
+msgid "Cost"
+msgstr "التكلفة"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__cost_percentage
+msgid "Cost %"
+msgstr "التكلفة %"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_form_view
+msgid "Display"
+msgstr "اظهار"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__display_name
+#: model:ir.model.fields,field_description:yds_reports.field_product_template__display_name
+#: model:ir.model.fields,field_description:yds_reports.field_report_yds_reports_mrp_report_view__display_name
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__end_date
+msgid "End Date"
+msgstr "تاريخ الانتهاء"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_account_move_line__id
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__id
+#: model:ir.model.fields,field_description:yds_reports.field_product_template__id
+#: model:ir.model.fields,field_description:yds_reports.field_report_yds_reports_mrp_report_view__id
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: yds_reports
+#: model:ir.model,name:yds_reports.model_account_move_line
+msgid "Journal Item"
+msgstr "عنصر اليومية"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report____last_update
+#: model:ir.model.fields,field_description:yds_reports.field_product_template____last_update
+#: model:ir.model.fields,field_description:yds_reports.field_report_yds_reports_mrp_report_view____last_update
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: yds_reports
+#: model:ir.actions.act_window,name:yds_reports.mrp_report
+#: model:ir.actions.report,name:yds_reports.action_report_mrp
+#: model:ir.model,name:yds_reports.model_mrp_report
+#: model:ir.ui.menu,name:yds_reports.menu_mrp_report
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_form_view
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "MRP Report"
+msgstr "تقرير التصنيع"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Percentage"
+msgstr "النسبة المئوية"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__product_id
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Product"
+msgstr "المنتج"
+
+#. module: yds_reports
+#: model:ir.model,name:yds_reports.model_product_template
+msgid "Product Template"
+msgstr "قالب المنتج"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Product uom"
+msgstr "وحدة قياس المنتج"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__product_qty
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_form_view
+msgid "Quantity"
+msgstr "الكمية"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Quantity to consume"
+msgstr "الكميةالمتاحة
+<pre>للاستهلاك</pre> "
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__qty_producing
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Quantity to produce"
+msgstr "الكمية المطلوب \n  انتاجها"
+
+#. module: yds_reports
+#: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
+msgid "Reference"
+msgstr "المرجع"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__x_price_subtotal_wo_uni
+msgid "Sale Price"
+msgstr ""
+
+#. module: yds_reports
+#: model:ir.model,name:yds_reports.model_sale_report
+msgid "Sales Analysis Report"
+msgstr "تقرير المبيعات التحليلي"
+
+#. module: yds_reports
+#: model:ir.model.fields,help:yds_reports.field_mrp_report__product_id
+msgid ""
+"Select a product which will use analytic account specified in analytic "
+"default (e.g. create new customer invoice or Sales order if we select this "
+"product, it will automatically take this as an analytic account)"
+msgstr ""
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_mrp_report__start_date
+msgid "Start Date"
+msgstr "تاريخ البداية"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__uni_rate
+msgid "Universal Discount %"
+msgstr "الخصم العام %"
+
+#. module: yds_reports
+#: model:ir.model.fields,field_description:yds_reports.field_sale_report__uni_amount
+msgid "Universal Discount Amount"
+msgstr "كمية الخصم العام"
+
+#. module: yds_reports
+#: model:ir.model,name:yds_reports.model_report_yds_reports_mrp_report_view
+msgid "report.yds_reports.mrp_report_view"
+msgstr ""

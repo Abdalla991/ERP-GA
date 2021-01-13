@@ -120,5 +120,5 @@ class mrpReport(models.TransientModel):
             'model': 'mrp.report',
             'form': final_dist
         }
-        return self.env.ref('yds_mrp2.action_report_mrp').report_action([], data=datas)
+        return self.env.ref('yds_reports.action_report_mrp').report_action([], data=datas)
 

@@ -15,12 +15,7 @@
     'depends': ['mrp','product','percent_field'],
 
     'data': [
-        'security/ir.model.access.csv',
         'views/mrp_bom_ext.xml',
-        'wizards/mrp_report_wizard.xml',
-        'reports/mrp_report.xml',
-        'reports/mrp_report_view.xml',
-
     ],
 
 }

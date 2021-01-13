@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 
 
 class ReportMrp(models.AbstractModel):
-    _name = 'report.yds_mrp2.mrp_report_view'
+    _name = 'report.yds_reports.mrp_report_view'
 
     @api.model
     def _get_report_values(self, docids, data=None):
