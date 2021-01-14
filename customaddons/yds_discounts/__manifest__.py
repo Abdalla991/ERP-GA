@@ -3,7 +3,7 @@
     'name': "YDS Discounts",
 
     'summary': """
-        Modifactions on discounts in Sales and Accounting by YDS
+        Modification to discounts in Sales and Accounting by YDS
         """,
 
     'description': """
@@ -15,7 +15,7 @@
     'category': 'Sales Management',
     'version': '0.1',
     'license': 'LGPL-3',
-    'depends': ['base', 'sale', 'purchase', 'sale_management','account','mrp'],
+    'depends': ['base', 'sale', 'purchase', 'sale_management','account','mrp','sale_margin'],
 
     'data': [
         'views/yds_pricelist_view.xml',

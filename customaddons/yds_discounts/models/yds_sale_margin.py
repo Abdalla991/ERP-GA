@@ -47,15 +47,15 @@ class SaleOrderLine(models.Model):
             # The pricelist may not have been set, therefore no conversion
             # is needed because we don't know the target currency..
 
-    @api.depends('x_price_subtotal_wo_uni', 'product_uom_qty', 'purchase_price')
+    @api.depends('x_price_subtotal', 'product_uom_qty', 'purchase_price')
     def _compute_yds_margin(self):
         for line in self:
             sale_price=  line.x_price_subtotal
             line.yds_margin =  sale_price - (line.purchase_price * line.product_uom_qty)
-
-            print(str(line.purchase_price))
-            print(str(line.product_uom_qty))
-            print(str(line.yds_margin))
+            print("Sale Price:  "+str(sale_price))
+            print("Purchase Price: "+str(line.purchase_price))
+            print("Quantity:  "+str(line.product_uom_qty))
+            print("Margin:  "+str(line.yds_margin))
             line.yds_margin_percent = sale_price and line.yds_margin/sale_price
 
 class SaleOrder(models.Model):
@@ -85,12 +85,4 @@ class SaleOrder(models.Model):
                 order.yds_margin = mapped_data.get(order.id, 0.0)
                 order.yds_margin_percent = order.amount_untaxed and order.yds_margin/order.amount_untaxed
 
-class SaleReport(models.Model):
-    _inherit = 'sale.report'
 
-    margin = fields.Float('Margin')
-
-    #Fix margin value in reports
-    def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
-        fields['margin'] = ", SUM(l.yds_margin / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS margin"
-        return super(SaleReport, self)._query(with_clause, fields, groupby, from_clause)

@@ -72,6 +72,19 @@ class KsGlobalDiscountSales(models.Model):
                 raise ValidationError(
                     'You cannot enter discount amount greater than actual cost or value lower than 0.')
 
+    @api.onchange('ks_global_discount_rate','order_line')
+    def _apply_change_on_lines(self):
+        print("CAlled apply_change_on_lines")
+        for order in self:
+            for line in order.order_line:
+                line.yds_global_discount_rate = order.ks_global_discount_rate
+                print("Order rate: "+str(line.yds_global_discount_rate))
+                print("Line rate: "+str(order.ks_global_discount_rate))
+
+class KsGlobalDiscountSalesLine(models.Model):
+    _inherit = "sale.order.line"
+    yds_global_discount_rate = fields.Float('Universal Discount',
+                                        readonly=True,store=True)
 
     # def _amount_by_group(self):
     #     for order in self:
