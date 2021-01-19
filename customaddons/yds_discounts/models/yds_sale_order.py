@@ -83,6 +83,7 @@ class SaleOrderlineTemplate(models.Model):
     yds_untaxed_amount_invoiced = fields.Monetary("Untaxed Invoiced Amount", compute='_compute_yds_untaxed_amount_invoiced', compute_sudo=True, store=True)
     yds_untaxed_amount_to_invoice = fields.Monetary("Untaxed Amount To Invoice", compute='_compute_yds_untaxed_amount_to_invoice', compute_sudo=True, store=True)
     yds_cost_percentage = fields.Float('Cost %', compute='_compute_yds_cost_percentage',store=True, readonly=True )
+    yds_product_cost = fields.Float('Cost ', compute='_compute_yds_product_cost',store=True, readonly=True )
     
     @api.depends('price_unit','product_id')
     def _compute_yds_cost_percentage(self):
@@ -91,6 +92,11 @@ class SaleOrderlineTemplate(models.Model):
             product_cost = product.standard_price
             if (line.price_unit > 0):
                 line.yds_cost_percentage= (product_cost / line.price_unit)*100
+
+    @api.depends('product_id')
+    def _compute_yds_product_cost(self):
+        for line in self:
+            line.yds_product_cost= line.product_id.standard_price
 
     @api.onchange('untaxed_amount_invoiced')
     def _compute_yds_untaxed_amount_invoiced(self):
@@ -151,6 +157,7 @@ class SaleOrderlineTemplate(models.Model):
         #                 raise UserError(_("One or more line have the same Label."))
         #     return super(SaleOrderlineTemplate, self).write(vals)
 
+    #Change how Odoo sets the default label of lines
     @api.onchange('product_id')
     def rename_description(self):
         if not self.product_id:
