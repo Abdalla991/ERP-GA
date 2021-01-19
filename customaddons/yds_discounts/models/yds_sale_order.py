@@ -96,7 +96,7 @@ class SaleOrderlineTemplate(models.Model):
     @api.depends('product_id')
     def _compute_yds_product_cost(self):
         for line in self:
-            line.yds_product_cost= line.product_id.standard_price
+            line.yds_product_cost= line.product_id.standard_price * line.product_uom_qty
 
     @api.onchange('untaxed_amount_invoiced')
     def _compute_yds_untaxed_amount_invoiced(self):
