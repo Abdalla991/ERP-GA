@@ -165,3 +165,14 @@ class SaleOrderlineTemplate(models.Model):
         self.name = self.product_id.name
         if self.product_id.description_sale:
             self.name = self.product_id.name + " - " + self.product_id.description_sale
+
+class PurchaseOrderlineTemplate(models.Model):
+    _inherit = 'purchase.order.line'
+ #Change how Odoo sets the default label of lines
+    @api.onchange('product_id')
+    def rename_description(self):
+        if not self.product_id:
+            return
+        self.name = self.product_id.name
+        if self.product_id.description_sale:
+            self.name = self.product_id.description_sale
