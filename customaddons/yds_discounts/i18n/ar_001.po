@@ -111,13 +111,15 @@ msgstr "الإجمالي"
 
 
 #. module: yds_discounts
-#: code:addons/yds_discounts/models/yds_invoice_lines.py:0
+#: code:custom_addons/yds_discounts/models/yds_invoice_lines.py:0
 #, python-format
 msgid "One or more line have the same Label."
 msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان ."
 
+
+
 #. module: yds_discounts
-#: code:addons/yds_discounts/models/yds_sale.py:0
-#, python-format
-msgid "One or more line have the same Label."
-msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان ."
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_discount_sale_order_form_inherited
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_invoice_view_form
+msgid "Universal Discount rate :"
+msgstr "نسبة الحصم الشامل :"
