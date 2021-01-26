@@ -122,4 +122,4 @@ msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان .
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_discount_sale_order_form_inherited
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_invoice_view_form
 msgid "Universal Discount rate :"
-msgstr "نسبة الحصم الشامل :"
+msgstr "نسبة الخصم الشامل :"

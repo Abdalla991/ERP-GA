@@ -174,5 +174,5 @@ class PurchaseOrderlineTemplate(models.Model):
         if not self.product_id:
             return
         self.name = self.product_id.name
-        if self.product_id.description_sale:
-            self.name = self.product_id.description_sale
+        if self.product_id.description_purchase:
+            self.name = self.product_id.description_purchase
