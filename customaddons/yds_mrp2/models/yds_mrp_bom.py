@@ -102,7 +102,11 @@ class YdsMrpBomLine(models.Model):
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
     yds_bom_expired = fields.Boolean(string="Selected Bill of Material has expired !", readonly=True, Default="False")
+    # yds_extra_cost = fields.Float(string="YDS Extra Cost",readonly=True, Default=0.0,store=True)
+    # yds_saved_cost = fields.Float(string="YDS Cost Savings",readonly=True, Default=0.0,store=True)
     
+    yds_total_cost_before = fields.Float(readonly=True, Default=0.0)
+    yds_total_cost_after = fields.Float(readonly=True, Default=0.0)
     @api.depends('product_id', 'bom_id', 'company_id')
     def _compute_allowed_product_ids(self):
     
@@ -121,10 +125,22 @@ class YdsMrpProduction(models.Model):
 
         return super(YdsMrpProduction, self)._compute_allowed_product_ids()
 
+
+    def yds_calc_extra_cost(self):
+        for production in self:
+            for move in production.move_raw_ids:
+                if move.forecast_availability > move.quantity_done:
+                    production.yds_saved_cost+= (move.forecast_availability - move.quantity_done)*move.product_id.standard_price
+                elif move.forecast_availability < move.quantity_done:
+                    production.yds_extra_cost+= (move.quantity_done - move.forecast_availability)*move.product_id.standard_price
+                production.yds_total_cost_before += move.forecast_availability
+                    
+
+
     def button_mark_done(self):
-        for move in self.move_raw_ids:
-            if move.forecast_availability < move.quantity_done:
-                raise ValidationError(_('Please check the availability for all components.'))
-                return
+        # self.yds_calc_extra_cost()
+        # ipdb.set_trace()
         res = super(YdsMrpProduction, self).button_mark_done()
         return res		
+
+    #raw_material_production_id -> MO id
