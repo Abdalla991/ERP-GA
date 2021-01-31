@@ -19,107 +19,376 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_amount_untaxed
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_amount_untaxed
-#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_amount_untaxed
-msgid "Untaxed Amount"
-msgstr "المبلغ بدون ضرائب"
 
 #. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_total_discount
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_total_discount
-msgid "Total Discount"
-msgstr "إجمالي الخصومات"
-
-#. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_amount_untaxed_after_discount
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_amount_untaxed_after_discount
-msgid "Untaxed Amount After Discount"
-msgstr "الإجمالي بدون ضرائب"
-
-#. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_amount_discount
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__ks_amount_discount
-msgid "Universal Discount"
-msgstr "خصم شامل"
-
-
-#. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__pricelist_id
-msgid "Pricelist"
-msgstr "قائمه الأسعار"
-
-#. module: yds_discounts
-#: model:ir.model,name:yds_discounts.model_account_tax
-#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__amount_tax
-#: model:ir.model.fields,field_description:yds_discounts.field_account_move__amount_tax
-#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__amount_tax
-#: model:ir.model.fields,field_description:yds_discounts.field_account_tax_repartition_line__tax_id
-#: model_terms:ir.ui.view,arch_db:yds_discounts.account_tax_view_search
-#: model_terms:ir.ui.view,arch_db:yds_discounts.view_account_tax_search
-#: model_terms:ir.ui.view,arch_db:yds_discounts.view_invoice_tree
-#: model_terms:ir.ui.view,arch_db:yds_discounts.view_move_line_tax_audit_tree
-msgid "Tax"
-msgstr "إجمالي الضرائب"
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_res_config_settings_view_form
+msgid "<span class=\"o_form_label\">Accounts</span>"
+msgstr "الحسابات"
 
 #. module: yds_discounts
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_invoice_report
-#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_purchase_report
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_sale_report
 msgid "<span>Universal Discount </span>"
-msgstr "<span>خصم شامل</span>"
+msgstr "الخصم الشامل"
 
-#. module: account
-#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
-msgid "<span>Subtotal after discount</span>"
-msgstr "<span>الإجمالي بعد الخصومات</span>"
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company__ks_enable_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings__ks_enable_discount
+msgid "Activate Universal Discount"
+msgstr "تفعيل الخصم الشامل"
 
-#. module: account
-#: model_terms:ir.ui.view,arch_db:account.report_invoice_document
-msgid "<span>Total Discount</span>"
-msgstr "<span>إجمالي الخصومات</span>"
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_res_company
+msgid "Companies"
+msgstr "الشركات"
 
-#. module: account
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "<span>Subtotal after discount</span>"
-msgstr "<span>الإجمالي بعد الخصومات</span>"
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
 
-#. module: account
-#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
-msgid "<span>Total Discount</span>"
-msgstr "<span>إجمالي الخصومات</span>"
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__purchase_price
+msgid "Cost"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_product_cost
+msgid "Cost "
+msgstr "التكلفة"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_cost_percentage
+msgid "Cost %"
+msgstr "نسبة التكلفة"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_product_pricelist__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_purchase_order_line__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_res_partner__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_advance_payment_inv__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:yds_discounts.field_stock_valuation_layer__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__show_update_pricelist
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__show_update_pricelist
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__show_update_pricelist
+msgid "Has Pricelist Changed"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move_line__id
+#: model:ir.model.fields,field_description:yds_discounts.field_product_pricelist__id
+#: model:ir.model.fields,field_description:yds_discounts.field_purchase_order_line__id
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company__id
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings__id
+#: model:ir.model.fields,field_description:yds_discounts.field_res_partner__id
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_advance_payment_inv__id
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__id
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__id
+#: model:ir.model.fields,field_description:yds_discounts.field_stock_valuation_layer__id
+msgid "ID"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,help:yds_discounts.field_account_bank_statement_line__pricelist_id
+#: model:ir.model.fields,help:yds_discounts.field_account_move__pricelist_id
+#: model:ir.model.fields,help:yds_discounts.field_account_payment__pricelist_id
+msgid "If you change the pricelist, only newly added lines will be affected."
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_enable_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_enable_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_enable_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__ks_enable_discount
+msgid "Ks Enable Discount"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_purchase_discount_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_purchase_discount_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_purchase_discount_account_id
+msgid "Ks Purchase Discount Account"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_sales_discount_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_sales_discount_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_sales_discount_account_id
+msgid "Ks Sales Discount Account"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_product_pricelist____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_purchase_order_line____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_res_partner____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_advance_payment_inv____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line____last_update
+#: model:ir.model.fields,field_description:yds_discounts.field_stock_valuation_layer____last_update
+msgid "Last Modified on"
+msgstr ""
 
 #. module: yds_discounts
 #: model:ir.model.fields,field_description:yds_discounts.field_sale_order__yds_margin
 #: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_margin
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_report__yds_margin
 msgid "Margin"
 msgstr "الهامش"
 
 #. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_subtotal_wo_uni
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_subtotal
-msgid "Subtotal"
-msgstr "الإجمالي الفرعي"
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__yds_margin_percent
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_margin_percent
+msgid "Margin (%)"
+msgstr " الهامش (%)"
 
 #. module: yds_discounts
-#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_total_wo_uni
+#: model:ir.model.fields.selection,name:yds_discounts.selection__account_move__ks_global_discount_type__percent
+#: model:ir.model.fields.selection,name:yds_discounts.selection__sale_order__ks_global_discount_type__percent
+msgid "Percentage"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_product_pricelist
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__pricelist_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__pricelist_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__pricelist_id
+msgid "Pricelist"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_product_pricelist__yds_assigned_discount_account
+msgid "Pricelist Discount Account"
+msgstr "حساب خصم قائمه الاسعار"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_pricelist_name
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_pricelist_name
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_pricelist_name
+msgid "Pricelist Name"
+msgstr "اسم قائمه الاسعار"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_pricelist_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_pricelist_account_id
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_pricelist_account_id
+msgid "Pricelist account ID"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_stock_valuation_layer__categ_id
+msgid "Product Category"
+msgstr ""
+
+#. module: yds_discounts
+#: code:addons/yds_discounts/models/yds_pricelist_invoice.py:0
+#, python-format
+msgid "Product prices have been recomputed according to pricelist <b>%s<b> "
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company__ks_purchase_discount_account
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings__ks_purchase_discount_account
+msgid "Purchase Discount Account"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
+
+#. module: yds_discounts
+#: model_terms:ir.ui.view,arch_db:yds_discounts.view_move_form_w_pricelist
+msgid "Recompute all prices based on this pricelist"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_sale_advance_payment_inv
+msgid "Sales Advance Payment Invoice"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_res_company__ks_sales_discount_account
+#: model:ir.model.fields,field_description:yds_discounts.field_res_config_settings__ks_sales_discount_account
+msgid "Sales Discount Account"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,help:yds_discounts.field_stock_valuation_layer__categ_id
+msgid "Select category for the current product"
+msgstr ""
+
+#. module: yds_discounts
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_res_config_settings_view_form
+msgid "Set default Universal discount account for sale order."
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model,name:yds_discounts.model_stock_valuation_layer
+msgid "Stock Valuation Layer"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move_line__yds_price_subtotal
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_subtotal
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_subtotal_wo_uni
+msgid "Subtotal"
+msgstr "الإجمالي الجزئي"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_amount_tax
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_amount_tax
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_amount_tax
+msgid "Tax"
+msgstr "الضريبة"
+
+#. module: yds_discounts
+#: model:ir.model.fields,help:yds_discounts.field_account_bank_statement_line__show_update_pricelist
+#: model:ir.model.fields,help:yds_discounts.field_account_move__show_update_pricelist
+#: model:ir.model.fields,help:yds_discounts.field_account_payment__show_update_pricelist
+msgid ""
+"Technical Field, True if the pricelist was changed;\n"
+" this will then display a recomputation button"
+msgstr ""
+
+#. module: yds_discounts
+#: model_terms:ir.ui.view,arch_db:yds_discounts.view_move_form_w_pricelist
+msgid "This will update all unit prices based on the currently set pricelist."
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move_line__yds_price_total
 #: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_total
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__x_price_total_wo_uni
 msgid "Total"
 msgstr "الإجمالي"
 
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_total_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_total_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_total_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_total_discount
+msgid "Total Discount"
+msgstr "مجموع الخصومات"
 
 #. module: yds_discounts
-#: code:custom_addons/yds_discounts/models/yds_invoice_lines.py:0
-#, python-format
-msgid "One or more line have the same Label."
-msgstr "لا يمكن إدخل منتجان بنفس بطاقة العنوان ."
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_amount_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_global_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_amount_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_global_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_amount_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_global_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_res_partner__yds_customer_universal_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_res_users__yds_customer_universal_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__ks_amount_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__ks_global_discount_rate
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_global_discount_rate
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_res_config_settings_view_form
+msgid "Universal Discount"
+msgstr "الخصم الشامل"
 
-
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__ks_global_discount_type
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__ks_global_discount_type
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__ks_global_discount_type
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__ks_global_discount_type
+msgid "Universal Discount Type"
+msgstr ""
 
 #. module: yds_discounts
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_discount_sale_order_form_inherited
 #: model_terms:ir.ui.view,arch_db:yds_discounts.ks_global_discount_invoice_view_form
 msgid "Universal Discount rate :"
 msgstr "نسبة الخصم الشامل :"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_amount_untaxed
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_amount_untaxed
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_amount_untaxed
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_amount_untaxed
+msgid "Untaxed Amount"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_amount_untaxed_after_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_amount_untaxed_after_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_amount_untaxed_after_discount
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order__x_amount_untaxed_after_discount
+msgid "Untaxed Amount After Discount"
+msgstr "المبلغ بالضرائب"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_untaxed_amount_to_invoice
+msgid "Untaxed Amount To Invoice"
+msgstr ""
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_sale_order_line__yds_untaxed_amount_invoiced
+msgid "Untaxed Invoiced Amount"
+msgstr ""
+
+#. module: yds_discounts
+#: model_terms:ir.ui.view,arch_db:yds_discounts.view_move_form_w_pricelist
+msgid "Update Prices"
+msgstr "تحديث الاسعار"
+
+#. module: yds_discounts
+#: model:ir.model.fields,field_description:yds_discounts.field_account_bank_statement_line__yds_is_sales_order
+#: model:ir.model.fields,field_description:yds_discounts.field_account_move__yds_is_sales_order
+#: model:ir.model.fields,field_description:yds_discounts.field_account_payment__yds_is_sales_order
+msgid "is Sales Order"
+msgstr ""
+
+#. module: yds_discounts
+#: model_terms:ir.ui.view,arch_db:yds_discounts.ks_res_config_settings_view_form
+msgid "من فضلك إختر الحسابات التي سيتم تسجيل الخصومات بها"
+msgstr ""
+
+
+#. module: account
+#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
+msgid "<span>Total discount</span>"
+msgstr "<span>إجمالي الخصومات</span>"
+
+#. module: sale
+#: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
+msgid "<span>Subtotal After Discount</span>"
+msgstr "<span>الإجمالي بعد الخصومات</span>"

@@ -167,7 +167,8 @@ class YDSAccountMove(models.Model):
                         
     @api.onchange('pricelist_id')
     def change_currency(self):
-        self.currency_id=self.pricelist_id.currency_id
+        if self.pricelist_id:
+            self.currency_id=self.pricelist_id.currency_id
 
     @api.onchange('invoice_line_ids',
                     'ks_global_discount_rate',

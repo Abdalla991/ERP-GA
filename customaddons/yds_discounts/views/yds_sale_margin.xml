@@ -7,6 +7,15 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='amount_total']" position="after">
+                <label for="margin" groups="base.group_user" invisible="1"/>
+                <div class="text-nowrap" groups="base.group_user">
+                    <field name="margin" class="oe_inline" invisible="1"/>
+                    <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">
+                        (<field name="margin_percent" nolabel="1" class="oe_inline" widget="percentage" invisible="1"/>)
+                    </span>
+                </div>
+
+                    <!-- YDS MARGIN -->
                 <label for="yds_margin" groups="base.group_user"/>
                 <div class="text-nowrap" groups="base.group_user">
                     <field name="yds_margin" class="oe_inline"/>
@@ -24,7 +33,12 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="after">
-                <field name="purchase_price" optional="hide"/>
+                <field name="purchase_price" optional="hide" invisible="1"/>
+                <field name="margin" optional="hide" invisible="1"/>
+                <field name="margin_percent"
+                    attrs="{'invisible': [('price_subtotal', '=', 0)]}"
+                    optional="hide" widget="percentage" invisible="1"/>
+                    <!-- YDS MARGIN -->
                 <field name="yds_margin" optional="hide"/>
                 <field name="yds_margin_percent"
                     attrs="{'invisible': [('price_subtotal', '=', 0)]}"
@@ -39,7 +53,12 @@
         <field name="inherit_id" ref="sale.view_sale_order_pivot"/>
         <field name="arch" type="xml">
             <pivot position="inside">
+
+                <field name="margin_percent" invisible="1"/>
+
+                    <!-- YDS MARGIN -->
                 <field name="yds_margin_percent" invisible="1"/>
+                
             </pivot>
         </field>
     </record>
