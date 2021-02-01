@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="yds_purchase_order_inherit" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="//div[@class='oe_structure']" position="before">
+            <p style="text-align:right; align:right">Shipping and Import procedures number: SIP-10</p>
+        </xpath>
+        <xpath expr="//th[@name='th_taxes']" position="replace">
+        </xpath>
+        <xpath expr="//th[@name='th_date_req']" position="replace">
+        </xpath>
+        <xpath expr="//td[@name='td_taxes']" position="replace">
+        </xpath>
+        <xpath expr="//td[@name='td_taxes_label']" position="replace">
+        </xpath>
+        <xpath expr="//span[@t-field='o.amount_tax']" position="replace">
+        </xpath>
+        <xpath expr="//td[@class='text-center']" position="replace">
+        </xpath>
+        <xpath expr="//div[@t-if='o.date_order']" position="after">
+                <div t-if="o.date_order" class="col-3 bm-2">
+                    <strong>Request Date:</strong>
+                    <p t-field="o.order_line[0].date_planned" class="m-0"/>
+                </div>
+        </xpath>
+        <xpath expr="//div[@class='col-4']" position="before">
+            <strong class="mr16">Total Qty</strong>
+            <t t-set="current_total_qty" t-value="0"/>
+            <t t-foreach="o.order_line" t-as="line">
+              <t t-set="current_total_qty" t-value="current_total_qty+line.product_qty"/>
+            </t>
+            <span
+                t-esc="current_total_qty"
+            />
+            <span t-field="o.order_line[0].product_uom.name" groups="uom.group_uom"/>
+        </xpath>
+        
+    </template>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+<report 
+id="yds_purchase_importing_po"
+string="Importing PO"
+model="purchase.order"
+report_type="qweb-pdf"
+name="yds_discounts.purchase_importing_po"
+file="Importing PO"
+print_report_name = "('GA Importing PO')"
+/>
+
+</odoo>

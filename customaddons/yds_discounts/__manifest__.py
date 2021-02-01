@@ -23,6 +23,8 @@
         'views/invoice_extension.xml',
         'views/yds_pricelist_invoice.xml',
         'report/sale_report_templates.xml',
+        'report/yds_purchase_report.xml',
+        'report/purchase_importing_po.xml',
         'views/report_invoice.xml',
         'views/ks_sale_order.xml',
         'views/ks_account_invoice.xml',
