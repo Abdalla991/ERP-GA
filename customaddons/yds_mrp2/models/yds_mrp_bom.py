@@ -128,7 +128,8 @@ class YdsMrpProduction(models.Model):
 
     def yds_calc_extra_cost(self):
         for production in self:
-            print("called")
+            production.yds_expected_cost = 0.0
+            production.yds_actual_cost = 0.0
             for move in production.move_raw_ids:
                 if move.forecast_availability > move.quantity_done:
                     production.yds_saved_cost+= (move.forecast_availability - move.quantity_done)*move.product_id.standard_price
@@ -145,3 +146,4 @@ class YdsMrpProduction(models.Model):
         return res		
 
     #raw_material_production_id -> MO id
+
