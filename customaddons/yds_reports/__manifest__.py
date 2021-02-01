@@ -12,13 +12,14 @@
     'category': 'Sales',
     'version': '90.1',
     'license': 'LGPL-3',
-    'depends': ['base', 'sale', 'purchase', 'account','mrp','yds_discounts','yds_mrp2','product','percent_field'],
+    'depends': ['base', 'sale', 'purchase', 'account','mrp','yds_discounts','yds_mrp2','product','percent_field','mrp_account_enterprise'],
 
     'data': [
         'security/ir.model.access.csv',
         'wizards/mrp_report_wizard.xml',
         'reports/mrp_report.xml',
         'reports/mrp_report_view.xml',
+        'reports/yds_cost_structure_report.xml',
     ],
 
 }

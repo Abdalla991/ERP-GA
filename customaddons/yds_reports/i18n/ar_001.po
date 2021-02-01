@@ -226,3 +226,4 @@ msgstr "كمية الخصم العام"
 #: model:ir.model,name:yds_reports.model_report_yds_reports_mrp_report_view
 msgid "report.yds_reports.mrp_report_view"
 msgstr ""
+
