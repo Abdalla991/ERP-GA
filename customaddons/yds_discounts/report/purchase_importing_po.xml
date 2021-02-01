@@ -5,26 +5,20 @@
         <div class="header">
             <table width="100%">
                 <tr>
-
                     <td style=" border-bottom= 0.5px solid">
                         <img src='/web/binary/company_logo' style="width:20%"/>
-
                     </td>
                     <td style="text-align:right; align:right;">
                         <span style="text-align:right; align:right">Shipping and Import procedures</span>
                         <br/>
                         <span style="text-align:right; align:right">No: SIP-10</span>
-
                     </td>
-
-
                 </tr>
                 <tr>
                 <td style="border-bottom: 0.5px solid #000000" colspan="2">
                 </td>
                 </tr>
                 <tr>
-                
                     <td>
                         <h3 style="margin-top:30px" t-esc="o.company_id.name" />
                         <span t-esc="o.company_id.street" />
