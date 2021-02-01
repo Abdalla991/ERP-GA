@@ -86,7 +86,7 @@
                 --><li t-if="o.company_id.website" class="list-inline-item d-inline"><span t-field="o.company_id.website"/></li><!--
                 --><li t-if="o.company_id.vat" class="list-inline-item d-inline"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company.vat"/></li>
                 </ul>
-                <div name="financial_infos">
+                <div name="financial_infos" style="border-width:0px;" >
                     <span t-field="o.company_id.report_footer"/>
                 </div>
                 <div t-if="report_type == 'pdf'" class="text-muted">
