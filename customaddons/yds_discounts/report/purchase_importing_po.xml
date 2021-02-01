@@ -6,74 +6,88 @@
             <table width="100%">
                 <tr>
 
-                    <td>
+                    <td style=" border-bottom= 0.5px solid">
                         <img src='/web/binary/company_logo' style="width:20%"/>
 
                     </td>
-                    <td style="text-align:right; align:right">
+                    <td style="text-align:right; align:right;">
                         <span style="text-align:right; align:right">Shipping and Import procedures</span>
                         <br/>
                         <span style="text-align:right; align:right">No: SIP-10</span>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-
 
                     </td>
 
 
                 </tr>
                 <tr>
+                <td style="border-bottom: 0.5px solid #000000" colspan="2">
+                </td>
+                </tr>
+                <tr>
+                
                     <td>
-                        <h2 t-esc="o.company_id.name" />
+                        <h3 style="margin-top:30px" t-esc="o.company_id.name" />
                         <span t-esc="o.company_id.street" />
                         <br/>
                         <span t-esc="o.company_id.street2" />
                         <br/>
                         <span t-esc="o.company_id.zip" />
-                        <br/>
                         <span t-esc="o.company_id.city" />
                         <br/>
                         <span t-esc="o.company_id.state_id.name" />
                         <br/>
                         <span t-esc="o.company_id.country_id.name"/>
                     </td>
-                    <td>
+                     
+                    <td >
                         <br/>
-
-                        <p t-esc="o.partner_id.name" class="m-0"/>
-                        <span t-esc="o.partner_id.street" class="m-0"/>
-                        <br/>
-                        <span t-esc="o.partner_id.street2" class="m-0"/>
-                        <br/>
-                        <span t-esc="o.partner_id.zip" class="m-0"/>
-                        <br/>
-                        <span t-esc="o.partner_id.city" class="m-0"/>
-                        <br/>
-                        <span t-esc="o.partner_id.state_id.name" class="m-0"/>
-                        <br/>
-                        <span t-esc="o.partner_id.country_id.name" class="m-0"/>
+                    <div t-field="o.partner_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                    />
+                    
                     </td>
                 </tr>
             </table>
         </div>
         <t t-call="web.external_layout">
-
-
-
-
             <div class="footer">
                 <div style="text-align:center; align:center">
-                    <span></span>
-                    <span style="text-align:center; align:center" t-esc="o.company_id.phone"/>
-                    <span>   -   </span>
-                    <span style="text-align:center; align:center" t-esc="o.company_id.email"/>
-                    <p t-esc="o.company_id.website"/>
+                <style>
+                .center {
+                        margin-left: auto;
+                        margin-right: auto;
+                        }
+                </style>
+                <br/>
+                 <p style="text-align:right; align:right; line-height:0.1">SIF-10-1</p>
+                <hr style="background-color:#000000; height:0.5px; line-height: 0.1"/>
 
+                    <table class="center" style="text-align:center; align:center; width:65%; line-height:0.5">
+                        <tr>
+                            <td>
+                                <p t-esc="o.company_id.phone" />
+                            </td>
+                            <td >
+                                <p t-esc="o.company_id.email"/>
+                            </td>
+                            <td>
+                                <p t-esc="o.company_id.website" />
+                            </td> 
+                            <td  t-if="o.company_id.vat">
+                                <t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.company_id.vat"/>
+                            </td> 
+                        </tr>
+                    </table>
+                                           
+                    <div name="financial_infos" style="line-height:0.5">
+                        <span t-field="o.company_id.report_footer"/>
+                    </div>
+                     
+                    <div class="center" style="color:grey; text-align:center; align:center;">
+                    <br style="line-height:0.5"/>
+                         <center><span>Page: </span><span class="page" />/ <span class="topage" /></center>
+                    </div>
                 </div>
-
-                <p style="text-align:right; align:right">: SIF-10-1</p>
 
             </div>
             <div class="page">
@@ -85,7 +99,6 @@
                 <br/>
                 <br/>
                 <br/>
-
                 <h2 t-if="o.state == 'draft'">Request for Quotation #<span t-field="o.name"/>
                 </h2>
                 <h2 t-if="o.state in ['sent', 'to approve']">Purchase Order #<span t-field="o.name"/>
@@ -94,7 +107,6 @@
                 </h2>
                 <h2 t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-field="o.name"/>
                 </h2>
-
                 <div id="informations" class="row mt32 mb32">
                     <div t-if="o.user_id" class="col-3 bm-2">
                         <strong>Purchase Representative:</strong>
@@ -177,26 +189,33 @@
 </tr>
 </t>
 </t>
+<tr>
+                                    <td id="product">
+                                      
+                                    </td>
+                                    <td class="text-right">
+                                            <strong class="mr16">Total Qty</strong>
+                                            <span t-esc="current_total_qty"/>
+                                            <span t-field="o.order_line[0].product_uom.name" groups="uom.group_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                
+                                    </td>
+                                    <td class="text-right">
+                                        
+                                    </td>
+</tr>
 </tbody>
 </table>
 
 <div id="total" class="row justify-content-end">
-                                            <strong class="mr16">Total Qty</strong>
-                                            <span t-esc="current_total_qty"/>
-                                            <span t-field="o.order_line[0].product_uom.name" groups="uom.group_uom"/>
+
                                             <p></p>
                                             <br></br>
 
                                             <div class="col-4">
                                                 <table class="table table-sm">
-                                                    <tr>
-                                                        <td name="td_subtotal_label">
-                                                            <strong> - </strong>
-                                                        </td>
-                                                        <td class="text-right">
-
-                                                        </td>
-                                                    </tr>
+          
                                                     <tr class="border-black">
                                                         <td name="td_subtotal_label">
                                                             <strong>Subtotal</strong>
