@@ -16,7 +16,6 @@
 
     'data': [
         'views/mrp_bom_ext.xml',
-        'views/yds_cost_structure_report.xml',
     ],
 
 }

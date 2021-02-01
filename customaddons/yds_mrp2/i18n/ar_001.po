@@ -149,6 +149,32 @@ msgstr "النسبة الكلية"
 msgid "UP"
 msgstr ""
 
+
+#. module: yds_mrp2
+#: model:ir.model.fields,field_description:yds_mrp2.field_mrp_production__yds_saved_cost
+msgid "Cost Savings"
+msgstr "التكلفة الموفرة"
+
+#. module: yds_mrp2
+#: model:ir.model.fields,field_description:yds_mrp2.field_mrp_production__yds_extra_cost
+msgid "Extra Cost"
+msgstr "التكلفة الزائدة"
+
+#. module: yds_mrp2
+#: model:ir.model.fields,field_description:yds_mrp2.field_mrp_production__yds_actual_cost
+msgid "Actual Cost"
+msgstr "التكلفة الفعلية"
+
+#. module: yds_mrp2
+#: model:ir.model.fields,field_description:yds_mrp2.field_mrp_production__yds_expected_cost
+msgid "Expected Cost"
+msgstr "التكلفة المتوقعة"
+
+#. module: mrp_account
+#: model:ir.model.fields,field_description:mrp_account.field_mrp_production__extra_cost
+msgid "Sub Contracting Extra Cost"
+msgstr ""
+
 #. module: yds_mrp2
 #: model:ir.model.fields,field_description:yds_mrp2.field_mrp_bom_line__busy_flag
 msgid "wait"

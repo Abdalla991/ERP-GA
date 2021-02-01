@@ -9,7 +9,7 @@ model="purchase.order"
 report_type="qweb-pdf"
 name="yds_discounts.purchase_importing_po"
 file="Importing PO"
-print_report_name = "('GA Importing PO')"
+print_report_name = "('Importing PO')"
 />
 
 </odoo>
