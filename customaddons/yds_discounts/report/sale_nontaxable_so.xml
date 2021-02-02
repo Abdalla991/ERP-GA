@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<template id="sale.report_saleorder_document">
+<template id="sale_nontaxable_so_document">
+    <div class="header"> </div>
     <t t-call="web.external_layout">
         <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
         <t t-set="address">
@@ -23,7 +24,7 @@
                 </t>
             </t>
         </t>
-        
+        <div class="footer"> </div>
         <div class="page">
             <div class="oe_structure"/>
 
@@ -226,6 +227,13 @@
                 <span t-field="doc.fiscal_position_id.sudo().note"/>
             </p>
         </div>
+    </t>
+</template>
+<template id="sale_nontaxable_so">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="yds_discounts.sale_nontaxable_so_document" t-lang="doc.partner_id.lang"/>
+        </t>
     </t>
 </template>
 </odoo>

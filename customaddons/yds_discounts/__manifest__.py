@@ -25,6 +25,8 @@
         'report/sale_report_templates.xml',
         'report/yds_purchase_report.xml',
         'report/purchase_importing_po.xml',
+        'report/sale_nontaxable_so.xml',
+        'report/yds_nt_sale_report.xml',
         'views/report_invoice.xml',
         'views/ks_sale_order.xml',
         'views/ks_account_invoice.xml',

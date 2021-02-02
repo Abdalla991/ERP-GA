@@ -392,3 +392,8 @@ msgstr "<span>إجمالي الخصومات</span>"
 #: model_terms:ir.ui.view,arch_db:sale.report_saleorder_document
 msgid "<span>Subtotal After Discount</span>"
 msgstr "<span>الإجمالي بعد الخصومات</span>"
+
+#. module: sale
+#: model:ir.actions.report,name:sale.action_report_nt_saleorder
+msgid "Non-Taxable SO"
+msgstr "عرض سعر غير ضريبي"
