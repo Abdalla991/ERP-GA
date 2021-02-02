@@ -1,0 +1,22 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* access_sale_margin
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0-20200421\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-17 14:18+0000\n"
+"PO-Revision-Date: 2020-09-17 14:18+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: access_sale_margin
+#: model:res.groups,name:access_sale_margin.hide_margin_sale
+msgid "Sale Order: See Margin and Cost"
+msgstr "Pedido: Ver Margen y Costo"
+

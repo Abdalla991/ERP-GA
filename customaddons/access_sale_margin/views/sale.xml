@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- sale.order | form | inherit sale_margin_sale_order -->
+    <record model="ir.ui.view" id="access_margin_sale_form_view">
+        <field name="name">sale.order.access.margin.view.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order"/>
+        <field name="arch" type="xml">
+            <!-- #WARNING: overwrite groups:"base.group_user"-->
+            <xpath expr="//field[@name='yds_margin']/.." position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+            <!-- #WARNING: overwrite groups:"base.group_user"-->
+            <xpath expr="//label[@for='yds_margin']" position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- sale.order | form | inherit sale_margin_sale_order_line -->
+    <record id="access_cost_sale_order_line_form_view" model="ir.ui.view">
+        <field name="name">sale.order.access.cost.view.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line"/>
+        <field name="arch" type="xml">
+            <!-- #WARNING: overwrite groups:"base.group_user"-->
+             <xpath expr="//field[@name='order_line']/form//field[@name='purchase_price']" position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- sale.order | form | inherit sale_margin_sale_order_line_form -->
+    <record id="access_cost_sale_order_line_tree_view" model="ir.ui.view">
+        <field name="name">sale.order.access.cost.view.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
+        <field name="arch" type="xml">
+            <!-- #WARNING: overwrite groups:"base.group_user"-->
+            <xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='yds_margin']" position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='yds_margin_percent']" position="attributes">
+                <attribute name="groups">access_sale_margin.hide_margin_sale</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
