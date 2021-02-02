@@ -395,5 +395,5 @@ msgstr "<span>الإجمالي بعد الخصومات</span>"
 
 #. module: sale
 #: model:ir.actions.report,name:sale.action_report_nt_saleorder
-msgid "Non-Taxable SO"
-msgstr "عرض سعر غير ضريبي"
+msgid "NT SO"
+msgstr "عرض سعر NT"
