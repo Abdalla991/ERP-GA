@@ -6,10 +6,10 @@ from datetime import datetime
 
 class YdsMrpProduction(models.Model):
     _inherit = "mrp.production"
-    yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
-    yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
-    yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
-    yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
+    # yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
+    # yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
+    # yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
+    # yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
     
 
 
