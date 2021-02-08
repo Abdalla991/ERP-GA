@@ -12,7 +12,7 @@
     'category': 'Manufactoring',
     'version': '90.1',
     'license': 'LGPL-3',
-    'depends': ['mrp','product','percent_field'],
+    'depends': ['mrp','product','percent_field','stock_landed_costs'],
 
     'data': [
         'views/mrp_bom_ext.xml',
