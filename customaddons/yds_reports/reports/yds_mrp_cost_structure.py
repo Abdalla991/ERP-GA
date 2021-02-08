@@ -4,52 +4,51 @@ from collections import defaultdict
 import ipdb 
 from datetime import datetime
 
-class YdsMrpProduction(models.Model):
-    _inherit = "mrp.production"
-    yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
-    yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
-    yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
-    yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
+# class YdsMrpProduction(models.Model):
+#     _inherit = "mrp.production"
+#     # yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
+#     # yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
+#     # yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
+#     # yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
     
 
 
-    def yds_calc_extra_cost(self):
-        for production in self:
-            production.yds_expected_cost = 0.0
-            production.yds_actual_cost = 0.0
-            production.yds_saved_cost= 0.0
-            production.yds_extra_cost = 0.0
-            for move in production.move_raw_ids:
-                print("Product: " + move.product_id.name)
-                print("--- To consume: "+str(move.forecast_availability) + "--- Consumed: "+str(move.quantity_done) )
-                if move.forecast_availability > move.quantity_done:
-                    production.yds_saved_cost+= (move.forecast_availability - move.quantity_done)*move.product_id.standard_price
-                elif move.forecast_availability < move.quantity_done:
-                    production.yds_extra_cost+= (move.quantity_done - move.forecast_availability)*move.product_id.standard_price
-                production.yds_expected_cost += move.forecast_availability*move.product_id.standard_price
-                production.yds_actual_cost += move.quantity_done*move.product_id.standard_price
-            print("--------------------------------------------------------------------")
+#     def yds_calc_extra_cost(self):
+#         for production in self:
+#             production.yds_expected_cost = 0.0
+#             production.yds_actual_cost = 0.0
+#             production.yds_saved_cost= 0.0
+#             production.yds_extra_cost = 0.0
+#             for move in production.move_raw_ids:
+#                 print("Product: " + move.product_id.name)
+#                 print("--- To consume: "+str(move.forecast_availability) + "--- Consumed: "+str(move.quantity_done) )
+#                 if move.forecast_availability > move.quantity_done:
+#                     production.yds_saved_cost+= (move.forecast_availability - move.quantity_done)*move.product_id.standard_price
+#                 elif move.forecast_availability < move.quantity_done:
+#                     production.yds_extra_cost+= (move.quantity_done - move.forecast_availability)*move.product_id.standard_price
+#                 production.yds_expected_cost += move.forecast_availability*move.product_id.standard_price
+#                 production.yds_actual_cost += move.quantity_done*move.product_id.standard_price
+#             print("--------------------------------------------------------------------")
 
-    def button_mark_done(self):
-        self.yds_calc_extra_cost()
-        # ipdb.set_trace()
-        res = super(YdsMrpProduction, self).button_mark_done()
-        return res		
+#     def button_mark_done(self):
+#         # self.yds_calc_extra_cost()
+#         res = super(YdsMrpProduction, self).button_mark_done()
+#         return res		
 
 
-    #remove subcontracting extra cost field from measres/filters/groupby..
-    @api.model
-    def fields_get(self, fields=None):
-        #Fields to be added in Filters/Group By
-        show = ['extra_cost']
-        res = super(YdsMrpProduction, self).fields_get()
-        #True = add fields, False = Remove fields
-        for field in show:
-            res[field]['selectable'] = False
-            res[field]['sortable'] = False
-            res[field]['exportable'] = False # to hide in export list
-            res[field]['store'] = False
-        return res
+#     #remove subcontracting extra cost field from measres/filters/groupby..
+#     @api.model
+#     def fields_get(self, fields=None):
+#         #Fields to be added in Filters/Group By
+#         show = ['extra_cost']
+#         res = super(YdsMrpProduction, self).fields_get()
+#         #True = add fields, False = Remove fields
+#         for field in show:
+#             res[field]['selectable'] = False
+#             res[field]['sortable'] = False
+#             res[field]['exportable'] = False # to hide in export list
+#             res[field]['store'] = False
+#         return res
 
 
 
@@ -138,47 +137,47 @@ class YDSMrpCostStructure(models.AbstractModel):
         return res
 
         
-class StockMove(models.Model):
-    _inherit = "stock.move"
-    forecast_availability = fields.Float('Forecast Availability', compute='_compute_forecast_information', digits='Product Unit of Measure',store=True )
+# class StockMove(models.Model):
+#     _inherit = "stock.move"
+#     forecast_availability = fields.Float('Forecast Availability', compute='_compute_forecast_information', digits='Product Unit of Measure',store=True )
 
-    @api.depends('product_id', 'picking_type_id', 'picking_id', 'reserved_availability', 'priority', 'state', 'product_uom_qty', 'location_id')
-    def _compute_forecast_information(self):
-        """ Compute forecasted information of the related product by warehouse."""
-        self.forecast_availability = False
-        self.forecast_expected_date = False
+#     @api.depends('product_id', 'picking_type_id', 'picking_id', 'reserved_availability', 'priority', 'state', 'product_uom_qty', 'location_id')
+#     def _compute_forecast_information(self):
+#         """ Compute forecasted information of the related product by warehouse."""
+#         self.forecast_availability = False
+#         self.forecast_expected_date = False
 
-        not_product_moves = self.filtered(lambda move: move.product_id.type != 'product')
-        for move in not_product_moves:
-            move.forecast_availability = move.product_qty
+#         not_product_moves = self.filtered(lambda move: move.product_id.type != 'product')
+#         for move in not_product_moves:
+#             move.forecast_availability = move.product_qty
 
-        product_moves = (self - not_product_moves)
-        warehouse_by_location = {loc: loc.get_warehouse() for loc in product_moves.location_id}
+#         product_moves = (self - not_product_moves)
+#         warehouse_by_location = {loc: loc.get_warehouse() for loc in product_moves.location_id}
 
-        outgoing_unreserved_moves_per_warehouse = defaultdict(lambda: self.env['stock.move'])
-        for move in product_moves:
-            picking_type = move.picking_type_id or move.picking_id.picking_type_id
-            is_unreserved = move.state in ('waiting', 'confirmed', 'partially_available')
-            if picking_type.code in self._consuming_picking_types() and is_unreserved:
-                outgoing_unreserved_moves_per_warehouse[warehouse_by_location[move.location_id]] |= move
-            elif picking_type.code in self._consuming_picking_types():
-                move.forecast_availability = move.reserved_availability
+#         outgoing_unreserved_moves_per_warehouse = defaultdict(lambda: self.env['stock.move'])
+#         for move in product_moves:
+#             picking_type = move.picking_type_id or move.picking_id.picking_type_id
+#             is_unreserved = move.state in ('waiting', 'confirmed', 'partially_available')
+#             if picking_type.code in self._consuming_picking_types() and is_unreserved:
+#                 outgoing_unreserved_moves_per_warehouse[warehouse_by_location[move.location_id]] |= move
+#             elif picking_type.code in self._consuming_picking_types():
+#                 move.forecast_availability = move.reserved_availability
 
-        for warehouse, moves in outgoing_unreserved_moves_per_warehouse.items():
-            if not warehouse:  # No prediction possible if no warehouse.
-                continue
-            product_variant_ids = moves.product_id.ids
-            wh_location_ids = [loc['id'] for loc in self.env['stock.location'].search_read(
-                [('id', 'child_of', warehouse.view_location_id.id)],
-                ['id'],
-            )]
-            ForecastedReport = self.env['report.stock.report_product_product_replenishment']
-            forecast_lines = ForecastedReport.with_context(warehouse=warehouse.id)._get_report_lines(None, product_variant_ids, wh_location_ids)
-            for move in moves:
-                lines = [l for l in forecast_lines if l["move_out"] == move._origin and l["replenishment_filled"] is True]
-                if lines:
-                    move.forecast_availability = sum(m['quantity'] for m in lines)
-                    move_ins_lines = list(filter(lambda report_line: report_line['move_in'], lines))
-                    if move_ins_lines:
-                        expected_date = max(m['move_in'].date for m in move_ins_lines)
-                        move.forecast_expected_date = expected_date
+#         for warehouse, moves in outgoing_unreserved_moves_per_warehouse.items():
+#             if not warehouse:  # No prediction possible if no warehouse.
+#                 continue
+#             product_variant_ids = moves.product_id.ids
+#             wh_location_ids = [loc['id'] for loc in self.env['stock.location'].search_read(
+#                 [('id', 'child_of', warehouse.view_location_id.id)],
+#                 ['id'],
+#             )]
+#             ForecastedReport = self.env['report.stock.report_product_product_replenishment']
+#             forecast_lines = ForecastedReport.with_context(warehouse=warehouse.id)._get_report_lines(None, product_variant_ids, wh_location_ids)
+#             for move in moves:
+#                 lines = [l for l in forecast_lines if l["move_out"] == move._origin and l["replenishment_filled"] is True]
+#                 if lines:
+#                     move.forecast_availability = sum(m['quantity'] for m in lines)
+#                     move_ins_lines = list(filter(lambda report_line: report_line['move_in'], lines))
+#                     if move_ins_lines:
+#                         expected_date = max(m['move_in'].date for m in move_ins_lines)
+#                         move.forecast_expected_date = expected_date

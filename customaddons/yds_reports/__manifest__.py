@@ -19,7 +19,7 @@
         'wizards/mrp_report_wizard.xml',
         'reports/mrp_report.xml',
         'reports/mrp_report_view.xml',
-        # 'reports/yds_cost_structure_report.xml',
+        'reports/yds_cost_structure_report.xml',
         # 'views/include_js.xml',
     ],
 
