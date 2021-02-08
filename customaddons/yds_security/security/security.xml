@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<!-- Create Groups -->
+		<record id="group_mrp_user_ga" model="res.groups">
+			<field name="name">
+				GA User
+			</field>
+       		<field name="category_id" ref="base.module_category_manufacturing_manufacturing"/>
+		</record>
+	</data>
+</odoo>
