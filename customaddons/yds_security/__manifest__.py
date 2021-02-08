@@ -15,6 +15,7 @@
     'depends': ['mrp','yds_discounts'],
 
     'data': [
+        'security/ir.model.access.csv',
         'security/security.xml',
         'views/yds_sale_confirm.xml',
     ],
