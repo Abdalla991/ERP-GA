@@ -25,8 +25,12 @@ class YdsStockLandedCost(models.Model):
             val_to_cost_lines = defaultdict(lambda: 0.0)
             for val_line in landed_cost.valuation_adjustment_lines:
                 val_to_cost_lines[val_line.cost_line_id] += val_line.additional_landed_cost
-                for cost_line, val_amount in val_to_cost_lines.items():
-                    if(cost_line.price_unit - val_amount > 0.1):
-                        return False
+            print(val_to_cost_lines)
+            if any((cost_line.price_unit - val_amount > 0.1)
+                    for cost_line, val_amount in val_to_cost_lines.items()):
+                return False
+                # for cost_line, val_amount in val_to_cost_lines.items():
+                #     if(cost_line.price_unit - val_amount > 0.1):
+                #         return False
             
         return True
