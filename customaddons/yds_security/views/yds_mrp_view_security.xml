@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record id="mrp_production_workorder_tree_editable_view_inherit_workorder_ga_user" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.tree.editable.inherit.mrp.workorder.ga.user</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view"/>
+        <field name="groups_id" eval="[(6, 0, [ref('yds_security.group_mrp_user_ga')])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name'] [2]" position="attributes">
+                 <attribute name="readonly">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='workcenter_id']" position="attributes">
+                 <attribute name="readonly">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_planned_start']" position="attributes">
+                 <attribute name="readonly">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='duration_expected']" position="attributes">
+                 <attribute name="readonly">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='duration']" position="attributes">
+                 <attribute name="readonly">True</attribute>
+            </xpath>
+        </field>
+        </record>
+
+        </data>
+</odoo>

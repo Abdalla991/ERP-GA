@@ -19,7 +19,8 @@
         'security/groups_security.xml',
         'security/record_rules.xml',
         'views/yds_sale_view_security.xml',
-        'views/user_view_secuirty.xml'
+        'views/user_view_secuirty.xml',
+        'views/yds_mrp_view_security.xml'
         
     ],
 
