@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Listed Buttons -> Managerial access only -->
+        <record id="sale_view_order_form_sec" model="ir.ui.view">
+            <field name="name">sale.view.order.form.sec</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_confirm'] [1]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_confirm'] [2]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_quotation_send'] [1]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_quotation_send'] [2]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_quotation_send'] [3]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_quotation_send'] [4]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'] [1]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'] [2]" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='action_draft']" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='payment_action_capture']" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+            <xpath expr="//button[@name='payment_action_void']" position="attributes">
+                    <attribute name="groups">sales_team.group_sale_manager</attribute>
+                    </xpath>
+
+        <!-- Make certian fields read only by default then enable editing for Managers below -->
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"  position="attributes">
+                <attribute name="readonly">True</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                </xpath>
+             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
+                <attribute name="readonly">True</attribute>
+                </xpath>
+            </field>   
+        </record>
+        <!-- Make Universal Discount field readonly by default then enable editing for Managers below -->
+        <record id="sale_uni_discount_readonly" model="ir.ui.view">
+            <field name="name">sale.uni.discount.read.only</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="yds_discounts.ks_discount_sale_order_form_inherited"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='ks_global_discount_rate']" position="attributes">
+                        <attribute name="readonly">True</attribute>
+                </xpath>
+            </field>   
+        </record>
+
+        <record id="hide_forecast_widget" model="ir.ui.view">
+            <field name="name">sale.hide.forecast.widget</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock_qty"/>
+            <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/widget[@name='qty_at_date_widget']" position="attributes"> 
+                <attribute name="invisible">True</attribute>
+                </xpath>
+            </field>   
+        </record>
+
+        <!-- Re-enable editing for manager -->
+    <record id="view_order_edit" model="ir.ui.view">
+        <field name="name">view.order.edit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="groups_id" eval="[(6, 0, [ref('sales_team.group_sale_manager')])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                <attribute name="readonly">False</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                <attribute name="readonly">False</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"  position="attributes">
+                <attribute name="readonly">False</attribute>
+                </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+                <attribute name="readonly">False</attribute>
+                </xpath>
+             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
+                <attribute name="readonly">False</attribute>
+                </xpath>
+        </field>
+    </record>
+
+        <record id="sale_uni_discount_edit" model="ir.ui.view">
+            <field name="name">sale.uni.discount.edit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="yds_discounts.ks_discount_sale_order_form_inherited"/>
+            <field name="groups_id" eval="[(6, 0, [ref('sales_team.group_sale_manager')])]"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='ks_global_discount_rate']" position="attributes">
+                        <attribute name="readonly">False</attribute>
+                </xpath>
+            </field>   
+        </record>
+
+        <record id="show_forecast_widget" model="ir.ui.view">
+            <field name="name">sale.show.forecast.widget</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock_qty"/>
+            <field name="groups_id" eval="[(6, 0, [ref('sales_team.group_sale_manager')])]"/>
+            <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/widget[@name='qty_at_date_widget']" position="attributes"> 
+                <attribute name="invisible">False</attribute>
+                </xpath>
+            </field>   
+        </record>
+
+      <!-- Mark Quotation as Sent -> Managerial access only -->
+        <record id="sale.model_sale_order_action_quotation_sent" model="ir.actions.server">
+            <field name="name">Mark Quotation as Sent</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_view_types">form,list</field>
+            <field name="state">code</field>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_manager'))]"/>
+            <field name="code">action = records.action_quotation_sent()</field>
+        </record>
+    </data>
+</odoo>

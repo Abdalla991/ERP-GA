@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Remove see all contacts from internal user and add it to "group_see_all_contacts" -->
+        <function name="write" model="ir.model.data">
+			<function name="search" model="ir.model.data">
+				<value eval="[('module', '=', 'base'), ('name', '=', 'res_partner_rule_private_employee')]" />
+			</function>
+			<value eval="{'noupdate': False}" />
+		</function>
+		<record id="base.res_partner_rule_private_employee" model="ir.rule">
+            <field name="name">res.partner.rule.private.employee</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">
+                ['|', ('type', '!=', 'private'), ('type', '=', False)]
+            </field>
+            <field name="groups" eval="[(6, 0, [ref('yds_security.group_see_all_contacts')])]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <function name="write" model="ir.model.data">
+			<function name="search" model="ir.model.data">
+				<value eval="[('module', '=', 'base'), ('name', '=', 'res_partner_rule_private_employee')]" />
+			</function>
+			<value eval="{'noupdate': True}" />
+		</function>
+
+
+        <!-- Show user allowed Contacts only -->
+        
+		<!-- <record id="filter_user_customer_allowed" model="ir.rule">
+			<field name="name">Filter User Allowed</field>
+			<field name="model_id" ref="base.model_res_partner"/>
+			<field name="groups" eval="[(4, ref('base.group_user'))]"/>
+			<field name="domain_force">['|', ('id', '=', user.partner_id.id), ('user_id', '=', user.id)]</field>
+		</record> -->
+
+        <record id="filter_user_customer_allowed" model="ir.rule">
+			<field name="name">Filter User Allowed</field>
+			<field name="model_id" ref="base.model_res_partner"/>
+			<field name="groups" eval="[(4, ref('base.group_user'))]"/>
+			<field name="domain_force">['|', ('id', '=', user.partner_id.id),('id','in', [ p.id for p in user.user_restricted_ids ])]</field>
+		</record>
+
+    </data>
+</odoo>
