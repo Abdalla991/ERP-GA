@@ -48,9 +48,9 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
                 <attribute name="readonly">True</attribute>
                 </xpath>
-            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+            <!-- <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
                 <attribute name="readonly">True</attribute>
-                </xpath>
+                </xpath> -->
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"  position="attributes">
                 <attribute name="readonly">True</attribute>
                 </xpath>
@@ -95,9 +95,9 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='analytic_tag_ids']" position="attributes">
                 <attribute name="readonly">False</attribute>
                 </xpath>
-            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+            <!-- <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
                 <attribute name="readonly">False</attribute>
-                </xpath>
+                </xpath> -->
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"  position="attributes">
                 <attribute name="readonly">False</attribute>
                 </xpath>

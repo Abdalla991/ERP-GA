@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-
+        <!-- Add read only attribute to certain fields to GA Worker -->
         <record id="mrp_production_workorder_tree_editable_view_inherit_workorder_ga_user" model="ir.ui.view">
         <field name="name">mrp.production.work.order.tree.editable.inherit.mrp.workorder.ga.user</field>
         <field name="model">mrp.workorder</field>
