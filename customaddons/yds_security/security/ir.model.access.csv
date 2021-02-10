@@ -41,3 +41,8 @@ access_yds_mrp_mps_forecast_details,access.mrp.mps.forecast.details,mrp_mps.mode
 access_yds_mrp_workorder_additional_product","access.mrp_workorder.additional.product","mrp_workorder.model_mrp_workorder_additional_product","yds_security.group_mrp_user_ga",1,1,1,0
 access_yds_sale_order_manufacturing_user,sale.order manufacturing.user,sale.model_sale_order,yds_security.group_mrp_user_ga,1,1,0,0
 access_yds_sale_order_line_manufacturing_user,sale.order.line manufacturing.user,sale.model_sale_order_line,yds_security.group_mrp_user_ga,1,1,0,0
+
+access_yds_res_users,access_res_users,base.model_res_users,,1,1,1,0
+access_yds_res_partner_sale_manager,res.partner.sale.manager,base.model_res_partner,,1,1,1,0
+access_yds_res_partner_sale_user,res.partner.sale.user,base.model_res_partner,,1,1,1,0
+

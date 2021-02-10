@@ -16,8 +16,11 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'security/security.xml',
-        'views/yds_sale_confirm.xml',
+        'security/groups_security.xml',
+        'security/record_rules.xml',
+        'views/yds_sale_view_security.xml',
+        'views/user_view_secuirty.xml'
+        
     ],
 
 }
