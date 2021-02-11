@@ -57,22 +57,25 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
                 <attribute name="readonly">True</attribute>
                 </xpath>
-             <!-- <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
+             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
                 <attribute name="readonly">True</attribute>
-                </xpath> -->
+                <attribute name="force_save">True</attribute>
+
+                </xpath>
             </field>   
         </record>
         <!-- Make Universal Discount field readonly by default then enable editing for Managers below -->
-        <!-- <record id="sale_uni_discount_readonly" model="ir.ui.view">
+        <record id="sale_uni_discount_readonly" model="ir.ui.view">
             <field name="name">sale.uni.discount.read.only</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="yds_discounts.ks_discount_sale_order_form_inherited"/>
             <field name="arch" type="xml">
             <xpath expr="//field[@name='ks_global_discount_rate']" position="attributes">
                         <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
                 </xpath>
             </field>   
-        </record> -->
+        </record>
 
         <record id="hide_forecast_widget" model="ir.ui.view">
             <field name="name">sale.hide.forecast.widget</field>
@@ -104,13 +107,13 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
                 <attribute name="readonly">False</attribute>
                 </xpath>
-             <!-- <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
+             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/tree/field[@name='discount']" position="attributes"> 
                 <attribute name="readonly">False</attribute>
-                </xpath> -->
+                </xpath>
         </field>
     </record>
 
-        <!-- <record id="sale_uni_discount_edit" model="ir.ui.view">
+        <record id="sale_uni_discount_edit" model="ir.ui.view">
             <field name="name">sale.uni.discount.edit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="yds_discounts.ks_discount_sale_order_form_inherited"/>
@@ -120,7 +123,7 @@
                         <attribute name="readonly">False</attribute>
                 </xpath>
             </field>   
-        </record> -->
+        </record>
 
         <record id="show_forecast_widget" model="ir.ui.view">
             <field name="name">sale.show.forecast.widget</field>
