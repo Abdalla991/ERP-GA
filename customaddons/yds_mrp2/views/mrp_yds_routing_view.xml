@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+ 
+ <record id="mrp.mrp_routing_workcenter_tree_view" model="ir.ui.view">
+            <field name="name">mrp.routing.workcenter.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="arch" type="xml">
+                <tree string="Routing Work Centers">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" readonly="1"/>
+                    <field name="workcenter_id" readonly="1"/>
+                    <field name="time_cycle" readonly="1" widget="float_time" string="Duration (minutes)" sum="Total Duration" width="1.5"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+            </data>
+</odoo>

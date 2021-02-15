@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_yds_mrp_routing_workcenter,mrp.yds.routing.workcenter,yds_mrp2.model_mrp_yds_routing_workcenter,mrp.group_mrp_user,1,0,0,0
+access_yds_mrp_routing_workcenter_manager,mrp.yds.routing.workcenter.manager,yds_mrp2.model_mrp_yds_routing_workcenter,mrp.group_mrp_manager,1,1,1,1
