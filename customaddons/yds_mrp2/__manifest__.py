@@ -16,6 +16,7 @@
 
     'data': [
         'views/mrp_bom_ext.xml',
+        'views/mrp_yds_routing_view.xml',
     ],
 
 }

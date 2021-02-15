@@ -31,6 +31,19 @@
                         </group>
                     </group>
                 </xpath>
+                <xpath expr="//form/sheet/notebook/page[2]" position="replace">
+                    <page string="Operations"
+                            name="operations"
+                            attrs="{'invisible': [('type', 'not in',('normal','phantom'))]}"
+                            groups="mrp.group_mrp_routings"
+                            >
+                                <field name="operation_ids"
+                                    attrs="{'invisible': [('type','not in',('normal','phantom'))]}"
+                                    groups="mrp.group_mrp_routings"
+                                    context="{'default_company_id': company_id, 'default_product_tmpl_ids': [product_tmpl_id]}"
+                                    widget="many2many" options="{'no_create': True}"/>
+                        </page>
+                </xpath>
                 
             </field>
         </record>

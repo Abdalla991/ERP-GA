@@ -13,7 +13,6 @@ class YdsMrpBom(models.Model):
     yds_total_percent = fields.Float('Total percent',default=0.0000, digits=(12,4))
     yds_total_quantity = fields.Float('Total Quantity',default=0.0000, digits=(12,4))
 
-
     @api.depends('bom_line_ids')
     def _count_boms(self):
         self.bom_count = len(self.env['mrp.bom'].search([]))
