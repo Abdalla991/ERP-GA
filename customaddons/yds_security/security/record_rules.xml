@@ -44,5 +44,14 @@
 			<field name="domain_force">['|', ('id', '=', user.partner_id.id),('id','in', [ p.id for p in user.user_restricted_ids ])]</field>
 		</record>
 
+        <record id="filter_sales_allowed_contacts" model="ir.rule">
+			<field name="name">Filter Order for Allowed Contacts</field>
+			<field name="model_id" ref="sale.model_sale_order" />
+			<field name="groups" eval="[(4, ref('yds_security.group_sales_salesman_allowed_contacts'))]"/>
+        	<field name="domain_force">['|',('user_id','=',user.id),('partner_id','in',[ p.id for p in user.user_restricted_ids ])]</field>
+		</record>
+
+
+
     </data>
 </odoo>
