@@ -7,11 +7,12 @@
             <field name="name">mrp.routing.workcenter.tree</field>
             <field name="model">mrp.routing.workcenter</field>
             <field name="arch" type="xml">
-                <tree string="Routing Work Centers">
+                <tree string="Routing Work Centers" editable="bottom">
                     <field name="sequence" widget="handle"/>
-                    <field name="name" readonly="1"/>
-                    <field name="workcenter_id" readonly="1"/>
-                    <field name="time_cycle" readonly="1" widget="float_time" string="Duration (minutes)" sum="Total Duration" width="1.5"/>
+                    <field name="name"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="workcenter_id" />
+                    <field name="time_cycle"  widget="float_time" string="Duration (minutes)" sum="Total Duration" width="1.5"/>
                 </tree>
             </field>
         </record>
