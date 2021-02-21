@@ -2,9 +2,9 @@
 <odoo>
     <!-- sale.order | form | inherit sale_margin_sale_order -->
     <record model="ir.ui.view" id="access_margin_sale_form_view">
-        <field name="name">sale.order.access.margin.view.form</field>
+        <field name="name">sale.order.access.margin.view.form.yds</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order"/>
+        <field name="inherit_id" ref="yds_discounts.sale_margin_sale_order_yds"/>
         <field name="arch" type="xml">
             <!-- #WARNING: overwrite groups:"base.group_user"-->
             <xpath expr="//field[@name='yds_margin']/.." position="attributes">
@@ -34,7 +34,7 @@
     <record id="access_cost_sale_order_line_tree_view" model="ir.ui.view">
         <field name="name">sale.order.access.cost.view.tree</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form"/>
+        <field name="inherit_id" ref="yds_discounts.sale_margin_sale_order_line_form_yds"/>
         <field name="arch" type="xml">
             <!-- #WARNING: overwrite groups:"base.group_user"-->
             <xpath expr="//field[@name='order_line']/tree//field[@name='purchase_price']" position="attributes">
@@ -49,4 +49,3 @@
         </field>
     </record>
 </odoo>
-

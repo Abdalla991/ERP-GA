@@ -1,66 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order">
+    <!-- <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order">
         <field name="name">sale.order.margin.view.form</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="inherit_id" ref="sale.view_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='amount_total']" position="after">
-                <label for="margin" groups="base.group_user" invisible="1"/>
+                <label for="margin" groups="base.group_user" invisible="1" />
                 <div class="text-nowrap" groups="base.group_user">
-                    <field name="margin" class="oe_inline" invisible="1"/>
+                    <field name="margin" class="oe_inline" invisible="1" />
                     <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">
-                        <field name="margin_percent" nolabel="1" class="oe_inline" widget="percentage" invisible="1"/>
-                    </span>
-                </div>
-
-                    <!-- YDS MARGIN -->
-                <label for="yds_margin" groups="base.group_user"/>
-                <div class="text-nowrap" groups="base.group_user">
-                    <field name="yds_margin" class="oe_inline"/>
-                    <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">
-                        (<field name="yds_margin_percent" nolabel="1" class="oe_inline" widget="percentage"/>)
+                        <field name="margin_percent" nolabel="1" class="oe_inline" widget="percentage" invisible="1" />
                     </span>
                 </div>
             </xpath>
         </field>
-    </record>
+    </record> -->
 
-    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_line_form">
-        <field name="name">sale.order.line.tree.margin.view.form</field>
+
+    <!-- YDS MARGIN -->
+
+    <record model="ir.ui.view" id="sale_margin_sale_order_yds">
+        <field name="name">sale.order.margin.view.form.yds</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order" />
         <field name="arch" type="xml">
-           <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="after">
-                <field name="purchase_price" optional="hide" invisible="1"/>
-                <field name="margin" optional="hide" invisible="1"/>
-                <field name="margin_percent"
-                    attrs="{'invisible': [('price_subtotal', '=', 0)]}"
-                    optional="hide" widget="percentage" invisible="1"/>
-                    <!-- YDS MARGIN -->
-                <field name="yds_margin" optional="hide"/>
-                <field name="yds_margin_percent"
-                    attrs="{'invisible': [('price_subtotal', '=', 0)]}"
-                    optional="hide" widget="percentage"/>
+            <xpath expr="//label[@for='margin']" position="replace">
+                <label for="yds_margin" groups="base.group_user" />
             </xpath>
+            <xpath expr="//field[@name='margin']" position="replace">
+                <field name="yds_margin" class="oe_inline" />
+            </xpath>
+            <xpath expr="//field[@name='margin_percent']" position="replace">
+                <field name="yds_margin_percent" nolabel="1" class="oe_inline" widget="percentage"  />
+            </xpath>
+
+            <!-- <xpath expr="//label[@for='margin']" position="after">
+                <label for="yds_margin" groups="base.group_user" />
+                <div class="text-nowrap" groups="base.group_user">
+                    <field name="yds_margin" class="oe_inline" />
+                    <span class="oe_inline" attrs="{'invisible': [('amount_untaxed', '=', 0)]}">
+                        (
+                        <field name="yds_margin_percent" nolabel="1" class="oe_inline" widget="percentage" />
+                        )
+                    </span>
+                </div>
+            </xpath>
+            <xpath expr="//label[@for='margin']/div[hasclass('text-nowrap')]" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath> -->
         </field>
     </record>
-
-    <record model="ir.ui.view" id="sale_margin.sale_margin_sale_order_pivot">
-        <field name="name">sale.order.margin.view.pivot</field>
+    <!--  -->
+     <record model="ir.ui.view" id="sale_margin_sale_order_line_form_yds">
+        <field name="name">sale.order.line.tree.margin.view.form.yds</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_sale_order_pivot"/>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_line_form" />
         <field name="arch" type="xml">
-            <pivot position="inside">
 
-                <field name="margin_percent" invisible="1"/>
+            <xpath expr="//field[@name='margin']" position="replace">
+                <field name="yds_margin" optional="hide" />
+            </xpath>
+            <xpath expr="//field[@name='margin_percent']" position="replace">
+                <field name="yds_margin_percent" attrs="{'invisible': [('price_subtotal', '=', 0)]}" optional="hide" widget="percentage" />
+            </xpath>
+            
+            <!-- <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="after">
+                <field name="purchase_price" optional="hide" invisible="1" />
+                <field name="margin" optional="hide" invisible="1" />
+                <field name="margin_percent" attrs="{'invisible': [('price_subtotal', '=', 0)]}" optional="hide" widget="percentage" invisible="1" />
+                YDS MARGIN
+                <field name="yds_margin" optional="hide" />
+                <field name="yds_margin_percent" attrs="{'invisible': [('price_subtotal', '=', 0)]}" optional="hide" widget="percentage" />
+            </xpath> -->
 
-                    <!-- YDS MARGIN -->
-                <field name="yds_margin_percent" invisible="1"/>
-                
-            </pivot>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="sale_margin_sale_order_pivot_yds">
+        <field name="name">sale.order.margin.view.pivot.yds</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_margin.sale_margin_sale_order_pivot" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='margin_percent']" position="replace">
+                <field name="yds_margin_percent" invisible="1" />
+             </xpath>
+             
+            <!--<pivot position="inside">
+
+                <field name="margin_percent" invisible="1" />
+
+                YDS MARGIN
+                <field name="yds_margin_percent" invisible="1" />
+
+            </pivot> -->
+        </field>
+    </record> 
 
 </odoo>
