@@ -10,7 +10,7 @@
     "summary": "Restrict (with groups) menu visibilty",
     "website": "https://github.com/OCA/server-ux",
     "license": "AGPL-3",
-    "depends": ["web_tour"],
+    "depends": ["stock","web_tour"],
     "maintainers": ["victoralmau"],
     "data": ["views/ir_ui_menu.xml"],
     "demo": ["demo/res_group.xml", "demo/ir_ui_menu.xml"],
