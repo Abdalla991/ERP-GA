@@ -50,6 +50,12 @@
 			<field name="groups" eval="[(4, ref('yds_security.group_sales_salesman_allowed_contacts'))]"/>
         	<field name="domain_force">['|',('user_id','=',user.id),('partner_id','in',[ p.id for p in user.user_restricted_ids ])]</field>
 		</record>
+        <record id="filter_purchase_allowed_contacts" model="ir.rule">
+			<field name="name">Filter orders for Allowed Contacts</field>
+			<field name="model_id" ref="purchase.model_purchase_order" />
+			<field name="groups" eval="[(4, ref('yds_security.group_purchase_user_allowed_contacts'))]"/>
+        	<field name="domain_force">['|',('user_id','=',user.id),('partner_id','in',[ p.id for p in user.user_restricted_ids ])]</field>
+		</record>
 
 
 
