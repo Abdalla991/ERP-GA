@@ -4,37 +4,40 @@ from collections import defaultdict
 import ipdb 
 from datetime import datetime
 
-# class YdsMrpProduction(models.Model):
-#     _inherit = "mrp.production"
-#     # yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
-#     # yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
-#     # yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
-#     # yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
+class YdsMrpProduction(models.Model):
+    _inherit = "mrp.production"
+    yds_extra_cost = fields.Float(string="Extra Cost",readonly=True, Default=0.0,store=True)
+    yds_saved_cost = fields.Float(string="Cost Savings",readonly=True, Default=0.0,store=True)
+    yds_expected_cost = fields.Float(string="Expected Cost", readonly=True, Default=0.0,store=True)
+    yds_actual_cost = fields.Float(string="Actual Cost", readonly=True, Default=0.0,store=True)
     
+    def yds_calc_extra_cost(self):
+        for production in self:
+            production.yds_expected_cost = 0.0
+            production.yds_actual_cost = 0.0
+            production.yds_saved_cost= 0.0
+            production.yds_extra_cost = 0.0
 
+            #calculate actual cost
+            for mo_line in production.move_raw_ids:
+                    line_cost = mo_line.product_id.standard_price*mo_line.quantity_done
+                    print(line_cost)
+                    production.yds_actual_cost += line_cost
+            if production.bom_id :
+                #calculate expected cost
+                print("Product: "+ production.product_id.name +" has a bom")
+                for bom_line in production.bom_id.bom_line_ids:
+                    line_cost=(bom_line.product_qty*bom_line.product_id.standard_price)/production.bom_id.product_qty
+                    print(line_cost)
+                    production.yds_expected_cost += line_cost*production.product_qty
+                print("Expected Cost= "+ str(production.yds_expected_cost))
+                print("Actual Cost= "+ str(production.yds_actual_cost) )
 
-#     def yds_calc_extra_cost(self):
-#         for production in self:
-#             production.yds_expected_cost = 0.0
-#             production.yds_actual_cost = 0.0
-#             production.yds_saved_cost= 0.0
-#             production.yds_extra_cost = 0.0
-#             for move in production.move_raw_ids:
-#                 print("Product: " + move.product_id.name)
-#                 print("--- To consume: "+str(move.forecast_availability) + "--- Consumed: "+str(move.quantity_done) )
-#                 if move.forecast_availability > move.quantity_done:
-#                     production.yds_saved_cost+= (move.forecast_availability - move.quantity_done)*move.product_id.standard_price
-#                 elif move.forecast_availability < move.quantity_done:
-#                     production.yds_extra_cost+= (move.quantity_done - move.forecast_availability)*move.product_id.standard_price
-#                 production.yds_expected_cost += move.forecast_availability*move.product_id.standard_price
-#                 production.yds_actual_cost += move.quantity_done*move.product_id.standard_price
-#             print("--------------------------------------------------------------------")
-
-#     def button_mark_done(self):
-#         # self.yds_calc_extra_cost()
-#         res = super(YdsMrpProduction, self).button_mark_done()
-#         return res		
-
+                #Calculate extra and saved costs
+                if production.yds_expected_cost > production.yds_actual_cost :
+                    production.yds_saved_cost = production.yds_expected_cost - production.yds_actual_cost
+                elif production.yds_expected_cost < production.yds_actual_cost :
+                    production.yds_extra_cost = production.yds_actual_cost - production.yds_expected_cost
 
 #     #remove subcontracting extra cost field from measres/filters/groupby..
 #     @api.model
