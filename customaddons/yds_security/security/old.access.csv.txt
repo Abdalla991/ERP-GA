@@ -1,0 +1,47 @@
+FOR MPR GA USER
+
+access_yds_mrp_workcenter_productivity_loss,mrp.workcenter.productivity.loss,mrp.model_mrp_workcenter_productivity_loss,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_workcenter_productivity_loss_type,mrp.workcenter.productivity.loss.type,mrp.model_mrp_workcenter_productivity_loss_type,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_workcenter_productivity,mrp.workcenter.productivity,mrp.model_mrp_workcenter_productivity,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_mrp_workcenter,mrp.workcenter,mrp.model_mrp_workcenter,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_routing_workcenter,mrp.routing.workcenter,mrp.model_mrp_routing_workcenter,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_bom,mrp.bom,mrp.model_mrp_bom,group_mrp_user_ga,1,0,0,0
+access_yds_mrp_bom_line,mrp.bom.line,mrp.model_mrp_bom_line,group_mrp_user_ga,1,0,0,0
+access_yds_mrp_bom_byproduct_user,mrp.bom.byproduct,mrp.model_mrp_bom_byproduct,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_production,mrp.production user,mrp.model_mrp_production,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_stock_location_mrp_worker,stock.location mrp_worker,stock.model_stock_location,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_stock_move_mrp_worker,stock.move mrp_worker,stock.model_stock_move,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_stock_picking_mrp_worker,stock.picking mrp_worker,stock.model_stock_picking,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_stock_warehouse,stock.warehouse mrp_worker,stock.model_stock_warehouse,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_product_product_user,product.product user,product.model_product_product,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_product_template_user,product.template user,product.model_product_template,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_uom_uom_user,uom.uom user,uom.model_uom_uom,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_product_supplierinfo_user,product.supplierinfo user,product.model_product_supplierinfo,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_res_partner,res.partner,base.model_res_partner,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_workorder_mrp_user,mrp.workorder.user,mrp.model_mrp_workorder,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_resource_calendar_leaves_user,mrp.resource.calendar.leaves.user,resource.model_resource_calendar_leaves,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_resource_calendar_attendance_mrp_user,mrp.resource.calendar.attendance.mrp.user,resource.model_resource_calendar_attendance,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_uom_category,uom.category,uom.model_uom_category,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_resource_resource,resource.resource,resource.model_resource_resource,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_stock_production_lot_user,stock.production.lot,stock.model_stock_production_lot,yds_security.group_mrp_user_ga,1,1,1,1
+access_yds_stock_warehouse_orderpoint_user,stock.warehouse.orderpoint,stock.model_stock_warehouse_orderpoint,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_resource_calendar_manufacturinguser,resource.calendar manufacturing.user,resource.model_resource_calendar,yds_security.group_mrp_user_ga,1,0,0,0
+access_yds_mrp_unbuild,mrp.unbuild,mrp.model_mrp_unbuild,group_mrp_user_ga,1,1,1,1
+access_yds_mrp_document_mrp_user,mrp.document group_user,mrp.model_mrp_document,group_mrp_user_ga,1,1,1,1
+access_yds_change_production_qty,access.change.production.qty,mrp.model_change_production_qty,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_stock_warn_insufficient_qty_unbuild,access.stock.warn.insufficient.qty.unbuild,mrp.model_stock_warn_insufficient_qty_unbuild,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_production_backorder,access.mrp.production.backorder,mrp.model_mrp_production_backorder,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_production_backorder_line,access.mrp.production.backorder.line,mrp.model_mrp_production_backorder_line,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_consumption_warning,access.mrp.consumption.warning,mrp.model_mrp_consumption_warning,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_consumption_warning_line,access.mrp.consumption.warning.line,mrp.model_mrp_consumption_warning_line,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_immediate_production,access.mrp.immediate.production,mrp.model_mrp_immediate_production,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_immediate_production_line,access.mrp.immediate.production.line,mrp.model_mrp_immediate_production_line,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_product_forecast,access_mrp_product_forecast,mrp_mps.model_mrp_product_forecast,yds_security.group_mrp_user_ga,0,0,0,0
+access_yds_mrp_production_schedule,access_mrp_production_schedule,mrp_mps.model_mrp_production_schedule,yds_security.group_mrp_user_ga,0,0,0,0
+access_yds_mrp_mps_forecast_details,access.mrp.mps.forecast.details,mrp_mps.model_mrp_mps_forecast_details,yds_security.group_mrp_user_ga,1,1,1,0
+access_yds_mrp_workorder_additional_product","access.mrp_workorder.additional.product","mrp_workorder.model_mrp_workorder_additional_product","yds_security.group_mrp_user_ga",1,1,1,0
+access_yds_sale_order_manufacturing_user,sale.order manufacturing.user,sale.model_sale_order,yds_security.group_mrp_user_ga,1,1,0,0
+access_yds_sale_order_line_manufacturing_user,sale.order.line manufacturing.user,sale.model_sale_order_line,yds_security.group_mrp_user_ga,1,1,0,0
+
+
+
