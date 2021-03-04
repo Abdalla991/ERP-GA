@@ -106,10 +106,6 @@
                                         <strong t-esc="mo.yds_saved_cost" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
                                 </tr>
-
-                            </tbody>
-                        </table>
-
                             </tbody>
                         </table>
 
