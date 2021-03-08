@@ -28,7 +28,7 @@
             <field name="comment">the user will have access to records of allowed contacts only in the sales application.</field>
 		</record>
 
-		<!-- GA Purchase Allowed contacts sales -->
+		<!-- GA Purchase Allowed contacts purchase -->
 		<record id="group_purchase_user_allowed_contacts" model="res.groups">
 			<field name="name">
 				User: Allowed Contacts Documents

@@ -16,10 +16,11 @@
             </field>
             <field name="groups" eval="[(6, 0, [ref('yds_security.group_see_all_contacts')])]"/>
             <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
         </record>
+		
         <function name="write" model="ir.model.data">
 			<function name="search" model="ir.model.data">
 				<value eval="[('module', '=', 'base'), ('name', '=', 'res_partner_rule_private_employee')]" />
@@ -27,7 +28,19 @@
 			<value eval="{'noupdate': True}" />
 		</function>
 
-
+	<!-- Must set a record rule to "Extra Rights/ Contact Creation" to allow creation and editing of contacts -->
+		<record id="res_partner_rule_private_employee_contact_creation" model="ir.rule">
+            <field name="name">res.partner.rule.private.employee.contact.creation</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">
+                ['|', ('type', '!=', 'private'), ('type', '=', False)]
+            </field>
+            <field name="groups" eval="[(6, 0, [ref('base.group_partner_manager')])]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
         <!-- Show user allowed Contacts only -->
         
 		<!-- <record id="filter_user_customer_allowed" model="ir.rule">
