@@ -36,6 +36,7 @@
                <xpath expr="//field[@name='forecast_availability']" position="attributes">
 					<attribute name="invisible"> True </attribute>
 				</xpath>
+                    
 			</field>   
 		</record>
 

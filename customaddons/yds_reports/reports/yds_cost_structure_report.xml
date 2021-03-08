@@ -64,17 +64,17 @@
                                         <span t-esc="m['cost']" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
                                 </tr>
-                               <!-- <tr>
+                               <tr>
                                     <td colspan="4" class="text-right">
                                         <strong>Total Cost of Components</strong>
                                     </td>
                                     <td class="text-right">
                                         <strong t-esc="line['total_cost']" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
-                                </tr> -->
+                                </tr>
                              
                                                    
-                                <tr>
+                                <!-- <tr>
                                     <td colspan="4" class="text-right">
                                         <strong> Total Cost of Components</strong>
                                     </td>
@@ -105,9 +105,9 @@
                                     <td class="text-right">
                                         <strong t-esc="mo.yds_saved_cost" t-options='{"widget": "monetary", "display_currency": currency}'/>
                                     </td>
-                                </tr>
+                                </tr> -->
                             </tbody>
-                        </table>
+                        </table> 
 
                         <!-- Cost of Operations table -->
                         <t t-if="line['operations']">
