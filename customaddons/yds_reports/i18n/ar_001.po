@@ -175,8 +175,7 @@ msgstr "الكمية"
 #. module: yds_reports
 #: model_terms:ir.ui.view,arch_db:yds_reports.mrp_report_view
 msgid "Quantity to consume"
-msgstr "الكميةالمتاحة
-<pre>للاستهلاك</pre> "
+msgstr "<pre>للاستهلاك</pre> الكميةالمتاحة"
 
 #. module: yds_reports
 #: model:ir.model.fields,field_description:yds_reports.field_mrp_report__qty_producing
