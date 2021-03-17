@@ -1,124 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="report_purchase_importing_po">
-        <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
-        <div class="header">
-            <table width="100%">
-                <tr>
-                    <td style=" border-bottom= 0.5px solid">
-                        <img src='/web/binary/company_logo' style="width:20%"/>
-                    </td>
-                    <td style="text-align:right; align:right;">
-                        <span style="text-align:right; align:right">Shipping and Import procedures</span>
-                        <br/>
-                        <span style="text-align:right; align:right">No: SIP-10</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border-bottom: 0.5px solid #000000" colspan="2">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span t-esc="o.company_id.name" />
-                        <br/>
-                        <span t-esc="o.company_id.street" />
-                        <span t-esc="o.company_id.street2" />
-                        <br/>
-                        <span t-esc="o.company_id.zip" />
-                        <span t-esc="o.company_id.city" />
-                        <br/>
-                        <span t-esc="o.company_id.state_id.name" />
-                        <br/>
-                        <span t-esc="o.company_id.country_id.name"/>
-                    </td>
-
-                    <td >
-                        <br/>
-
-
-                    </td>
-                </tr>
-            </table>        
-        </div>
-        <t t-call="web.external_layout">
-
-            <div class="footer">
-                <div style="text-align:center; align:center">
-                    <style>
-                .center {
-                        margin-left: auto;
-                        margin-right: auto;
-                        }
-                    </style>
-                    <br/>
-                    <p style="text-align:right; align:right; line-height:0.1">SIF-10-1</p>
-                    <hr style="background-color:#000000; height:0.5px; line-height: 0.1"/>
-
-                    <table class="center" style="text-align:center; align:center; width:65%; line-height:0.5">
-                        <tr>
-                            <td>
-                                <p t-esc="o.company_id.phone" />
-                            </td>
-                            <td >
-                                <p t-esc="o.company_id.email"/>
-                            </td>
-                            <td>
-                                <p t-esc="o.company_id.website" />
-                            </td>
-                            <td t-if="o.company_id.vat">
-                                <t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>
-:                                <span t-field="o.company_id.vat"/>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div name="financial_infos" style="line-height:0.5">
-                        <span t-field="o.company_id.report_footer"/>
+        <div t-attf-class="header o_company_#{company_id}_layout" t-att-style="report_header_style">
+            <div class="container">
+                <div class="row border-bottom border-dark">
+                    <div class="col-6">
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Logo" style="width:20%" />
                     </div>
-
-                    <div class="center" style="color:grey; text-align:center; align:center;">
-                        <br style="line-height:0.5"/>
-                        <center>
-                            <span>Page: </span>
-                            <span class="page" />
-/                            <span class="topage" />
-                        </center>
+                    <div class="col-6 text-right align-self-end">
+                        <div>
+                            <p class="mb-0">Shipping and Import procedures</p>
+                            <p class="mb-0">No: SIP-10</p>
+                        </div>
                     </div>
                 </div>
-
+                <div name="company_address" class="row align-items-start justifiy-content-left">
+                    <span class="company_address" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["name", "address"], "no_marker": true}' />
+                </div>
             </div>
+        </div>
+        <div t-attf-class="footer o_company_#{company_id}_layout">
+            <p class="text-right mb-0 border-bottom border-dark">SIF-10-1</p>
+            <div class="text-center">
+                <ul class="list-inline">
+                    <li t-if="o.company_id.phone" class="list-inline-item">
+                        <span class="o_force_ltr" t-field="o.company_id.phone" />
+                    </li>
+                    <li t-if="o.company_id.email" class="list-inline-item">
+                        <span t-field="o.company_id.email" />
+                    </li>
+                    <li t-if="o.company_id.website" class="list-inline-item">
+                        <span t-field="o.company_id.website" />
+                    </li>
+                    <li t-if="o.company_id.vat" class="list-inline-item">
+                        <t t-esc="o.company_id.country_id.vat_label or 'Tax ID'" />
+                        :
+                        <span t-field="o.company_id.vat" />
+                    </li>
+                    <li>
+                        <div t-field="o.company_id.report_footer" />
+                    </li>
+                </ul>
+                <div class="-mt-1" t-if="report_type == 'pdf'">
+                    Page:
+                    <span class="page" />
+                    /
+                    <span class="topage" />
+                </div>
+            </div>
+        </div>
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)" />
+            <t t-set="address">
+                <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+                <p t-if="o.partner_id.vat">
+                    <t t-esc="o.company_id.country_id.vat_label or 'Tax ID'" />
+                    :
+                    <span t-field="o.partner_id.vat" />
+                </p>
+            </t>
+
             <div class="page">
-                <div class="oe_structure"/>
-
-                <div style="margin-left:500px" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
-                />
+                <div class="oe_structure" />
 
 
-                <h2 t-if="o.state == 'draft'">Request for Quotation #<span t-field="o.name"/>
+                <h2 t-if="o.state == 'draft'">
+                    Request for Quotation #
+                    <span t-field="o.name" />
                 </h2>
-                <h2 t-if="o.state in ['sent', 'to approve']">Purchase Order #<span t-field="o.name"/>
+                <h2 t-if="o.state in ['sent', 'to approve']">
+                    Purchase Order #
+                    <span t-field="o.name" />
                 </h2>
-                <h2 t-if="o.state in ['purchase', 'done']">Purchase Order #<span t-field="o.name"/>
+                <h2 t-if="o.state in ['purchase', 'done']">
+                    Purchase Order #
+                    <span t-field="o.name" />
                 </h2>
-                <h2 t-if="o.state == 'cancel'">Cancelled Purchase Order #<span t-field="o.name"/>
+                <h2 t-if="o.state == 'cancel'">
+                    Cancelled Purchase Order #
+                    <span t-field="o.name" />
                 </h2>
                 <div id="informations" class="row mt32 mb32">
                     <div t-if="o.user_id" class="col-3 bm-2">
                         <strong>Purchase Representative:</strong>
-                        <p t-field="o.user_id" class="m-0"/>
+                        <p t-field="o.user_id" class="m-0" />
                     </div>
                     <div t-if="o.partner_ref" class="col-3 bm-2">
                         <strong>Your Order Reference:</strong>
-                        <p t-field="o.partner_ref" class="m-0"/>
+                        <p t-field="o.partner_ref" class="m-0" />
                     </div>
                     <div t-if="o.date_order" class="col-3 bm-2">
                         <strong>Order Date:</strong>
-                        <p t-field="o.date_order" class="m-0"/>
+                        <p t-field="o.date_order" class="m-0" />
                     </div>
                     <div t-if="o.date_order" class="col-3 bm-2">
                         <strong>Request Date:</strong>
-                        <p t-field="o.order_line[0].date_planned" class="m-0"/>
+                        <p t-field="o.order_line[0].date_planned" class="m-0" />
                     </div>
                 </div>
 
@@ -140,38 +117,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-set="current_subtotal" t-value="0"/>
-                        <t t-set="current_total_qty" t-value="0"/>
+                        <t t-set="current_subtotal" t-value="0" />
+                        <t t-set="current_total_qty" t-value="0" />
                         <t t-foreach="o.order_line" t-as="line">
-                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
-                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
-                            <t t-set="current_total_qty" t-value="current_total_qty+line.product_qty"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded" />
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included" />
+                            <t t-set="current_total_qty" t-value="current_total_qty+line.product_qty" />
                             <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
                                 <t t-if="not line.display_type">
                                     <td id="product">
-                                        <span t-field="line.name"/>
+                                        <span t-field="line.name" />
                                     </td>
                                     <td class="text-right">
-                                        <span t-field="line.product_qty"/>
-                                        <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                                        <span t-field="line.product_qty" />
+                                        <span t-field="line.product_uom.name" groups="uom.group_uom" />
                                     </td>
                                     <td class="text-right">
-                                        <span t-field="line.price_unit"/>
+                                        <span t-field="line.price_unit" />
                                     </td>
                                     <td class="text-right">
-                                        <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        <span t-field="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
                                     </td>
                                 </t>
                                 <t t-if="line.display_type == 'line_section'">
                                     <td colspan="99" id="section">
-                                        <span t-field="line.name"/>
+                                        <span t-field="line.name" />
                                     </td>
-                                    <t t-set="current_section" t-value="line"/>
-                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-set="current_section" t-value="line" />
+                                    <t t-set="current_subtotal" t-value="0" />
                                 </t>
                                 <t t-if="line.display_type == 'line_note'">
                                     <td colspan="99" id="note">
-                                        <span t-field="line.name"/>
+                                        <span t-field="line.name" />
                                     </td>
                                 </t>
                             </tr>
@@ -179,74 +156,67 @@
                                 <tr class="is-subtotal text-right">
                                     <td colspan="99" id="subtotal">
                                         <strong class="mr16">Subtotal</strong>
-                                        <span t-esc="current_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}'
-                                        />
-</td>
-</tr>
-</t>
-</t>
-<tr>
-<td id="product">
-
-                                        </td>
-                                        <td class="text-right">
-                                            <strong class="mr16">Total Qty</strong>
-                                            <span t-esc="current_total_qty"/>
-                                            <span t-field="o.order_line[0].product_uom.name" groups="uom.group_uom"/>
-                                        </td>
-                                        <td class="text-right">
-
-                                        </td>
-                                        <td class="text-right">
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div id="total" class="row justify-content-end">
-
-                                <p></p>
-                                <br></br>
-                                <br></br>
-                                <br></br>
-
-                                <div class="col-4">
-                                    <table class="table table-sm">
-
-                                        <tr class="border-black">
-                                            <td name="td_subtotal_label">
-                                                <strong>Subtotal</strong>
-                                            </td>
-                                            <td class="text-right">
-                                                <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                            </td>
-                                        </tr>
-
-                                        <tr class="border-black o_total">
-                                            <td name="td_amount_total_label">
-                                                <strong>Total</strong>
-                                            </td>
-                                            <td class="text-right">
-                                                <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <p t-field="o.notes"/>
-                            <div class="oe_structure"/>
-                        </div>
-                    </t>
-                </template>
-
-                <template id="purchase_importing_po">
-                    <t t-call="web.html_container">
-                        <t t-foreach="docs" t-as="o">
-                            <t t-call="yds_discounts.report_purchase_importing_po" t-lang="o.partner_id.lang"/>
+                                        <span t-esc="current_subtotal" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                                    </td>
+                                </tr>
+                            </t>
                         </t>
-                    </t>
-                </template>
+                        <tr>
+                            <td id="product"></td>
+                            <td class="text-right">
+                                <strong class="mr16">Total Qty</strong>
+                                <span t-esc="current_total_qty" />
+                                <span t-field="o.order_line[0].product_uom.name" groups="uom.group_uom" />
+                            </td>
+                            <td class="text-right"></td>
+                            <td class="text-right"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            </odoo>
+                <div id="total" class="row justify-content-end">
+
+                    <p></p>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+
+                    <div class="col-4">
+                        <table class="table table-sm">
+
+                            <tr class="border-black">
+                                <td name="td_subtotal_label">
+                                    <strong>Subtotal</strong>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                                </td>
+                            </tr>
+
+                            <tr class="border-black o_total">
+                                <td name="td_amount_total_label">
+                                    <strong>Total</strong>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}' />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <p t-field="o.notes" />
+                <div class="oe_structure" />
+            </div>
+        </t>
+    </template>
+
+    <template id="purchase_importing_po">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="yds_discounts.report_purchase_importing_po" t-lang="o.partner_id.lang" />
+            </t>
+        </t>
+    </template>
+
+</odoo>
