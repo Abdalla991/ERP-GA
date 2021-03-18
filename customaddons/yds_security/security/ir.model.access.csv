@@ -3,3 +3,24 @@ access_yds_res_users,access_res_users,base.model_res_users,,1,1,1,0
 access_yds_res_partner_sale_manager,res.partner.sale.manager,base.model_res_partner,,1,1,1,0
 access_yds_res_partner_sale_user,res.partner.sale.user,base.model_res_partner,,1,1,1,0
 
+product.access_product_product_manager,product.product manager,product.model_product_product,base.group_system,1,0,0,0
+product.access_product_template_manager,product.template.manager,product.model_product_template,base.group_system,1,0,0,0
+
+
+account.access_product_product_account_manager,product.product.account.manager,product.model_product_product,account.group_account_manager,1,0,0,0
+account.access_product_template_account_manager,product.product.account.manager,product.model_product_template,account.group_account_manager,1,0,0,0
+
+purchase.access_product_product_purchase_manager,product.product purchase_manager,product.model_product_product,purchase.group_purchase_manager,1,0,0,0
+purchase.access_product_template_purchase_manager,product.template purchase_manager,product.model_product_template,purchase.group_purchase_manager,1,0,0,0
+
+mrp.access_product_product_mrp_manager,product.product mrp_manager,product.model_product_product,mrp.group_mrp_manager,1,0,0,0
+mrp.access_product_template_mrp_manager,product.template mrp_manager,product.model_product_template,mrp.group_mrp_manager,1,0,0,0
+
+sale.access_product_product_sale_manager,product.product salemanager,product.model_product_product,sales_team.group_sale_manager,1,0,0,0
+sale.access_product_template_sale_manager,product.template salemanager,product.model_product_template,sales_team.group_sale_manager,1,0,0,0
+
+stock.access_product_product_stock_manager,product.product stock_manager,product.model_product_product,stock.group_stock_manager,1,0,0,0
+stock.access_product_template_stock_manager,product.template stock_manager,product.model_product_template,stock.group_stock_manager,1,0,0,0
+
+access_product_product_all_rights,product.product all_rights,product.model_product_product,yds_security.group_product_all_rights,1,1,1,1
+access_product_template_all_rights,product.template all_rights,product.model_product_template,yds_security.group_product_all_rights,1,1,1,1

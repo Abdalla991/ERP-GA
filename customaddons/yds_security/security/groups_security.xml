@@ -7,15 +7,15 @@
 			<field name="name">
 				Contacts: See ALL
 			</field>
-       		<field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
-       		<field name="category_id" ref="base.module_category_usability"/>
+			<field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
+			<field name="category_id" ref="base.module_category_usability" />
 		</record>
 		<!-- MRP GA USER -->
 		<record id="group_mrp_user_ga" model="res.groups">
 			<field name="name">
 				GA User
 			</field>
-       		<field name="category_id" ref="base.module_category_manufacturing_manufacturing"/>
+			<field name="category_id" ref="base.module_category_manufacturing_manufacturing" />
 		</record>
 
 		<!-- GA Sales Allowed contacts sales -->
@@ -23,9 +23,9 @@
 			<field name="name">
 				User: Allowed Contacts Documents
 			</field>
-            <field name="category_id" ref="base.module_category_sales_sales"/>
-            <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
-            <field name="comment">the user will have access to records of allowed contacts only in the sales application.</field>
+			<field name="category_id" ref="base.module_category_sales_sales" />
+			<field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]" />
+			<field name="comment">the user will have access to records of allowed contacts only in the sales application.</field>
 		</record>
 
 		<!-- GA Purchase Allowed contacts purchase -->
@@ -33,9 +33,19 @@
 			<field name="name">
 				User: Allowed Contacts Documents
 			</field>
-			<field name="category_id" ref="base.module_category_inventory_purchase"/>
-			<field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]"/>
-            <field name="comment">the user will have access to records of allowed contacts only in the purchase application.</field>
+			<field name="category_id" ref="base.module_category_inventory_purchase" />
+			<field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]" />
+			<field name="comment">the user will have access to records of allowed contacts only in the purchase application.</field>
+		</record>
+
+		<!-- Product read-only group -->
+		<record id="group_product_all_rights" model="res.groups">
+			<field name="name">
+				User: Product All Rights
+			</field>
+			<!-- <field name="category_id" ref="base.module_category_manufacturing_manufacturing"/> -->
+			<field name="comment">the user will have rights to read, write and create products.</field>
+			<field name="category_id" ref="base.module_category_administration_administration" />
 		</record>
 	</data>
 </odoo>
