@@ -30,6 +30,8 @@ class YDSSaleReport(models.Model):
     uni_amount =  fields.Float('Universal Discount Amount', readonly=True)
     uni_rate =  fields.Float('Universal Discount %',readonly=True)
 
+    yds_customer_tag = fields.Many2one('res.partner.category', string='Customer Tags', readonly=True, store=True, related='analytic_account_id.group_id')
+    
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     # fields['price_total'] = ", SUM(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_total"
     #     # fields['price_subtotal'] = ", SUM(l.x_price_subtotal / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_subtotal"
@@ -131,3 +133,15 @@ class YDSSaleReport(models.Model):
         """ % (groupby)
 
         return '%s (SELECT %s FROM %s GROUP BY %s)' % (with_, select_, from_, groupby_)
+
+
+    @api.model
+    def fields_get(self, fields=None):
+        #Fields to be added in Filters/Group By
+        show = ['yds_customer_tag']
+        res = super(YDSSaleReport, self).fields_get()
+        #True = add fields, False = Remove fields
+        for field in show:
+            res[field]['selectable'] = True
+            res[field]['sortable'] = True
+        return res
