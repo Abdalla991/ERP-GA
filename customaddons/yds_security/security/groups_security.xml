@@ -45,7 +45,7 @@
 			</field>
 			<!-- <field name="category_id" ref="base.module_category_manufacturing_manufacturing"/> -->
 			<field name="comment">the user will have rights to read, write and create products.</field>
-			<field name="category_id" ref="base.module_category_administration_administration" />
+			<field name="category_id" ref="base.module_category_hidden" />
 		</record>
 	</data>
 </odoo>

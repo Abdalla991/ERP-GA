@@ -12,16 +12,16 @@
     'category': 'Security',
     'version': '90.1',
     'license': 'LGPL-3',
-    'depends': ['mrp','yds_discounts'],
+    'depends': ['mrp', 'yds_discounts'],
 
     'data': [
-        'security/ir.model.access.csv',
         'security/groups_security.xml',
         'security/record_rules.xml',
         'views/yds_sale_view_security.xml',
         'views/user_view_secuirty.xml',
-        'views/yds_mrp_view_security.xml'
-        
+        'views/yds_mrp_view_security.xml',
+        'security/ir.model.access.csv',
+
     ],
 
 }
