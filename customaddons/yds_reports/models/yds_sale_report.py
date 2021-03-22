@@ -28,8 +28,7 @@ class YDSSaleReport(models.Model):
     cost_percentage = fields.Float('Cost %', readonly=True)
     uni_amount = fields.Float('Universal Discount Amount', readonly=True)
     uni_rate = fields.Float('Universal Discount %', readonly=True)
-    yds_customer_tag = fields.Many2one('res.partner.category', string='Customer Tags',
-                                       readonly=True, store=True, related='analytic_account_id.group_id')
+    customer_tag = fields.Char('Customer Tag', readonly=True)
 
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     # fields['price_total'] = ", SUM(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_total"
@@ -83,8 +82,8 @@ class YDSSaleReport(models.Model):
             l.yds_product_cost as cost,
             l.yds_cost_percentage as cost_percentage,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
-            s.ks_global_discount_rate as uni_rate
-
+            s.ks_global_discount_rate as uni_rate,
+            s.yds_customer_tag as customer_tag
         """
         # CASE WHEN l.product_id IS NOT NULL THEN sum((t.standard_price * l.product_uom_qty / NULLIF(SUM(l.x_price_subtotal_wo_uni),0))*100/ CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as cost_percentage,
         for field in fields.values():
@@ -126,18 +125,9 @@ class YDSSaleReport(models.Model):
             l.discount,
             l.yds_cost_percentage,
             l.yds_product_cost,
+            l.yds_cost_percentage,
+            s.yds_customer_tag,
             s.id %s
         """ % (groupby)
 
         return '%s (SELECT %s FROM %s GROUP BY %s)' % (with_, select_, from_, groupby_)
-
-    @api.model
-    def fields_get(self, fields=None):
-        # Fields to be added in Filters/Group By
-        show = ['yds_customer_tag']
-        res = super(YDSSaleReport, self).fields_get()
-        # True = add fields, False = Remove fields
-        for field in show:
-            res[field]['selectable'] = True
-            res[field]['sortable'] = True
-        return res

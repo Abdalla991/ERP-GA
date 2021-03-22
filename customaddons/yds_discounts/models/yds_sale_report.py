@@ -30,7 +30,6 @@ class YDSSaleReport(models.Model):
     uni_amount =  fields.Float('Universal Discount Amount', readonly=True)
     uni_rate =  fields.Float('Universal Discount %',readonly=True)
 
-    yds_customer_tag = fields.Many2one('res.partner.category', string='Customer Tags', readonly=True, store=True, related='analytic_account_id.group_id')
     
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     # fields['price_total'] = ", SUM(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_total"
