@@ -14,8 +14,9 @@ class YDSSaleOrder(models.Model):
     x_total_discount = fields.Monetary(
         string='Total Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
     yds_customer_tag = fields.Char(
-
         'Customer Tags', compute='_compute_yds_customer_tags', store=True, readonly=True)
+    yds_update = fields.Char("Is Updated", help="Field used to update orders customer tags")
+
     @api.depends('partner_id')
     def _compute_yds_customer_tags(self):
         for record in self:
