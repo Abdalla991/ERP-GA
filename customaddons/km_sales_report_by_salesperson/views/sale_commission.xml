@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+        <!-- the tree view of setting commission -->
+    <record model="ir.ui.view" id="tree_view_id">
+      <field name="name">view.tree</field>
+      <field name="model">sale.commission</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+
+        <tree string="Commission tree">
+            <field name="name" />
+            <field name="commission_ratio" widget="Percent"/>
+            <field name="target"/> 
+        </tree>
+        
+      </field>
+    </record>
+
+    <!-- the form view of setting commission -->
+    <record model="ir.ui.view" id="form_view_id">
+      <field name="name">view.form</field>
+      <field name="model">sale.commission</field>
+      <field name="priority" eval="16"/>
+      <field name="arch" type="xml">
+        
+        <form string="Commission form">
+        <sheet>
+        <group>
+            <group>
+                <field name="name" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"/>
+                <field name="commission_ratio" widget="Percent"/>
+            </group>
+            <group>
+                <field name="target"/>
+            </group>
+        </group>  
+        </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- set commission action  -->
+    <record model="ir.actions.act_window" id="commission">
+      <field name="name">Set commissions</field>
+      <field name="res_model">sale.commission</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+   
+    
+    <!-- set commission menus -->
+    <menuitem id="main_commission_menu" parent="sale.sale_menu_root" name="Commission" sequence="10" groups="base.group_user"/>
+
+    <menuitem id="commission_menu" parent="main_commission_menu" name="Set commissions" sequence="10" action="commission" groups="base.group_user"/>  <!-- inside the action attribute, the id of the action is written-->
+
+
+
+</odoo>
