@@ -29,11 +29,11 @@
         <sheet>
         <group>
             <group>
-                <field name="name" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"/>
-                <field name="commission_ratio" widget="Percent"/>
+                <field name="name" required="1" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"/>
+                <field name="commission_ratio" required="1" widget="Percent"/>
             </group>
             <group>
-                <field name="target"/>
+                <field name="target" required="1"/>
             </group>
         </group>  
         </sheet>
