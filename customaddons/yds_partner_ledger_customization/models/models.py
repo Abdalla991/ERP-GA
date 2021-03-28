@@ -16,7 +16,7 @@ class YDSReportPartnerLedger(models.AbstractModel):
         # new format move_ref
         res = super(YDSReportPartnerLedger, self)._get_report_line_move_line(
             options, partner, aml, cumulated_init_balance, cumulated_balance)
-        if res['columns'][0]['name'] == "CSH1":
+        if res['columns'][0]['name'] != "NINV" and res['columns'][0]['name'] != "BILL":
             res['columns'][2]['name'] = self._format_aml_name(
                 '/', aml['ref'], '/')
         return res
