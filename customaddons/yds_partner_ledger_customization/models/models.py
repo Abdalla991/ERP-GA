@@ -18,5 +18,5 @@ class YDSReportPartnerLedger(models.AbstractModel):
             options, partner, aml, cumulated_init_balance, cumulated_balance)
         if res['columns'][0]['name'] == "CSH1":
             res['columns'][2]['name'] = self._format_aml_name(
-                False, aml['ref'], False)
+                '/', aml['ref'], '/')
         return res
