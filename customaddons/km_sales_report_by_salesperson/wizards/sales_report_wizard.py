@@ -52,11 +52,12 @@ class SalesReportBySalesperson(models.TransientModel):
                 temp_data.append(0)
                 temp_data.append(0)
                 sale_data.append(temp_data)
-                
-            if total_amount_untaxed < target:
-                total_commission = 0
-
-            
+            if (target):  
+                if total_amount_untaxed < target:
+                    total_commission = 0
+            else:
+                raise ValidationError(
+                    'Selected sales person has not made any sales order yet')            
             #pushing the last array to the 2d array containing the total values across all orders
             temp_data2.append(0)
             temp_data2.append(0)
