@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-
+    <!-- Add new paperformat for Importing PO to set appropriate margins-->
     <report id="yds_purchase_importing_po" string="Importing PO" model="purchase.order" report_type="qweb-pdf" name="yds_discounts.purchase_importing_po" file="Importing PO" print_report_name="('Importing PO ('+object.name+')')" />
 
     <record id="paperformat_GA_SIF" model="report.paperformat">

@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'account_predictive_bills'],
+    'depends': ['base', 'account', 'account_predictive_bills', 'account_reports'],
 
     # always loaded
     'data': [

@@ -1,10 +1,2 @@
-customaddons/yds_discounts/__pycache__
-customaddons/universal_discount/__pycache__
-customaddons/universal_discountClean/__pycache__
-customaddons/yds_universal_discount/__pycache__
-customaddons/yds_discounts/models/__pycache__
-customaddons/universal_discount/models/__pycache__
-customaddons/universal_discountClean/models/__pycache__
-customaddons/yds_universal_discount/models/__pycache__
-customaddons/yds_printing/models/__pycache__
-customaddons/base_menu_visibilty_restriction/__pycache__
+*.pyc
+.gitignore

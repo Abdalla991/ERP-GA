@@ -1,24 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-<!--
-        <template id="listing">
-          <ul>
-            <li t-foreach="objects" t-as="object">
-              <a t-attf-href="#{ root }/objects/#{ object.id }">
-                <t t-esc="object.display_name"/>
-              </a>
-            </li>
-          </ul>
-        </template>
-        <template id="object">
-          <h1><t t-esc="object.display_name"/></h1>
-          <dl>
-            <t t-foreach="object._fields" t-as="field">
-              <dt><t t-esc="field"/></dt>
-              <dd><t t-esc="object[field]"/></dd>
+  <data>
+    <!-- YDS: Override to remove initial balance from table lines-->
+    <template id="yds_line_template" inherit_id="account_reports.line_template">
+      <xpath expr="//tr" position="replace">
+        <tr t-attf-class="#{trclass} #{line.get('class', '')} #{'o_js_account_report_parent_row_unfolded' if line.get('unfolded', False) else ''}" t-att-data-pagebreak="'before' if (line.get('page_break') and context.get('print_mode')) else None" t-att-data-parent-id="line.get('parent_id', False)" t-att="{k: v for k, v in line.items() if k.startswith('data-')}" t-att-style="line.get('style', '')">
+          <td t-att-data-id="line['id']" t-att-class="'o_account_report_line o_account_report_line_indent ' + (line.get('unfoldable') and 'js_account_report_foldable o_foldable_total' or '') + ' ' + line.get('name_class', '')" t-att-data-unfolded="line.get('unfolded', False)" t-att-data-offset="line.get('offset', False)" t-att-data-progress="line.get('progress', False)" t-att-data-remaining="line.get('remaining', False)">
+            <t t-if="line.get('unfoldable')">
+              <span t-att-data-id="line['id']" class="o_account_reports_caret_icon">
+                <i class="fa fa-caret-down" t-if="line.get('unfolded')" role="img" aria-label="Unfolded" title="Unfolded" />
+                <i class="fa fa-caret-right" t-if="not line.get('unfolded')" role="img" aria-label="Folded" title="Folded" />
+              </span>
             </t>
-          </dl>
-        </template>
--->
-    </data>
+            <t t-elif="not line.get('caret_options')">
+              <span t-att-data-id="line['id']" class="o_account_reports_caret_icon">
+                <i class="fa fa-caret-right invisible" role="img" aria-label="Unfolded" title="Unfolded" />
+              </span>
+            </t>
+            <t t-if="not line.get('caret_options')">
+              <span class="account_report_line_name" t-att-title="line.get('title_hover')">
+                <a t-if="line.get('action_id')" t-att-data-id="line['id']" t-att-data-action-id="line['action_id']" t-att-action="line.get('action', 'execute_action')">
+                  <t t-esc="line.get('name')" />
+                </a>
+                <t t-if="not line.get('action_id')" t-esc="line.get('name')" />
+                <span class="js_account_report_line_footnote" t-att-data-id="line['id']">
+                  <sup t-if="line.get('footnote')">
+                    <b class="o_account_reports_footnote_sup">
+                      <a t-att-href="'#footnote'+line['footnote']"></a>
+                      <t t-esc="line['footnote']" />
+                    </b>
+                  </sup>
+                </span>
+              </span>
+            </t>
+            <t t-if="line.get('caret_options')">
+              <t t-if="not context.get('print_mode')">
+                <div class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href='#'>
+                    <span t-att-data-id="line['id']" t-att-class="domainClass" t-att-title="line.get('title_hover')">
+                      <t t-esc="line.get('name')" />
+                    </span>
+                  </a>
+                  <span class="js_account_report_line_footnote" t-att-data-id="line['id']">
+                    <sup t-if="line.get('footnote')">
+                      <b class="o_account_reports_footnote_sup">
+                        <a t-att-href="'#footnote'+line['footnote']"></a>
+                        <t t-esc="line['footnote']" />
+                      </b>
+                    </sup>
+                  </span>
+                  <div class="dropdown-menu o_account_reports_domain_dropdown" role="menu">
+                    <t t-call="account_reports.line_caret_options" />
+                    <a role="menuitem" tabindex="-1" t-att-data-id="line['id']" class="dropdown-item js_account_reports_add_footnote">Annotate</a>
+                  </div>
+                </div>
+              </t>
+              <t t-else="">
+                <span t-att-data-id="line['id']" t-att-class="domainClass" t-att-title="line.get('title_hover')">
+                  <t t-esc="line.get('name')" />
+                </span>
+                <span class="js_account_report_line_footnote" t-att-data-id="line['id']">
+                  <sup t-if="line.get('footnote')">
+                    <b class="o_account_reports_footnote_sup">
+                      <a t-att-href="'#footnote'+line['footnote']"></a>
+                      <t t-esc="line['footnote']" />
+                    </b>
+                  </sup>
+                </span>
+              </t>
+            </t>
+          </td>
+          <t t-foreach="range(int(line.get('colspan', '1')) - 1)" t-as="l">
+            <td></td>
+          </t>
+          <t t-set="column_index" t-value="0" />
+          <t t-foreach="line.get('columns')" t-as="cell">
+            <t t-set="hierarchies_enabled" t-value="len(lines.get('columns_header', [])) > 1" />
+              <!-- YDS: Add condition to check if the column is Initial Balance and output nothing-->
+            <t t-if="lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('name', '') == 'Initial Balance'"></t>
+            <t t-else="">
+              <td t-att-class="'o_account_report_line ' + (cell.get('class', lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('class', '')) + (line.get('unfoldable') and ' o_foldable_total' or '')) + ('' if hierarchies_enabled else ' o_account_report_line_indent')" t-att-style="cell.get('style', lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('style', ''))">
+                <span class="o_account_report_column_value" t-att-title="cell.get('title')">
+                  <t t-call="{{cell.get('template', 'account_reports.cell_template')}}" />
+                </span>
+              </td>
+            </t>
+            <t t-set="column_index" t-value="column_index + 1" />
+          </t>
+        </tr>
+      </xpath>
+    </template>
+
+    <!-- YDS: Override to remove initial balance from table headers-->
+    <template id="yds_header" inherit_id="account_reports.main_table_header">
+      <xpath expr="//thead" position="replace">
+        <thead class="o_account_reports_header_hierarchy">
+          <t t-foreach="lines.get('columns_header')" t-as="header_line">
+            <tr>
+              <t t-foreach="header_line" t-as="cell">
+                <t t-if="cell.get('name')">
+                  <!-- YDS: Add condition to check if column is initial balance and output nothing-->
+                  <t t-if="cell.get('name') == 'Initial Balance'"></t>
+                  <t t-else="">
+                    <th t-att-class="'o_account_report_column_header ' + (cell.get('class', ''))" t-att-colspan="cell.get('colspan')" t-att-style="cell.get('style', '')" t-att-title="cell.get('title')" t-att-data-toggle="cell.get('data-toggle')">
+                      <t t-call="{{cell.get('template', 'account_reports.cell_template')}}" />
+                    </th>
+                  </t>
+                </t>
+                <t t-else="">
+                  <th t-att-class="'o_account_report_column_header ' + (cell.get('class', ''))" t-att-colspan="cell.get('colspan')" t-att-style="cell.get('style', '')" t-att-title="cell.get('title')" t-att-data-toggle="cell.get('data-toggle')">
+                    <t t-call="{{cell.get('template', 'account_reports.cell_template')}}" />
+                  </th>
+                </t>
+              </t>
+            </tr>
+          </t>
+        </thead>
+      </xpath>
+    </template>
+  </data>
 </odoo>
