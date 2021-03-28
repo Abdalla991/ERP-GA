@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+   <!-- sale report form view -->
+    <record model="ir.ui.view" id="sale_report_wizard" >
+        <field name="name">Sales Order Report</field>
+        <field name="model">sale.salesperson.report</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Sales Report By Salesperson">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                    </group>
+                    <group>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="salesperson_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="print_sale_report_by_salesperson" string="Display" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- saleperson commission report action -->
+    <record id="action_sale_report_wizard" model="ir.actions.act_window">
+        <field name="name">Commissions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.salesperson.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sale_report_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- saleperson commission report menu -->
+
+    <menuitem action="action_sale_report_wizard"
+              id="menu_sale_report_wizard"
+              parent="sale.menu_sale_report" name="Commissions" sequence="10" groups="base.group_user"/>
+
+ 
+   
+   
+   
+   
+   
+   
+   
+   
+
+
+
+
+
+</odoo>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_report_view">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <style>
+                    .table, .table td, .table th {
+                      border: 1px solid #ddd;
+                      text-align: left;
+                    }
+
+                    .table {
+                      border-collapse: collapse;
+                      width: 100%;
+                    }
+
+                    .table th, .table td {
+                      padding: 10px;
+                    }
+
+                    .salesperson{
+                        padding: 50px
+                    }
+                </style>
+
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <center>
+                        <b>
+                            <h3>Sales Report By Salesperson</h3>
+                        </b>
+                    </center>
+                    <center>
+                        <b>
+                            <span t-esc="start_date"/>
+                            To
+                            <span t-esc="end_date"/>
+                        </b>
+                    </center>
+                    <br/>
+                    <t t-foreach="data.keys()" t-as="user">
+                        <br/>
+                        <center>
+                            <b  class="salesperson">
+                                <span>Salesperson :</span>
+                                <span t-esc="user"/>
+                            </b>
+                        </center>
+                        <br/>
+
+                        <t t-set="total_sum" t-value="0"/>
+                        <t t-set="total_commission" t-value="0"/>
+                        <t t-set="target" t-value="0"/>
+
+                        <table class="table table-condensed">
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Subtotal</th>
+                                    <th>Commission</th>
+                                </tr>
+                                <tr t-foreach="data[user]" t-as="order">
+                                    <!-- order name -->
+                                    <td t-if="not order[0] == 0">
+                                        <span t-esc="order[0]"/>
+                                    </td>
+                                    <!-- order date -->
+                                    <td t-if="not order[0] == 0">
+                                        <span t-esc="order[1]" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <!-- customer name -->
+                                    <td t-if="not order[0] == 0">
+                                        <span t-esc="order[2]"/>
+                                    </td>
+                                    <!-- order subtotal -->
+                                    <td t-if="not order[0] == 0">
+                                        <span t-esc="order[3]"/>
+                                        <!-- <t t-set="total_sum" t-value="total_sum + order[3]"/> -->
+                                    </td>
+                                    <!-- saleperson commission for this order -->
+                                    <td t-if="not order[0] == 0">
+                                        <span t-esc="order[4]"/>
+                                    </td>
+
+                                    <!--Calculation for total of subtotals -->
+                                    <td t-if="not order[6] == 0">
+                                        <t t-set="total_sum" t-value="total_sum + order[7]"/>
+                                    </td>
+
+                                    <!--Calculation for Salesperson target -->
+                                    <td t-if="not order[6] == 0">
+                                        <t t-set="target" t-value="target + order[6]"/>
+                                    </td>
+
+                                    <!-- Calculations for Salesperson total commission if target is reached -->
+                                    <td t-if="not order[5] == 0">
+                                        <t t-set="total_commission" t-value="total_commission + order[5]"/>
+                                    </td>
+                                </tr>
+
+                                <!-- 3 rows for displaying the total of subtotals, target and total commission -->
+                                <tr>
+                                    <td colspan="3">
+                                    </td>
+                                    <td>
+                                        <b>Total Subtotal</b>
+                                    </td>
+                                    <td>
+                                        <span t-esc="total_sum"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="3" ></td>
+                                    <td>
+                                        <b>Target</b>
+                                    </td>
+                                    <td>
+                                        <span t-esc="target"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="3" ></td>
+                                    <td>
+                                        <b>Total Commission</b>
+                                    </td>
+                                    <td>
+                                        <span t-esc="total_commission"/>
+                                    </td>
+                                </tr>
+
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

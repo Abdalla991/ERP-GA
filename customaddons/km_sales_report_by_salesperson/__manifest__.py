@@ -1,0 +1,27 @@
+{
+    'name': 'YDS Sales Report By Salesperson',
+    'version': '1.0.0',
+    'summary': 'Generate your sales order reports by salesperson',
+    'author': 'YDS',
+    'maintainer': 'YDS',
+    'Company': 'YDS',
+    'website': 'https://yds-int.com',
+    'depends': ['base','sale_management','account'],
+    'license': 'LGPL-3',
+    'category': 'Sales',
+    'data':[
+        # 'security/security.xml',
+        'security/ir.model.access.csv',
+        'wizards/sale_report_wizard.xml',
+        'reports/sale_reports.xml',
+        'reports/sale_report_view.xml',
+        'views/sale_commission.xml'
+    ],
+    'images': ['static/description/sale-report-banner.png'],
+    'price': 0.0,
+    'currency': 'EGP',
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+    'sequence': 5,
+}
