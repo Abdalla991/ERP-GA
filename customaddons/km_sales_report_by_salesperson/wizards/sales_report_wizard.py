@@ -31,7 +31,7 @@ class SalesReportBySalesperson(models.TransientModel):
             total_amount_untaxed = 0
             total_commission = 0
             temp_data2 = []
-
+            target = 0
             for order in sale_order_groupby_dict[salesperson]:
                 temp_data = []
                 target = order.target
@@ -52,12 +52,10 @@ class SalesReportBySalesperson(models.TransientModel):
                 temp_data.append(0)
                 temp_data.append(0)
                 sale_data.append(temp_data)
-            if (target):  
-                if total_amount_untaxed < target:
-                    total_commission = 0
-            else:
-                raise ValidationError(
-                    'Selected sales person has not made any sales order yet')            
+
+            
+            if total_amount_untaxed < target:
+                total_commission = 0      
             #pushing the last array to the 2d array containing the total values across all orders
             temp_data2.append(0)
             temp_data2.append(0)
