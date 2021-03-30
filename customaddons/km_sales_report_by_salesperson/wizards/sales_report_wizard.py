@@ -33,25 +33,26 @@ class SalesReportBySalesperson(models.TransientModel):
             temp_data2 = []
             target = 0
             for order in sale_order_groupby_dict[salesperson]:
-                temp_data = []
-                target = order.target
-                subtotal = (order.amount_total - order.amount_tax)
-                commission  = round(subtotal * (order.commission_ratio / 100), 2)
+                if(order.state == "sale"):
+                    temp_data = []
+                    target = order.target
+                    subtotal = (order.amount_total - order.amount_tax)
+                    commission  = round(subtotal * (order.commission_ratio / 100), 2)
+                    
+                    total_amount_untaxed += subtotal
+                    total_commission += commission
 
-                total_amount_untaxed += subtotal
-                total_commission += commission
 
 
-
-                temp_data.append(order.name)
-                temp_data.append(order.date_order)
-                temp_data.append(order.partner_id.name)
-                temp_data.append(round (subtotal, 2))
-                temp_data.append(commission)
-                temp_data.append(0)
-                temp_data.append(0)
-                temp_data.append(0)
-                sale_data.append(temp_data)
+                    temp_data.append(order.name)
+                    temp_data.append(order.date_order)
+                    temp_data.append(order.partner_id.name)
+                    temp_data.append(round (subtotal, 2))
+                    temp_data.append(commission)
+                    temp_data.append(0)
+                    temp_data.append(0)
+                    temp_data.append(0)
+                    sale_data.append(temp_data)
 
             
             if total_amount_untaxed < target:

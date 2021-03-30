@@ -60,7 +60,7 @@ class KsGlobalDiscountSales(models.Model):
                 rec.ks_global_discount_rate = 0
             rec.amount_tax = rec.amount_tax * (1-rec.ks_global_discount_rate/100)
             rec.amount_total = rec.amount_untaxed + rec.amount_tax - rec.ks_amount_discount
-            # rec.amount_untaxed -= rec.ks_amount_discount
+            rec.amount_untaxed = rec.amount_total-rec.amount_tax
 
     @api.constrains('ks_global_discount_rate')
     def ks_check_discount_value(self):
