@@ -32,6 +32,7 @@ class YDSAccountMove(models.Model):
     yds_pricelist_name = fields.Char(string ='Pricelist Name',readonly=True,store=True)
     yds_amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True)
     yds_amount_untaxed_after_discount = fields.Monetary(string='Untaxed Amount After Discount', store=True, readonly=True)
+    yds_amount_untaxed_after_all_discounts = fields.Monetary(string='Untaxed Amount After Discount', compute='_compute_untaxed_after_all_discounts',store=True, readonly=True)
     yds_is_sales_order = fields.Boolean(string="is Sales Order")
     yds_amount_tax = fields.Monetary(string='Tax', store=True, readonly=True)
 
@@ -164,7 +165,30 @@ class YDSAccountMove(models.Model):
             if(move.yds_is_sales_order):
                 move.add_all_lines()
                 move.yds_is_sales_order=False
-                        
+
+    @api.depends(
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual_currency',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual',
+        'line_ids.matched_credit_ids.credit_move_id.move_id.line_ids.amount_residual_currency', 
+        'line_ids.debit',
+        'line_ids.credit',
+        'line_ids.currency_id',
+        'line_ids.amount_currency',
+        'line_ids.amount_residual',
+        'line_ids.amount_residual_currency',
+        'line_ids.payment_id.state',
+        'line_ids.full_reconcile_id',
+        'line_ids.price_subtotal',
+        'line_ids.analytic_account_id',
+        'yds_total_discount',
+        'ks_global_discount_rate',
+        'pricelist_id',
+        'partner_id')
+    def _compute_untaxed_after_all_discounts(self):
+        for move in self:
+            move.yds_amount_untaxed_after_all_discounts = move.yds_amount_untaxed_after_discount - move.ks_amount_discount
+    
     @api.onchange('pricelist_id')
     def change_currency(self):
         if self.pricelist_id:
