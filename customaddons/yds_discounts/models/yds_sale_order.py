@@ -18,9 +18,8 @@ class YDSSaleOrder(models.Model):
     x_total_discount = fields.Monetary(
         string='Total Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
     yds_customer_tag = fields.Char(
-        'Customer Tags', compute='_compute_yds_customer_tags', store=True, readonly=True)
-    yds_update = fields.Char("Is Updated", help="Field used to update orders customer tags")
 
+        'Customer Tags', compute='_compute_yds_customer_tags', store=True, readonly=True)
     
     @api.depends('partner_id')
     def _compute_yds_customer_tags(self):
@@ -122,8 +121,6 @@ class SaleOrderlineTemplate(models.Model):
         'Cost %', compute='_compute_yds_cost_percentage', store=True, readonly=True)
     yds_product_cost = fields.Float(
         'Cost ', compute='_compute_yds_product_cost', store=True, readonly=True)
-
-    yds_update = fields.Char("Is Updated", help="Field used to update orders customer tags")
 
 
 
