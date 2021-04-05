@@ -3,19 +3,13 @@
     'name': "YDS Partner Ledger Customization",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
-
-    'description': """
-        Long description of module's purpose
+        Accounting Partner Ledger Report Customization.
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "YDS",
+    'website': "http://www.yds-int.com",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
+
     'category': 'Uncategorized',
     'version': '0.1',
 
