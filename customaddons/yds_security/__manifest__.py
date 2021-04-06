@@ -20,7 +20,7 @@
         'views/yds_sale_view_security.xml',
         'views/user_view_secuirty.xml',
         'views/yds_mrp_view_security.xml',
-        'views/yds_stock_picking_security_views.xml',
+        'views/yds_stock_picking_security_view.xml',
         'security/ir.model.access.csv',
 
     ],
