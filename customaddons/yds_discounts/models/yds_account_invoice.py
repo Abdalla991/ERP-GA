@@ -235,13 +235,14 @@ class YDSAccountMove(models.Model):
     #Check that universal discount rate is valid
     @api.constrains('ks_global_discount_rate')
     def ks_check_discount_value(self):
-        if self.ks_global_discount_type == "percent":
-            if self.ks_global_discount_rate > 100 or self.ks_global_discount_rate < 0:
-                raise ValidationError('You cannot enter percentage value greater than 100.')
-        else:
-            if self.ks_global_discount_rate < 0 or self.amount_untaxed < 0:
-                raise ValidationError(
-                    'You cannot enter discount amount greater than actual cost or value lower than 0.')
+        for record in self:
+            if record.ks_global_discount_type == "percent":
+                if record.ks_global_discount_rate > 100 or record.ks_global_discount_rate < 0:
+                    raise ValidationError('You cannot enter percentage value greater than 100.')
+            else:
+                if record.ks_global_discount_rate < 0 or record.amount_untaxed < 0:
+                    raise ValidationError(
+                        'You cannot enter discount amount greater than actual cost or value lower than 0.')
        
     #TEST THIS FUNCTION
     @api.model
