@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <data noupdate="1">
+    <data>
 
         <record id="view_picking_form_inherit_stock" model="ir.ui.view">
             <field name="name">stock.picking.view.form.inherit</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form" />
             <field name="arch" type="xml">
-                <xpath expr="//button[@name='action_toggle_is_locked']" position="replace">
-                    <button name="action_toggle_is_locked" attrs="{'invisible': ['|', ('state', 'in', ('draft','cancel')), ('is_locked', '=', False)]}" string="Unlock" groups="stock.group_stock_user" type="object" help="If the picking is unlocked you can edit initial demand (for a draft picking) or done quantities (for a done picking)." />
-                    <button name="action_toggle_is_locked" attrs="{'invisible': [('is_locked', '=', True)]}" string="Lock" groups="stock.group_stock_user" type="object" />
+                <xpath expr="//button[@name='action_toggle_is_locked']" position="attributes">
+                    <attribute name="groups">stock.group_stock_user</attribute>
                 </xpath>
             </field>
         </record>
