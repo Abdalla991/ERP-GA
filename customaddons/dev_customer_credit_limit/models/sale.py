@@ -25,7 +25,6 @@ class sale_order(models.Model):
         ('cancel', 'Cancelled'),
     ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', track_sequence=3, default='draft')
 
-    # yds_updated = fields.Char(string="UPDATE_YDS", invisilbe=True)
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):

@@ -13,14 +13,14 @@ class YDSSaleOrder(models.Model):
         string='Untaxed Amount After Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
     x_amount_untaxed_after_uni_discount = fields.Monetary(
         string='Untaxed Amount After Universal Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
-    
-        
+
     x_total_discount = fields.Monetary(
         string='Total Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
     yds_customer_tag = fields.Char(
-
         'Customer Tags', compute='_compute_yds_customer_tags', store=True, readonly=True)
-    
+    yds_update = fields.Char(
+        "Is Updated", help="Field used to update orders customer tags")
+
     @api.depends('partner_id')
     def _compute_yds_customer_tags(self):
         for record in self:
@@ -122,8 +122,6 @@ class SaleOrderlineTemplate(models.Model):
     yds_product_cost = fields.Float(
         'Cost ', compute='_compute_yds_product_cost', store=True, readonly=True)
 
-
-
     @api.depends('price_unit', 'product_id')
     def _compute_yds_cost_percentage(self):
         for line in self:
@@ -166,12 +164,14 @@ class SaleOrderlineTemplate(models.Model):
                 if invoice_line.move_id.state == 'posted':
                     invoice_date = invoice_line.move_id.invoice_date or fields.Date.today()
                     if invoice_line.move_id.move_type == 'out_invoice':
-                        amount_invoiced += invoice_line.currency_id._convert(invoice_line.price_subtotal*(1-invoice_line.discount/100)*(1-(invoice_line.move_id.ks_global_discount_rate) / 100), line.currency_id, line.company_id, invoice_date)
+                        amount_invoiced += invoice_line.currency_id._convert(invoice_line.price_subtotal*(1-invoice_line.discount/100)*(
+                            1-(invoice_line.move_id.ks_global_discount_rate) / 100), line.currency_id, line.company_id, invoice_date)
                     elif invoice_line.move_id.move_type == 'out_refund':
-                        amount_invoiced -= invoice_line.currency_id._convert(invoice_line.price_subtotal*(1-invoice_line.discount/100)*(1-(invoice_line.move_id.ks_global_discount_rate) / 100), line.currency_id, line.company_id, invoice_date)
-                        
+                        amount_invoiced -= invoice_line.currency_id._convert(invoice_line.price_subtotal*(1-invoice_line.discount/100)*(
+                            1-(invoice_line.move_id.ks_global_discount_rate) / 100), line.currency_id, line.company_id, invoice_date)
+
             line.untaxed_amount_invoiced = amount_invoiced
-    
+
     @api.depends('state', 'price_reduce', 'product_id', 'untaxed_amount_invoiced', 'qty_delivered', 'product_uom_qty')
     def _compute_untaxed_amount_to_invoice(self):
         """ Total of remaining amount to invoice on the sale order line (taxes excl.) as
@@ -211,15 +211,19 @@ class SaleOrderlineTemplate(models.Model):
                     amount = 0
                     for l in line.invoice_lines:
                         if len(l.tax_ids.filtered(lambda tax: tax.price_include)) > 0:
-                            amount += l.tax_ids.compute_all(l.currency_id._convert(l.price_unit, line.currency_id, line.company_id, l.date or fields.Date.today(), round=False) * l.quantity)['total_excluded'] 
+                            amount += l.tax_ids.compute_all(l.currency_id._convert(l.price_unit, line.currency_id,
+                                                                                   line.company_id, l.date or fields.Date.today(), round=False) * l.quantity)['total_excluded']
                         else:
-                            amount += l.currency_id._convert(l.price_unit, line.currency_id, line.company_id, l.date or fields.Date.today(), round=False) * l.quantity
+                            amount += l.currency_id._convert(
+                                l.price_unit, line.currency_id, line.company_id, l.date or fields.Date.today(), round=False) * l.quantity
 
-                    amount_to_invoice = max(price_subtotal*(1-line.order_id.ks_global_discount_rate/100)  - amount, 0)
+                    amount_to_invoice = max(
+                        price_subtotal*(1-line.order_id.ks_global_discount_rate/100) - amount, 0)
                 else:
-                    amount_to_invoice = price_subtotal*(1-line.order_id.ks_global_discount_rate/100)  - line.untaxed_amount_invoiced 
+                    amount_to_invoice = price_subtotal * \
+                        (1-line.order_id.ks_global_discount_rate/100) - \
+                        line.untaxed_amount_invoiced
             line.untaxed_amount_to_invoice = amount_to_invoice
-
 
     @api.depends('product_uom_qty', 'discount', 'price_unit', 'tax_id', 'yds_global_discount_rate')
     def _compute_amount(self):
