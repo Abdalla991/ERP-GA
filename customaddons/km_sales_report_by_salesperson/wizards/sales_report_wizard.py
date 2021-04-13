@@ -36,7 +36,11 @@ class SalesReportBySalesperson(models.TransientModel):
                 if(order.state == "sale"):
                     temp_data = []
                     target = order.target
-                    subtotal = (order.amount_total - order.amount_tax)
+                    amount_invoiced = 0
+                    for line in order.order_line :
+                        amount_invoiced += line.untaxed_amount_invoiced
+                    
+                    subtotal = amount_invoiced
                     commission  = round(subtotal * (order.commission_ratio / 100), 2)
                     
                     total_amount_untaxed += subtotal
