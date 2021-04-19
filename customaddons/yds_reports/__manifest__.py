@@ -12,7 +12,7 @@
     'category': 'Sales',
     'version': '90.1',
     'license': 'LGPL-3',
-    'depends': ['base', 'sale', 'purchase', 'account','mrp','yds_discounts','yds_mrp2','product','percent_field'],
+    'depends': ['base', 'sale', 'purchase', 'account','mrp', 'mrp_account_enterprise','yds_discounts','yds_mrp2','product','percent_field'],
 
     'data': [
         'security/ir.model.access.csv',
