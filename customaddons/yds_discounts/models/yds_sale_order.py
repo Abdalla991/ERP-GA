@@ -16,15 +16,34 @@ class YDSSaleOrder(models.Model):
 
     x_total_discount = fields.Monetary(
         string='Total Discount', store=True, readonly=True, compute='_amount_all', tracking=5)
+
+    yds_customer_category_id = fields.Many2many(
+        'res.partner.category', string='Customer Tags', compute='_compute_yds_customer_category_id', store=True)
     yds_customer_tag = fields.Char(
-        'Customer Tags', compute='_compute_yds_customer_tags', store=True, readonly=True)
+        string="Customer Tags", compute="_compute_yds_customer_tags", store=True, default="")
+    
     yds_update = fields.Char(
         "Is Updated", help="Field used to update orders customer tags")
+
+    # @api.onchange('partner_id')
+    # @api.depends('partner_id.category_id')
+    # def _compute_yds_customer_category_id(self):
+    #     for record in self:
+    #         record.yds_customer_category_id = [
+    #             (6, 0, record.partner_id.category_id.ids)]
 
     @api.depends('partner_id')
     def _compute_yds_customer_tags(self):
         for record in self:
-            record.yds_customer_tag = record.partner_id.category_id.name
+            i = 0
+            if record.partner_id.category_id:
+                for tag in record.partner_id.category_id:
+                    if i == 0:
+                        record.yds_customer_tag += tag.name
+                    else:
+                        record.yds_customer_tag += " - "+tag.name
+                    i += 1
+
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
