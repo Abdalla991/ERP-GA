@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "YDS Master Plan Replinsh Modification",
+    'name': "YDS Master Plan Replenish Modification",
 
     'summary': """
         Modify MRP master production schedule to creat MO with state draft 
