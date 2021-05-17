@@ -34,14 +34,14 @@ class YdsMrpProduction(models.Model):
     #     res = super(YdsMrpProduction, self).button_mark_done()
     #     return res		
     
-    def button_mark_done(self):
-        unavailable_components = []
-        for move in self.move_raw_ids:
-            if move.state != 'assigned' or move.state != "done":
-                unavailable_components.append(move.product_id.name)
-            if len(unavailable_components) > 0:
-                unavail_str = ','.join(unavailable_components)
-                raise ValidationError(_(f'Please check the availability for the following components: {unavail_str}.'))
-                return
-        res = super(YdsMrpProduction, self).button_mark_done()
-        return res		
+    # def button_mark_done(self):
+    #     unavailable_components = []
+    #     for move in self.move_raw_ids:
+    #         if move.state != 'assigned' or move.state != "done":
+    #             unavailable_components.append(move.product_id.name)
+    #         if len(unavailable_components) > 0:
+    #             unavail_str = ','.join(unavailable_components)
+    #             raise ValidationError(_(f'Please check the availability for the following components: {unavail_str}.'))
+    #             return
+    #     res = super(YdsMrpProduction, self).button_mark_done()
+    #     return res		
