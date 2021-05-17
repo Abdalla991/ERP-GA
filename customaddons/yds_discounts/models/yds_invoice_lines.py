@@ -471,3 +471,19 @@ class YDSAccountMoveLine(models.Model):
             res[field]['selectable'] = True
             res[field]['sortable'] = True
         return res
+    
+
+class YDSAccountMoveLine(models.Model):
+    _inherit = "stock.quant"
+
+    categ_id = fields.Many2one('product.category', related='product_id.categ_id', store=True)
+    @api.model
+    def fields_get(self, fields=None):
+        #Fields to be added in Filters/Group By
+        show = ['categ_id']
+        res = super(YDSAccountMoveLine, self).fields_get()
+        #True = add fields, False = Remove fields
+        for field in show:
+            res[field]['selectable'] = True
+            res[field]['sortable'] = True
+        return res
