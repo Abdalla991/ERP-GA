@@ -42,7 +42,7 @@ class YdsMrpProduction(models.Model):
     def button_mark_done(self):
         unavailable_components = []
         for move in self.move_raw_ids:
-            if move.state not in ['assigned', 'done']:
+            if move.state not in ['assigned', 'done', 'partially_available']:
                 unavailable_components.append(move.product_id.name)
         if len(unavailable_components) > 0:
             unavail_str = ', '.join(unavailable_components)
