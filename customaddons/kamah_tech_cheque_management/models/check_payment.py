@@ -32,7 +32,7 @@ class normal_payments(models.Model):
                              track_visibility='onchange')
     pay_check_ids = fields.One2many('native.payments.check.create', 'nom_pay_id', string=_('Checks'))
     send_rec_money = fields.Selection(string="Payment Type",selection=[('send','Send Money'),('rece','Receive Money')],default='rece')
-    receipt_number = fields.Char(string="Receipt Number")
+    receipt_number = fields.Char(string="Receipt Number" , required=True)
     account_id = fields.Many2one('account.account',string="Account")
     analyitc_id = fields.Many2one('account.analytic.account',string="Analytic Account")
 

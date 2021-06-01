@@ -33,7 +33,7 @@
         'wizard/check_cycle_wizard_view.xml',
         'views/payment_report.xml',
         'views/report_check_cash_payment_receipt_templates.xml',
-        'data/sms_temp.xml',
+        # 'data/sms_temp.xml',
 
     ],
     'qweb': [],

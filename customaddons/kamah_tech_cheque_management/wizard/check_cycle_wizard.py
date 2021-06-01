@@ -218,12 +218,15 @@ class check_cycle_accs(models.TransientModel):
                                                                amount=check.amount)
                     check.state = 'debited'
             elif self.env.context['action_wiz'] == 'cs_return':
+                company_id=self.env.user.company_id
                 checks = self.env['check.management'].search([('id', 'in', self.env.context['active_ids'])])
-                journal_id = self.env.ref('kamah_tech_cheque_management.rece_check_journal').id
+                # journal_id = self.env.ref('kamah_tech_cheque_management.rece_check_journal').id
+                exchange_journal = company_id.currency_exchange_journal_id
                 for check in checks:
                     move = {
                         'name': 'Returning Check number ' + check.check_number + ' to customer',
-                        'journal_id': journal_id,
+                        # 'journal_id': journal_id,
+                        'journal_id': exchange_journal.id,
                         'ref': 'Returning Check number ' + check.check_number + ' to customer',
                         'company_id': self.env.user.company_id.id,
 
