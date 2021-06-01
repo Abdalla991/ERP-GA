@@ -1,43 +1,44 @@
 from odoo import models, fields, api, exceptions, _
 from odoo.exceptions import UserError, ValidationError
-import ipdb #Remove before publishing
+import ipdb  # Remove before publishing
 
-#this file is concerned with the addition/removal of new lines
+# this file is concerned with the addition/removal of new lines
+
 
 class YDSAccountMove(models.Model):
     _inherit = "account.move"
 
-    #Rename lines with an already existing product to avoid ignoring of discount lines due to duplicate line names
+    # Rename lines with an already existing product to avoid ignoring of discount lines due to duplicate line names
     # @api.onchange('invoice_line_ids')
     def rename_lines(self):
-        productNames = [] 
+        productNames = []
         productCounts = []
-        for rec in self :
-            innerloopCount=0
+        for rec in self:
+            innerloopCount = 0
             for line in rec.invoice_line_ids:
-                innerloopCount+=1
+                innerloopCount += 1
                 if line.product_id.name in productNames:
                     index = productNames.index(line.product_id.name)
-                    productCounts[index]+=1
-                    line.name = line.product_id.name +" ("+str(productCounts[index])+")"
-                else:   
+                    productCounts[index] += 1
+                    line.name = line.product_id.name + \
+                        " ("+str(productCounts[index])+")"
+                else:
                     productNames.append(line.product_id.name)
                     productCounts.append(1)
 
+    # Add Universal discount lines per product
 
-
-    #Add Universal discount lines per product
-    def add_lines_uni(self):       
+    def add_lines_uni(self):
         # OVERRIDE
         # Don't change anything on moves used to cancel another ones.
         # return super()._post(soft=False)
         # print("add_lines for universal called")
         type_list = ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']
         for move in self:
-            count =0  #for counting loops
+            count = 0  # for counting loops
             if move.is_invoice(include_receipts=True):
                 for line in move.invoice_line_ids:
-                    count+=1
+                    count += 1
                     exists = False
                     # Filter out lines being not eligible for discount/universal discount line.
                     # if line.product_id.type != 'product' or line.product_id.valuation != 'real_time':
@@ -50,22 +51,25 @@ class YDSAccountMove(models.Model):
 
                     sign = -1 if move.move_type == 'out_refund' else 1
 
-                    #Calculations
-                    uni_discount_rate=move.ks_global_discount_rate/100
+                    # Calculations
+                    uni_discount_rate = move.ks_global_discount_rate/100
                     amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(amount*( (line.discount or 0.0) / 100.0))
+                    pricelist_discount_line_amount = (
+                        amount*((line.discount or 0.0) / 100.0))
                     hasDiscount = uni_discount_rate > 0
-                    
-                    amount_currency =sign*(line.amount_currency-(line.amount_currency*(line.discount/100)))*uni_discount_rate
+
+                    amount_currency = sign * \
+                        (line.amount_currency-(line.amount_currency *
+                                               (line.discount/100)))*uni_discount_rate
 
                     if(hasDiscount):
-                        universal_discount_line_amount = ((amount-pricelist_discount_line_amount)*uni_discount_rate)
+                        universal_discount_line_amount = (
+                            (amount-pricelist_discount_line_amount)*uni_discount_rate)
                         # print("line "+str(count)+"has "+"uni discount of " +str(universal_discount_line_amount))
                     else:
-                        universal_discount_line_amount=0
+                        universal_discount_line_amount = 0
 
-                    
-                    lineName =  line.name[:64]+" Universal discount "
+                    lineName = line.name[:64]+" Universal discount "
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     terms_lines = move.line_ids.filtered(
@@ -74,12 +78,12 @@ class YDSAccountMove(models.Model):
                         lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
                     if already_exists:
                         print("Uni Aleady exisits 1 "+line.name)
-                        exists=True
+                        exists = True
                         amount = universal_discount_line_amount
                         print("new amount = "+str(amount))
                         if sale_uni_discount_account \
                                 and (move.move_type == "out_invoice"
-                                    or move.move_type == "out_refund")\
+                                     or move.move_type == "out_refund")\
                                 and amount > 0:
                             if move.move_type == "out_invoice":
                                 already_exists.update({
@@ -92,31 +96,33 @@ class YDSAccountMove(models.Model):
                                     'debit': amount < 0.0 and -amount or 0.0,
                                     'credit': amount > 0.0 and amount or 0.0,
                                     'amount_currency': amount_currency,
-                     analytic_account_id           })
+                                })
                             already_exists.update({
                                 'analytic_account_id': line.analytic_account_id.id,
                             })
-                        move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                        move._recompute_dynamic_lines(
+                            recompute_all_taxes=True, recompute_tax_base_amount=True)
                     if not already_exists and hasDiscount:
                         print("Uni does not exist 1")
                         in_draft_mode = move != move._origin
-                        # not in_draft_mode and 
+                        # not in_draft_mode and
                         # if move.move_type == 'out_invoice':
                         if hasDiscount and move.move_type in type_list:
                             in_draft_mode = move != move._origin
                             terms_lines = move.line_ids.filtered(
                                 lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                            already_exists = move.line_ids.filtered( lambda line: line.name and line.name.find(lineName) == 0)
+                            already_exists = move.line_ids.filtered(
+                                lambda line: line.name and line.name.find(lineName) == 0)
                             create_method = in_draft_mode and \
-                                            move.env['account.move.line'].new or\
-                                            move.env['account.move.line'].create
+                                move.env['account.move.line'].new or\
+                                move.env['account.move.line'].create
                             if sale_uni_discount_account \
                                     and (move.move_type == "out_invoice"
-                                        or move.move_type == "out_refund"):
+                                         or move.move_type == "out_refund"):
                                 amount = universal_discount_line_amount
                                 dict = {
                                     'move_name': move.name,
-                                    'name':lineName,
+                                    'name': lineName,
                                     'move_id': move._origin,
                                     'product_id': line.product_id.id,
                                     'product_uom_id': line.product_uom_id.id,
@@ -132,12 +138,12 @@ class YDSAccountMove(models.Model):
                                     'company_id': terms_lines.company_id.id,
                                     'company_currency_id': terms_lines.company_currency_id.id,
                                     'date': move.date,
-                                    }
+                                }
                                 if move.move_type == "out_invoice":
                                     dict.update({
-                                    'debit': amount > 0.0 and amount or 0.0,
-                                    'credit': amount < 0.0 and -amount or 0.0,
-                                    'amount_currency': -amount_currency,
+                                        'debit': amount > 0.0 and amount or 0.0,
+                                        'credit': amount < 0.0 and -amount or 0.0,
+                                        'amount_currency': -amount_currency,
                                     })
                                 else:
                                     dict.update({
@@ -151,35 +157,37 @@ class YDSAccountMove(models.Model):
                                         lambda line: line.name and line.name.find(lineName) == 0)
                                     move.line_ids = move.line_ids - duplicate_id
                                     move.line_ids += create_method(dict)
-                                    move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                                    move._recompute_dynamic_lines(
+                                        recompute_all_taxes=True, recompute_tax_base_amount=True)
                                     # Updation of Invoice Line Id
                                 else:
                                     dict.update({
-                                    'price_unit': 0.0,
-                                    'debit': 0.0,
-                                    'credit': 0.0,
-                                        })
+                                        'price_unit': 0.0,
+                                        'debit': 0.0,
+                                        'credit': 0.0,
+                                    })
                                     move.line_ids = [(0, 0, dict)]
                             if in_draft_mode:
                                 # print("Uni in draft mode 2")
                                 # Update the payement account amount
-                                move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
-                            else: 
+                                move._recompute_dynamic_lines(
+                                    recompute_all_taxes=True, recompute_tax_base_amount=True)
+                            else:
                                 # print("Uni not in draft mode final")
                                 already_exists = self.line_ids.filtered(
-                                        lambda line: line.name and line.name.find(lineName) == 0)
+                                    lambda line: line.name and line.name.find(lineName) == 0)
                                 already_exists.with_context(check_move_validity=False).update({
-                                    'debit': amount > 0.0 and amount or 0.0, 
+                                    'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
                                     'amount_currency': -amount_currency,
-                                    })
+                                })
                                 # ipdb.set_trace()
-                                move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                                move.with_context(check_move_validity=False)._recompute_dynamic_lines(
+                                    recompute_all_taxes=True, recompute_tax_base_amount=True)
                                 print()
 
+    # Remove Universal discount lines if rate == 0
 
-  
-    #Remove Universal discount lines if rate == 0
     @api.onchange('ks_global_discount_rate')
     def remove_lines_uni(self):
         print("checking Uni lines to remove")
@@ -188,7 +196,7 @@ class YDSAccountMove(models.Model):
                 if line.name and move.ks_global_discount_rate == 0:
                     lineName = line.name[:64]+" Universal discount "
                     already_exists = move.line_ids.filtered(
-                                lambda line: line.name and line.name.find(lineName) == 0)
+                        lambda line: line.name and line.name.find(lineName) == 0)
                     if already_exists:
                         print("found and removing: "+already_exists.name)
                         # ipdb.set_trace()
@@ -202,21 +210,21 @@ class YDSAccountMove(models.Model):
                         #     'credit': total_balance > 0.0 and total_balance or 0.0,
                         #     # 'price_unit': total_balance,
                         # })
-                        move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                        move._recompute_dynamic_lines(
+                            recompute_all_taxes=True, recompute_tax_base_amount=True)
 
-                        
-         
     # #Add regular discount line per product
     # @api.onchange('line_ids.discount',
     #     'line_ids.price_subtotal',
     #     'yds_total_discount')
-    def add_lines(self):       
+
+    def add_lines(self):
         type_list = ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']
         for move in self:
-            count =0  #for counting loops
+            count = 0  # for counting loops
             if move.is_invoice(include_receipts=True):
                 for line in move.invoice_line_ids:
-                    count+=1
+                    count += 1
                     print("adding discount line for invoice line: "+str(count))
                     # print(count)
                     exists = False
@@ -225,25 +233,27 @@ class YDSAccountMove(models.Model):
                     #     continue
 
                     product_discount_account = move.pricelist_id.yds_assigned_discount_account.id
-                    if not product_discount_account: 
+                    if not product_discount_account:
                         continue
 
                     sign = -1 if move.move_type == 'out_refund' else 1
-                    #Calculations
+                    # Calculations
                     amount = ((line.credit or 0.0) - (line.debit or 0.0))*sign
-                    pricelist_discount_line_amount =(amount* ( (line.discount or 0.0) / 100.0))
-                    hasDiscount = pricelist_discount_line_amount > 0  
-                    amount_currency = sign*(line.amount_currency*line.discount/100)
-                    
+                    pricelist_discount_line_amount = (
+                        amount * ((line.discount or 0.0) / 100.0))
+                    hasDiscount = pricelist_discount_line_amount > 0
+                    amount_currency = sign * \
+                        (line.amount_currency*line.discount/100)
+
                     # ipdb.set_trace()
 
                     lineName = line.name[:64]+" discount "
                     print("------Existing Lines ------")
                     for l in move.line_ids:
-                        print(str(l.name))   
+                        print(str(l.name))
                     print("---------------------------")
 
-                    print("expected name: "+ lineName)
+                    print("expected name: " + lineName)
 
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
@@ -251,15 +261,15 @@ class YDSAccountMove(models.Model):
                         lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
                     other_lines = move.line_ids.filtered(
                         lambda line: line.account_id.user_type_id.type not in ('receivable', 'payable'))
-                    if pricelist_discount_line_amount > 0 :
+                    if pricelist_discount_line_amount > 0:
                         if already_exists:
                             print("Aleady exisits  "+line.name)
-                            exists=True
+                            exists = True
                             amount = pricelist_discount_line_amount
                             print("new amount = "+str(amount))
                             if product_discount_account \
                                     and (move.move_type == "out_invoice"
-                                        or move.move_type == "out_refund"):
+                                         or move.move_type == "out_refund"):
                                 if move.move_type == "out_invoice":
                                     already_exists.update({
                                         'debit': amount > 0.0 and amount or 0.0,
@@ -275,7 +285,8 @@ class YDSAccountMove(models.Model):
                                 already_exists.update({
                                     'analytic_account_id': line.analytic_account_id.id,
                                 })
-                            move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                            move._recompute_dynamic_lines(
+                                recompute_all_taxes=True, recompute_tax_base_amount=True)
                         if not already_exists and hasDiscount:
                             print("does not exist")
                             in_draft_mode = move != move._origin
@@ -285,20 +296,22 @@ class YDSAccountMove(models.Model):
                                 in_draft_mode = move != move._origin
                                 terms_lines = move.line_ids.filtered(
                                     lambda line: line.account_id.user_type_id.type in ('receivable', 'payable'))
-                                already_exists = move.line_ids.filtered( lambda line: line.name and line.name.find(newLineName) == 0)
+                                already_exists = move.line_ids.filtered(
+                                    lambda line: line.name and line.name.find(newLineName) == 0)
                                 create_method = in_draft_mode and \
-                                                move.env['account.move.line'].new or\
-                                                move.env['account.move.line'].create
+                                    move.env['account.move.line'].new or\
+                                    move.env['account.move.line'].create
 
                                 if product_discount_account \
                                         and (move.move_type == "out_invoice"
-                                            or move.move_type == "out_refund"):
+                                             or move.move_type == "out_refund"):
                                     amount = pricelist_discount_line_amount
-                                    print("-----------------------------------------------------")
+                                    print(
+                                        "-----------------------------------------------------")
                                     print(str(line.id))
                                     dict = {
                                         'move_name': move.name,
-                                        'name':newLineName,
+                                        'name': newLineName,
                                         'move_id': move._origin,
                                         'product_id': line.product_id.id,
                                         'product_uom_id': line.product_uom_id.id,
@@ -314,59 +327,61 @@ class YDSAccountMove(models.Model):
                                         'company_id': terms_lines.company_id.id,
                                         'company_currency_id': terms_lines.company_currency_id.id,
                                         'date': move.date,
-                                        }
+                                    }
                                     if move.move_type == "out_invoice":
                                         dict.update({
-                                        'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
-                                        'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
-                                        'amount_currency': -amount_currency,
+                                            'debit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
+                                            'credit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
+                                            'amount_currency': -amount_currency,
                                         })
                                     else:
                                         dict.update({
                                             'debit': pricelist_discount_line_amount < 0.0 and -pricelist_discount_line_amount or 0.0,
                                             'credit': pricelist_discount_line_amount > 0.0 and pricelist_discount_line_amount or 0.0,
                                             'amount_currency': amount_currency,
-                                            
+
                                         })
                                     if in_draft_mode:
                                         print("in draft mode 1")
-                                        #revice duplicate
+                                        # revice duplicate
                                         duplicate_id = move.line_ids.filtered(
                                             lambda line: line.name and line.name.find(newLineName) == 0)
                                         move.line_ids = move.line_ids - duplicate_id
                                         move.line_ids += create_method(dict)
                                         # Updation of Invoice Line Id
-                                        move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                                        move._recompute_dynamic_lines(
+                                            recompute_all_taxes=True, recompute_tax_base_amount=True)
                                     else:
                                         print("not in draft mode 1")
                                         duplicate_id = move.line_ids.filtered(
                                             lambda line: line.name and line.name.find(newLineName) == 0)
                                         move.line_ids = move.line_ids - duplicate_id
                                         dict.update({
-                                        'price_unit':0,
-                                        'debit': 0 , 
-                                        'credit': 0,
+                                            'price_unit': 0,
+                                            'debit': 0,
+                                            'credit': 0,
                                         })
                                         move.line_ids = [(0, 0, dict)]
                                 if in_draft_mode:
                                     print("in draft mode 2")
                                     # Update the payement account amount
-                                    move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
-                                else: 
+                                    move._recompute_dynamic_lines(
+                                        recompute_all_taxes=True, recompute_tax_base_amount=True)
+                                else:
                                     print("not in draft mode 2")
                                     already_exists = move.line_ids.filtered(
-                                            lambda line: line.name and line.name.find(newLineName) == 0)
+                                        lambda line: line.name and line.name.find(newLineName) == 0)
                                     already_exists.with_context(check_move_validity=False).update({
-                                            'debit': amount > 0.0 and amount or 0.0, 
-                                            'credit': amount < 0.0 and -amount or 0.0,
-                                            'amount_currency': -amount_currency,
-                                            })
-                                    move.with_context(check_move_validity=False)._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                                        'debit': amount > 0.0 and amount or 0.0,
+                                        'credit': amount < 0.0 and -amount or 0.0,
+                                        'amount_currency': -amount_currency,
+                                    })
+                                    move.with_context(check_move_validity=False)._recompute_dynamic_lines(
+                                        recompute_all_taxes=True, recompute_tax_base_amount=True)
                                     # ipdb.set_trace()
 
+    # Remove regular discount line per product when discount == 0
 
-
-    #Remove regular discount line per product when discount == 0
     @api.onchange('invoice_line_ids')
     def remove_lines_disc(self):
         for move in self:
@@ -374,7 +389,7 @@ class YDSAccountMove(models.Model):
                 if line.name and line.discount == 0:
                     lineName = line.name[:64]+" discount "
                     already_exists = move.line_ids.filtered(
-                                lambda line: line.name and line.name.find(lineName) == 0)
+                        lambda line: line.name and line.name.find(lineName) == 0)
                     if already_exists:
                         print("found and removing: "+already_exists.name)
                         # ipdb.set_trace()
@@ -388,11 +403,12 @@ class YDSAccountMove(models.Model):
                         #     'credit': total_balance > 0.0 and total_balance or 0.0,
                         #     # 'price_unit': total_balance,
                         # })
-                        move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+                        move._recompute_dynamic_lines(
+                            recompute_all_taxes=True, recompute_tax_base_amount=True)
 
-                        # self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)] 
+                        # self.line_ids = [(1, already_exists.id, dict1), (1, terms_lines.id, dict2)]
 
-    #remove lines when invoice line row is removed
+    # remove lines when invoice line row is removed
     @api.onchange('invoice_line_ids')
     def remove_cached_lines(self):
         # print("Checking lines to remove")
@@ -401,19 +417,19 @@ class YDSAccountMove(models.Model):
             lines_to_be_saved_names = []
             lines_to_be_removed = move.line_ids
 
-            #remove all non discount / Uni discount lines from the list
+            # remove all non discount / Uni discount lines from the list
             for line in move.line_ids:
                 if not "discount" in str(line.name):
-                    lines_to_be_removed-= line
+                    lines_to_be_removed -= line
 
-            #debugging purposes REMOVE ME
+            # debugging purposes REMOVE ME
             # print("before cleaning")
             for l in lines_to_be_removed:
-                print (l.name)
-            
-            #remove existing invoice lines from the list 
+                print(l.name)
+
+            # remove existing invoice lines from the list
             for invoice_line in move.invoice_line_ids:
-                if invoice_line.discount > 0 :
+                if invoice_line.discount > 0:
                     for l in lines_to_be_removed:
                         if l.name == invoice_line.name + " discount ":
                             lines_to_be_removed -= l
@@ -422,17 +438,18 @@ class YDSAccountMove(models.Model):
                         if l.name == invoice_line.name + " Universal discount ":
                             lines_to_be_removed -= l
 
-            #debugging purposes REMOVE ME
+            # debugging purposes REMOVE ME
             # print("after cleaning")
             for l in lines_to_be_removed:
-                print (l.name)
+                print(l.name)
 
-            #remove lines that have been removed
+            # remove lines that have been removed
             move.line_ids -= lines_to_be_removed
-            #rebalance
-            move._recompute_dynamic_lines(recompute_all_taxes=True, recompute_tax_base_amount=True)
+            # rebalance
+            move._recompute_dynamic_lines(
+                recompute_all_taxes=True, recompute_tax_base_amount=True)
 
-    #Ensure no lines have the same label to avoid discount lines not being created
+    # Ensure no lines have the same label to avoid discount lines not being created
     # def write(self, vals):
     #     print("Move WRITE CALLED")
     #     for line in self.line_ids:
@@ -444,8 +461,8 @@ class YDSAccountMove(models.Model):
 
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
-                    
-    #Change how label field is computed
+
+    # Change how label field is computed
     @api.onchange('product_id')
     def rename_description(self):
         if not self.product_id:
@@ -454,19 +471,20 @@ class YDSAccountMoveLine(models.Model):
         if self.product_id.description_sale:
             self.name = self.product_id.name + " - " + self.product_id.description_sale
 
-                     
 
-#TODO: Change my location    
+# TODO: Change my location
 class YDSAccountMoveLine(models.Model):
     _inherit = "stock.valuation.layer"
 
-    categ_id = fields.Many2one('product.category', related='product_id.categ_id', store=True)
+    categ_id = fields.Many2one(
+        'product.category', related='product_id.categ_id', store=True)
+
     @api.model
     def fields_get(self, fields=None):
-        #Fields to be added in Filters/Group By
+        # Fields to be added in Filters/Group By
         show = ['categ_id']
         res = super(YDSAccountMoveLine, self).fields_get()
-        #True = add fields, False = Remove fields
+        # True = add fields, False = Remove fields
         for field in show:
             res[field]['selectable'] = True
             res[field]['sortable'] = True
@@ -476,13 +494,15 @@ class YDSAccountMoveLine(models.Model):
 class YDSStockQuant(models.Model):
     _inherit = "stock.quant"
 
-    categ_id = fields.Many2one('product.category', related='product_id.categ_id', store=True)
+    categ_id = fields.Many2one(
+        'product.category', related='product_id.categ_id', store=True)
+
     @api.model
     def fields_get(self, fields=None):
-        #Fields to be added in Filters/Group By
+        # Fields to be added in Filters/Group By
         show = ['categ_id']
         res = super(YDSStockQuant, self).fields_get()
-        #True = add fields, False = Remove fields
+        # True = add fields, False = Remove fields
         for field in show:
             res[field]['selectable'] = True
             res[field]['sortable'] = True
