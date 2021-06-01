@@ -92,7 +92,7 @@ class YDSAccountMove(models.Model):
                                     'debit': amount < 0.0 and -amount or 0.0,
                                     'credit': amount > 0.0 and amount or 0.0,
                                     'amount_currency': amount_currency,
-                                })
+                     analytic_account_id           })
                             already_exists.update({
                                 'analytic_account_id': line.analytic_account_id.id,
                             })
