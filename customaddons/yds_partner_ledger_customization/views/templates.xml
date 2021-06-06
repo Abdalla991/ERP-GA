@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+    <!-- Add Css to display partner ledger navbar-->
+    <template id="assets_backend_1" name="partner_ledger_navbar_css" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <link rel="stylesheet" type="text/css" href="/yds_partner_ledger_customization/static/src/css/partner_ledger.css"/>
+      </xpath>
+  </template>
+
     <!-- YDS: Override to remove initial balance from table lines-->
-    <template id="yds_line_template" inherit_id="account_reports.line_template">
+    <!-- <template id="yds_line_template" inherit_id="account_reports.line_template">
       <xpath expr="//tr" position="replace">
         <tr t-attf-class="#{trclass} #{line.get('class', '')} #{'o_js_account_report_parent_row_unfolded' if line.get('unfolded', False) else ''}" t-att-data-pagebreak="'before' if (line.get('page_break') and context.get('print_mode')) else None" t-att-data-parent-id="line.get('parent_id', False)" t-att="{k: v for k, v in line.items() if k.startswith('data-')}" t-att-style="line.get('style', '')">
           <td t-att-data-id="line['id']" t-att-class="'o_account_report_line o_account_report_line_indent ' + (line.get('unfoldable') and 'js_account_report_foldable o_foldable_total' or '') + ' ' + line.get('name_class', '')" t-att-data-unfolded="line.get('unfolded', False)" t-att-data-offset="line.get('offset', False)" t-att-data-progress="line.get('progress', False)" t-att-data-remaining="line.get('remaining', False)">
@@ -12,7 +19,7 @@
                 <i class="fa fa-caret-right" t-if="not line.get('unfolded')" role="img" aria-label="Folded" title="Folded" />
               </span>
             </t>
-            <t t-elif="not line.get('caret_options')">
+            <t t-elif="not line.getnone('caret_options')">
               <span t-att-data-id="line['id']" class="o_account_reports_caret_icon">
                 <i class="fa fa-caret-right invisible" role="img" aria-label="Unfolded" title="Unfolded" />
               </span>
@@ -76,7 +83,7 @@
           <t t-set="column_index" t-value="0" />
           <t t-foreach="line.get('columns')" t-as="cell">
             <t t-set="hierarchies_enabled" t-value="len(lines.get('columns_header', [])) > 1" />
-              <!-- YDS: Add condition to check if the column is Initial Balance and output nothing-->
+              YDS: Add condition to check if the column is Initial Balance and output nothing
             <t t-if="lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('name', '') == 'Initial Balance'"></t>
             <t t-else="">
               <td t-att-class="'o_account_report_line ' + (cell.get('class', lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('class', '')) + (line.get('unfoldable') and ' o_foldable_total' or '')) + ('' if hierarchies_enabled else ' o_account_report_line_indent')" t-att-style="cell.get('style', lines.get('columns_header')[-1][column_index+line.get('colspan', 1)].get('style', ''))">
@@ -89,17 +96,17 @@
           </t>
         </tr>
       </xpath>
-    </template>
+    </template> -->
 
     <!-- YDS: Override to remove initial balance from table headers-->
-    <template id="yds_header" inherit_id="account_reports.main_table_header">
+    <!-- <template id="yds_header" inherit_id="account_reports.main_table_header">
       <xpath expr="//thead" position="replace">
         <thead class="o_account_reports_header_hierarchy">
           <t t-foreach="lines.get('columns_header')" t-as="header_line">
             <tr>
               <t t-foreach="header_line" t-as="cell">
                 <t t-if="cell.get('name')">
-                  <!-- YDS: Add condition to check if column is initial balance and output nothing-->
+                  YDS: Add condition to check if column is initial balance and output nothing
                   <t t-if="cell.get('name') == 'Initial Balance'"></t>
                   <t t-else="">
                     <th t-att-class="'o_account_report_column_header ' + (cell.get('class', ''))" t-att-colspan="cell.get('colspan')" t-att-style="cell.get('style', '')" t-att-title="cell.get('title')" t-att-data-toggle="cell.get('data-toggle')">
@@ -117,6 +124,6 @@
           </t>
         </thead>
       </xpath>
-    </template>
+    </template> -->
   </data>
 </odoo>
