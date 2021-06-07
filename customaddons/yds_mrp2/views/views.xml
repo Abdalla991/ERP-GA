@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <data>
+
+        <record id="yds_res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">yds.res.config.settings.view.form.inherit.mark.done</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="mrp.res_config_settings_view_form" />
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_erp_manager')])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='mrp_byproduct']" position="after">
+                    <div class="col-lg-6 col-12 o_setting_box" id="mark_done_control">
+                        <div class="o_setting_left_pane">
+                            <field name="mo_mark_done_restriction" widget="upgrade_boolean" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="mo_mark_done_restriction" />
+                            <div class="text-muted">
+                                Enable restriction on Manufacturing Order mark done buttone, to check available quantities.                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+
+
+</odoo>

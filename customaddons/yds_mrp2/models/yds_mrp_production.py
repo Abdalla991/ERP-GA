@@ -10,6 +10,9 @@ class YdsMrpProduction(models.Model):
     yds_bom_expired = fields.Boolean(
         string="Selected Bill of Material has expired !", readonly=True, Default="False")
 
+    mark_done_restriction = fields.Boolean(
+        related="company_id.mo_mark_done_restriction")
+
     @api.depends('product_id', 'bom_id', 'company_id')
     def _compute_allowed_product_ids(self):
 
@@ -40,14 +43,18 @@ class YdsMrpProduction(models.Model):
     #     return res
 
     def button_mark_done(self):
-        unavailable_components = []
-        for move in self.move_raw_ids:
-            if move.state not in ['assigned', 'done', 'partially_available']:
-                unavailable_components.append(move.product_id.name)
-        if len(unavailable_components) > 0:
-            unavail_str = ', '.join(unavailable_components)
-            raise ValidationError(
-                _(f'Please check the availability of the following components: {unavail_str}.'))
-            return
-        res = super(YdsMrpProduction, self).button_mark_done()
-        return res
+        if self.mark_done_restriction:
+            unavailable_components = []
+            for move in self.move_raw_ids:
+                if move.state not in ['assigned', 'done', 'partially_available']:
+                    unavailable_components.append(move.product_id.name)
+            if len(unavailable_components) > 0:
+                unavail_str = ', '.join(unavailable_components)
+                raise ValidationError(
+                    _(f'Please check the availability of the following components: {unavail_str}.'))
+                return
+            res = super(YdsMrpProduction, self).button_mark_done()
+            return res
+        else:
+            res = super(YdsMrpProduction, self).button_mark_done()
+            return res
