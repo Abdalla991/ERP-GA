@@ -17,7 +17,7 @@
                         <div class="o_setting_right_pane">
                             <label for="mo_mark_done_restriction" />
                             <div class="text-muted">
-                                Enable restriction on Manufacturing Order mark done buttone, to check available quantities.                            </div>
+                                Enable restriction on Manufacturing Order mark done buttone, to check available quantities.</div>
                         </div>
                     </div>
                 </xpath>
