@@ -1,0 +1,206 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* dev_customer_credit_limit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e-20210518\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-24 14:36+0000\n"
+"PO-Revision-Date: 2021-06-24 14:36+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_customer_limit_wizard_form
+msgid "<span> Credit Limit Exceeded</span>"
+msgstr " تم تخطي حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_customer_limit_wizard_form
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_sale_order_confirm_inherit_form
+msgid "Cancel"
+msgstr "الغاء"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__cancel
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__check_credit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_users__check_credit
+msgid "Check Credit"
+msgstr "معرفة حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:res.groups,name:dev_customer_credit_limit.credit_limit_config
+msgid "Config Credit Limit On partners"
+msgstr "Config credit limit on partners"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_customer_limit_wizard_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_sale_order_confirm_inherit_form
+msgid "Confirm Sale"
+msgstr "تأكيد امر البيع"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model,name:dev_customer_credit_limit.model_res_partner
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__create_uid
+msgid "Created by"
+msgstr "انشئ من خلال"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__create_date
+msgid "Created on"
+msgstr "انشئ في"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_credit_readonly_partner_form
+msgid "Credit"
+msgstr "حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_users__credit_limit
+msgid "Credit Limit"
+msgstr "حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:ir.actions.act_window,name:dev_customer_credit_limit.action_credit_limit
+#: model:ir.ui.menu,name:dev_customer_credit_limit.menu_credit_limit_sale_order
+msgid "Credit Limit Sale Order"
+msgstr "خد ائتمان امر البيع"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__credit_limit_on_hold
+msgid "Credit Limit on Hold"
+msgstr "غلق حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__credit_limit
+msgid "Credit limit"
+msgstr "حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__credit_limit_on_hold
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_users__credit_limit_on_hold
+msgid "Credit limit on hold"
+msgstr "غلق حد الائتمان"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__current_sale
+msgid "Current Quotation"
+msgstr " عروض الاسعار الحالية"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__partner_id
+msgid "Customer"
+msgstr "العميل"
+
+#. module: dev_customer_credit_limit
+#: model:ir.actions.act_window,name:dev_customer_credit_limit.action_customer_limit_wizard
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_customer_limit_wizard_form
+msgid "Customer Credit Limit"
+msgstr " حد ائتمان العميل"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model,name:dev_customer_credit_limit.model_customer_limit_wizard
+msgid "Customer Credit Limit Wizard"
+msgstr ""
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__display_name
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__display_name
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_sale_order__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__exceeded_amount
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_sale_order__exceeded_amount
+msgid "Exceeded Amount"
+msgstr "المبلغ الزائد"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__id
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__id
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_sale_order__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__invoices
+msgid "Invoices"
+msgstr "فاتورة"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard____last_update
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner____last_update
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_sale_order____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__done
+msgid "Locked"
+msgstr "مقفل"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__draft
+msgid "Quotation"
+msgstr "عرض سعر"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__sent
+msgid "Quotation Sent"
+msgstr "تم إرسال عرض السعر"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__sale_orders
+msgid "Sale Orders"
+msgstr "أمر البيع"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model,name:dev_customer_credit_limit.model_sale_order
+#: model:ir.model.fields.selection,name:dev_customer_credit_limit.selection__sale_order__state__sale
+msgid "Sales Order"
+msgstr "أمر البيع"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_sale_order__state
+msgid "Status"
+msgstr "الحالة"
+
+#. module: dev_customer_credit_limit
+#: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__credit
+msgid "Total Receivable"
+msgstr "اجمالي المطلوب"
+
+#. module: dev_customer_credit_limit
+#: model_terms:ir.ui.view,arch_db:dev_customer_credit_limit.view_customer_limit_wizard_form
+msgid "or"
+msgstr "و"
