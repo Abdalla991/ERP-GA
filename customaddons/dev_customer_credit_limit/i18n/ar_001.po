@@ -35,7 +35,7 @@ msgstr "ملغي"
 #: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_partner__check_credit
 #: model:ir.model.fields,field_description:dev_customer_credit_limit.field_res_users__check_credit
 msgid "Check Credit"
-msgstr "معرفة حد الائتمان"
+msgstr "تفعيل حد الائتمان"
 
 #. module: dev_customer_credit_limit
 #: model:res.groups,name:dev_customer_credit_limit.credit_limit_config
@@ -83,7 +83,7 @@ msgstr "حد الائتمان"
 #: model:ir.actions.act_window,name:dev_customer_credit_limit.action_credit_limit
 #: model:ir.ui.menu,name:dev_customer_credit_limit.menu_credit_limit_sale_order
 msgid "Credit Limit Sale Order"
-msgstr "خد ائتمان امر البيع"
+msgstr "حد ائتمان امر البيع"
 
 #. module: dev_customer_credit_limit
 #: model:ir.model.fields,field_description:dev_customer_credit_limit.field_customer_limit_wizard__credit_limit_on_hold

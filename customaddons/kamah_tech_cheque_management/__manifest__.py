@@ -2,6 +2,8 @@
 {
     'name': "Check Management",
 
+    'sequence': '100',
+    
     'summary': """ Check Management  """,
 
     'description': """

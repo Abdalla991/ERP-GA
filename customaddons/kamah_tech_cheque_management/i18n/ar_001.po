@@ -1,0 +1,1173 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* kamah_tech_cheque_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e-20210506\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-06-24 12:20+0000\n"
+"PO-Revision-Date: 2021-06-24 12:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<span>Check Amount</span>"
+msgstr " مبلغ الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<span>Check Bank</span>"
+msgstr " بنك الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<span>Check Date</span>"
+msgstr " تاريخ الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<span>Check Number</span>"
+msgstr "رقم الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<span>Deposit Bank</span>"
+msgstr "يصرف في بنك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<strong>Customer: </strong>"
+msgstr " العميل"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<strong>Payment Amount: </strong>"
+msgstr " مبلغ المدفوعة"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<strong>Payment Date: </strong>"
+msgstr "تاريخ الدفع"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<strong>Payment Method: </strong>"
+msgstr "طريقة الدفع"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "<strong>payment subtype: </strong>"
+msgstr "payment subtype: "
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__account_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__account_id
+msgid "Account"
+msgstr "حساب"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_needaction
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "Action not allowed on normal checks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__check_state__active
+msgid "Active"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_exception_decoration
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_state
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_type_icon
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_all_pay_checks
+msgid "All Payable Checks"
+msgstr " كل الشيكات المستحقة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_all_rece_checks
+msgid "All Receivable Checks"
+msgstr " كل شيكات القبض"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__amount
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__amount
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__amount1
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__amount
+#, python-format
+msgid "Amount"
+msgstr " المبلغ"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "Amount of new Checks is not equal to amount of selected checks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__analyitc_id
+msgid "Analytic Account"
+msgstr " الحساب التحليلي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__approve_check
+msgid "Approve Check"
+msgstr " قبض الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action3
+msgid "Approve Checks"
+msgstr "قبض الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__approved
+msgid "Approved"
+msgstr "محصل"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_approved_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_approved_checks
+msgid "Approved Checks"
+msgstr " الشيكات المصروفة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_attachment_count
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__will_collection_user
+msgid "Bank Maturity Date"
+msgstr "تاريخ الصرف من البنك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.check_cycle_accounts_form
+msgid "Cancel"
+msgstr "الغاء"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action4
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_canceled_action
+msgid "Cancel Checks"
+msgstr "الغاء الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__canceled
+msgid "Canceled"
+msgstr "ملغاه"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_check_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__check_id
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.tttt_check_graph_view
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.ttttt_check_pivot_view
+msgid "Check"
+msgstr "شيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__amount
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_search
+#, python-format
+msgid "Check Amount"
+msgstr " مبلغ الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__check_amt
+msgid "Check Amt"
+msgstr " مبلغ الشيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_bank
+#, python-format
+msgid "Check Bank"
+msgstr "مصدر الشيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__bank
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__bank
+#, python-format
+msgid "Check Bank Name"
+msgstr "اسم بنك الشيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__check_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__check_date
+#, python-format
+msgid "Check Date"
+msgstr "تاريخ الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_form
+msgid "Check Info"
+msgstr "بيانات الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.check_main_menu
+msgid "Check Management"
+msgstr "إدارة الشيكات"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_from_check_man
+msgid "Check Managment"
+msgstr "إدارة الشيكات"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__check_number
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_number
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_search
+#, python-format
+msgid "Check Number"
+msgstr "رقم الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__amount_reg
+msgid "Check Regular Amount"
+msgstr "مبلغ الشيك الكلي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__open_amount_reg
+msgid "Check Regular Open Amount"
+msgstr "المبلغ المتبقي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_state
+msgid "Check State"
+msgstr "حالة الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__check_type
+msgid "Check Type"
+msgstr "نوع الشيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__check_number
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__check_number
+#, python-format
+msgid "Check number"
+msgstr "رقم الشيك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__pay_check_ids
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_check_main_menu
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_form_view
+#, python-format
+msgid "Checks"
+msgstr "الشيكات"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_checks_menu_paid
+msgid "Checks Paid"
+msgstr "الشكات المدفوعة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_checks_menu_receive
+msgid "Checks Received"
+msgstr "الشيكات المقبوضة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action5
+msgid "Company Return"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_form_view
+msgid "Confirm"
+msgstr "التاكيد"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__contracting
+msgid "Contracting Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__create_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__create_uid
+msgid "Created by"
+msgstr "انشئ من خلال"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__create_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__currency_id
+msgid "Currency"
+msgstr " العملة"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_search
+msgid "Customer"
+msgstr " العميل"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_form
+msgid "Customer Info"
+msgstr "بيانات العميل"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action7
+msgid "Customer Return"
+msgstr "ترجيع للعميل"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__cs_return
+msgid "Customer Returned"
+msgstr "مرتجع للعميل"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_csreturned_action
+msgid "Customer Returned Checks"
+msgstr " الشيكات المرتجعة للعميل "
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action6
+msgid "Debit Checks"
+msgstr "دفع الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__debited
+msgid "Debited"
+msgstr "مدفوع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_debited_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_debited_checks
+msgid "Debited Checks"
+msgstr "الشيكات المدفوعة"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/check_payment.py:0
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__dep_bank
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__dep_bank
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__dep_bank
+#, python-format
+msgid "Depoist Bank"
+msgstr "بنك  الإيداع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action
+msgid "Depoist Checks"
+msgstr "إيداع الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__depoisted
+msgid "Depoisted"
+msgstr "مودعة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_depoisted_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_depoisted_checks
+msgid "Depoisted Checks"
+msgstr "الشيكات المودعة"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_search
+msgid "Deposited Checks"
+msgstr "الشيكات المودعة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_journal__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_report_check_management_receipt_check_cash_payment__display_name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__normal_payments__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__date_maturity
+msgid "Due date"
+msgstr "تاريخ الصرف"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_follower_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_channel_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_channel_ids
+msgid "Followers (Channels)"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_partner_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__activity_type_icon
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__garage
+msgid "Garage Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__handed
+msgid "Handed"
+msgstr "مسلمة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_handed_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_handed_checks
+msgid "Handed Checks"
+msgstr "الشيكات المسلمة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__holding
+msgid "Holding"
+msgstr "بالخزينة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_holding_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_holding_checks
+msgid "Holding Checks"
+msgstr "شيكات بالخزينة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_journal__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_report_check_management_receipt_check_cash_payment__id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_exception_icon
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__activity_exception_icon
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_needaction
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_unread
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_needaction
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_unread
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_has_error
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_has_sms_error
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_has_error
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_bank_statement_import_journal_creation__inter_journal_type
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_journal__inter_journal_type
+msgid "Intermediate Journal Type"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_is_follower
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/journal_subtype.py:0
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__account_journal__payment_subtype__issue_check
+#, python-format
+msgid "Issued Checks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__jebal_check_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__jebal_con_pay_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__jebal_nrom_pay_id
+msgid "Jebal Check"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line__jebal_pay_id
+msgid "Jebal Payment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_account_journal
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__journal_id
+msgid "Journal"
+msgstr "دفتر اليومية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_account_move
+msgid "Journal Entry"
+msgstr "قيد اليومية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_account_move_line
+msgid "Journal Item"
+msgstr "عنصر اليومية"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_form_view
+msgid "Journal Items"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_journal____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_move_line____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_report_check_management_receipt_check_cash_payment____last_update
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__write_uid
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_create_moves__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__write_date
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_split_merge_check__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_main_attachment_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_main_attachment_id
+msgid "Main Attachment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__merge_split_checks
+msgid "Merge Split Checks"
+msgstr " جمع/فصل الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_has_error
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__mod
+msgid "Modification Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_approve
+msgid "Name Approve"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_cancel
+msgid "Name Cancel"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_csreturn
+msgid "Name Csreturn"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_debit
+msgid "Name Debit"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_reject
+msgid "Name Reject"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_return
+msgid "Name Return"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__name_split_merge
+msgid "Name Split Merge"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_date_deadline
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_summary
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_type_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_native_payments_check_create__nom_pay_id
+msgid "Nom Pay"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__check_type__pay
+msgid "Notes Payable"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__notes_rece_id
+msgid "Notes Rece"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__check_type__rece
+msgid "Notes Receivable"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__notespayable_id
+msgid "Notespayable"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_needaction_counter
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_has_error_counter
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_needaction_counter
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_has_error_counter
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__message_unread_counter
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__open_amount
+#, python-format
+msgid "Open Amount"
+msgstr "المبلغ المتبقي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__open_amt
+msgid "Open Amt"
+msgstr "المبلغ المتبقي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_appove_check_lines__paid_amt
+msgid "Paid Amt"
+msgstr "المبلغ المدفوع"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/checks_fields.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__investor_spilt
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__investor_id
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.view_norm_payment_filter_check
+#, python-format
+msgid "Partner"
+msgstr " الشريك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__partner_id
+msgid "Partner Name"
+msgstr "اسم الشريك"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/journal_subtype.py:0
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__account_journal__inter_journal_type__pay
+#, python-format
+msgid "Pay"
+msgstr "الدفع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_pay_action
+msgid "Payable Checks"
+msgstr " الشيكات المستحقة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__payment_date
+msgid "Payment Date"
+msgstr " تاريخ الدفع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__payment_method
+msgid "Payment Journal"
+msgstr " دفتر اليومية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__payment_No
+msgid "Payment No"
+msgstr "رقم المدفوع"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "Payment Receipt:"
+msgstr "رقم العملية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_bank_statement_import_journal_creation__payment_subtype
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_account_journal__payment_subtype
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__payment_subtype
+msgid "Payment Subtype"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__send_rec_money
+msgid "Payment Type"
+msgstr " نوع الدفع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.report,name:kamah_tech_cheque_management.action_report_payment_receipt
+msgid "Payment check Receipt"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_action_norm_pay_action
+#: model:ir.model,name:kamah_tech_cheque_management.model_normal_payments
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.default_norm_pay_menu
+msgid "Payments"
+msgstr "المدفوعات"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "Please provide the bank account"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__normal_payments__state__posted
+msgid "Posted"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.receipt_check_cash_payment_print
+msgid "Receipt No:"
+msgstr "رقم العملية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__receipt_number
+msgid "Receipt Number"
+msgstr " رقم العملية"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_rece_action
+msgid "Receivable Checks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/journal_subtype.py:0
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__account_journal__inter_journal_type__receive
+#, python-format
+msgid "Receive"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__normal_payments__send_rec_money__rece
+msgid "Receive Money"
+msgstr "قبض"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/models/journal_subtype.py:0
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__account_journal__payment_subtype__rece_check
+#, python-format
+msgid "Received Checks"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__regular
+msgid "Regular Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action2
+msgid "Reject Checks"
+msgstr "رفض الشيك"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__rejected
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_rejected_action
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_rejected_checks
+msgid "Rejected Checks"
+msgstr " الشيكات المرفوضة"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.check_cycle_accounts_form
+msgid "Rejection Reason"
+msgstr " سبب الرفض"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__reject_reason
+msgid "Rejection reason"
+msgstr " سبب الرفض"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__reservation
+msgid "Reservation Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__activity_user_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__state__returned
+msgid "Returned"
+msgstr "مرتجع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.native_check_returned_action
+msgid "Returned Checks"
+msgstr " اليكات المرتجعة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_returned_checks
+msgid "Returned Checks On Hand"
+msgstr "الشيكات المرتجعة بالخزينة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.ui.menu,name:kamah_tech_cheque_management.native_csreturned_checks
+msgid "Returned Checks To Customer"
+msgstr "الشيكات المرتجعة للعملة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_has_sms_error
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.view_norm_payment_filter_check
+msgid "Search Payments"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__normal_payments__send_rec_money__send
+msgid "Send Money"
+msgstr "صرف"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__type__ser
+msgid "Services Installment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action8
+msgid "Split-Merge"
+msgstr "فصل/جمع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__state
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__state
+msgid "State"
+msgstr "الحالة"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__activity_state
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.check_cycle_accounts_form
+msgid "Submit"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields.selection,name:kamah_tech_cheque_management.selection__check_management__check_state__suspended
+msgid "Suspended"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "The paid amount is greater than open amount for some checks\n"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_account_move_line__date_maturity
+msgid ""
+"This field is used for payable and receivable journal entries. You can put "
+"the limit date for the payment of this line."
+msgstr ""
+"يُستخدم هذا الحقل للقيود اليومية الدائنة والمدينة. يمكنك وضع حد زمني لسداد "
+"هذا البند."
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_form_view
+msgid "Title"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.check_cycle_accounts_form
+msgid "Total"
+msgstr "الاجمالي"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_tree
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_tree_view
+msgid "Total Amount"
+msgstr "اجمالي المبلغ"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.check_cycle_accounts_form
+msgid "Total Checks Amount"
+msgstr "اجمالي مبلغ الشيكات"
+
+#. module: kamah_tech_cheque_management
+#: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.checks_object_tree
+msgid "Total Open Amount"
+msgstr "اجمالي المبلغ المتبقي"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__type
+msgid "Type"
+msgstr "النوع"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__activity_exception_decoration
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__under_collect_id
+msgid "Under Collect"
+msgstr "تحت التحصيل"
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__under_collect_jour
+msgid "Under Collect Jour"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "Unknown Action"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_unread
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__message_unread_counter
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__user_id
+msgid "User"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__website_message_ids
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_check_management__website_message_ids
+#: model:ir.model.fields,help:kamah_tech_cheque_management.field_normal_payments__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "You can not merge checks from different journals"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_appove_check_lines
+msgid "appove.check.lines"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_check_cycle_accounts_default
+msgid "check.cycle.accounts.default"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_create_moves
+msgid "create.moves"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_native_payments_check_create
+msgid "native.payments.check.create"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_report_check_management_receipt_check_cash_payment
+msgid "report.check_management.receipt_check_cash_payment"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model,name:kamah_tech_cheque_management.model_split_merge_check
+msgid "split.merge.check"
+msgstr ""
+
+#. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_cycle_accounts_default__total_amt_checks
+msgid "total Amount of Checks"
+msgstr "اجمالي مبلغ الشيكات"
+
+#. module: kamah_tech_cheque_management
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#: code:addons/kamah_tech_cheque_management/wizard/check_cycle_wizard.py:0
+#, python-format
+msgid "u cant split checks for different customers ."
+msgstr ""
