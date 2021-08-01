@@ -5,7 +5,7 @@
             <field name='name'>checks.management.search</field>
             <field name='model'>check.management</field>
             <field name='arch' type='xml'>
-                <search>
+                <search delete="false">
                     <field name="check_number" string="Check Number"/>
                     <field name="investor_id" string="Customer"/>
                     <field name="amount" string="Check Amount"/>
@@ -34,7 +34,7 @@
             <field name="model">check.management</field>
 
             <field name="arch" type="xml">
-                <form string="" create="false">
+                <form string="" create="false" delete="false">
                     <header>
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -74,7 +74,7 @@
             <field name="model">check.management</field>
 
             <field name="arch" type="xml">
-                <tree string="" create="false" edit="false">
+                <tree string="" create="false" edit="false" delete="false">
                     <field name="check_number"/>
                     <field name="check_date"/>
                     <field name="investor_id" />
