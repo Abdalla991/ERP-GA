@@ -4,4 +4,4 @@ from . import journal_subtype
 from . import checks_fields
 from . import check_payment
 from . import report_check_cash_payment_receipt
-
+from . import check_config

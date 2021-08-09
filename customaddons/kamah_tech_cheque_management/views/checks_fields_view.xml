@@ -5,7 +5,7 @@
             <field name='name'>checks.management.search</field>
             <field name='model'>check.management</field>
             <field name='arch' type='xml'>
-                <search delete="false">
+                <search>
                     <field name="check_number" string="Check Number"/>
                     <field name="investor_id" string="Customer"/>
                     <field name="amount" string="Check Amount"/>
@@ -32,9 +32,8 @@
         <record id="checks_object_form" model="ir.ui.view">
             <field name="name">checks.object.form</field>
             <field name="model">check.management</field>
-
             <field name="arch" type="xml">
-                <form string="" create="false" delete="false">
+                <form string="" create="false">
                     <header>
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -54,6 +53,9 @@
                             <group string="Customer Info">
                                 <field name="investor_id" readonly="1" invisible="0"/>
                             </group >
+                            <group string="Journal">
+                                <field string="Return Journal" name="under_collect_jour" />
+                            </group>
                         </group>
                         <notebook>
 
@@ -74,10 +76,11 @@
             <field name="model">check.management</field>
 
             <field name="arch" type="xml">
-                <tree string="" create="false" edit="false" delete="false">
+                <tree string="" create="false" edit="false">
                     <field name="check_number"/>
                     <field name="check_date"/>
                     <field name="investor_id" />
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
                     <field name="check_bank"/>
                     <field name="dep_bank"/>
                     <field name="amount" sum="Total Amount"/>
@@ -213,7 +216,14 @@
             </field>
         </record>
 
-
+        <record id="sequence_receipt_number_seq" model="ir.sequence">
+            <field name="name">Check Receipt  Number sequence</field>
+            <field name="code">check.payment</field>
+            <field name="prefix">CH#</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="False" name="company_id"/>
+        </record>
 
 
     </data>

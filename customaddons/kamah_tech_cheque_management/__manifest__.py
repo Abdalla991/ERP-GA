@@ -12,8 +12,8 @@
 
     """,
 
-    'author': "Kamah Tech",
-    'website': "http://www.kamah-tech.com/",
+    'author': "YDS Digital Solutions",
+    'website': "http://www.yds-int.com/",
 
     # Categories can be used to filter modules in modules listing
     # Check 
@@ -28,6 +28,7 @@
     'data': [
 
         'security/ir.model.access.csv',
+        'security/checks_security.xml',
         'views/account_journal_view.xml',
         'views/checks_fields_view.xml',
         'views/check_payment.xml',
@@ -35,6 +36,7 @@
         'wizard/check_cycle_wizard_view.xml',
         'views/payment_report.xml',
         'views/report_check_cash_payment_receipt_templates.xml',
+        'views/res_config.xml',
         # 'data/sms_temp.xml',
 
     ],

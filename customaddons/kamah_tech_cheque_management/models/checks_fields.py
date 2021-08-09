@@ -11,7 +11,10 @@ class check_management(models.Model):
     _name = 'check.management'
     _description = 'Check'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _check_company_auto = True
 
+    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True,
+                                 default=lambda self: self.env.company)
     check_number = fields.Char(
         string=_("Check Number"), required=True, default="0")
     check_date = fields.Date(string=_("Check Date"), required=True)
@@ -44,12 +47,19 @@ class check_management(models.Model):
     state = fields.Selection(selection=[('holding', 'Holding'), ('depoisted', 'Depoisted'),
                                         ('approved', 'Approved'), ('rejected', 'Rejected'), (
                                             'returned', 'Returned'), ('handed', 'Handed'),
-                                        ('debited', 'Debited'), ('canceled', 'Canceled'), ('cs_return', 'Customer Returned')], translate=True, track_visibility='onchange')
+                                        ('debited', 'Debited'), ('canceled', 'Canceled'), ('cs_return', 'Customer Returned')], translate=False, track_visibility='onchange')
 
     notes_rece_id = fields.Many2one('account.account')
     under_collect_id = fields.Many2one('account.account')
     notespayable_id = fields.Many2one('account.account')
-    under_collect_jour = fields.Many2one('account.journal')
+
+    @api.model
+    def _deafult_under_collect_jour(self):
+        return self.env['ir.config_parameter'].sudo().get_param("kamah_tech_cheque_management.check_return_journal_id")
+
+    under_collect_jour = fields.Many2one('account.journal',
+                                         default=_deafult_under_collect_jour,
+                                         store=True)
     check_type = fields.Selection(
         selection=[('rece', 'Notes Receivable'), ('pay', 'Notes Payable')])
     check_state = fields.Selection(
@@ -85,31 +95,47 @@ class check_management(models.Model):
                 if 'menu_sent' in self.env.context:
                     if self.env.context['menu_sent'] in ('handed', 'debited'):
                         res['fields']['state']['selection'] = [
-                            ('handed', 'Handed'), ('debited', 'Debited')]
+                            ('handed', 'Handed'),
+                            ('debited', 'Debited')
+                        ]
                         if self.env.context['lang'] == 'ar_001':
                             res['fields']['state']['selection'] = [
-                                ('handed', 'مسلمة'), ('debited', 'مدفوع')]
+                                ('handed', 'مسلمة'),
+                                ('debited', 'مدفوع')
+                            ]
                     else:
-                        res['fields']['state']['selection'] = [('holding', 'Holding'), ('depoisted', 'Depoisted'), ('approved', 'Approved'),
-                                                               ('rejected', 'Rejected'), ('returned', 'Returned'), ('canceled', 'Canceled'), ('cs_return', 'Customer Returned')]
+                        res['fields']['state']['selection'] = [
+                            ('holding', 'Holding'),
+                            ('depoisted', 'Depoisted'),
+                            ('approved', 'Approved'),
+                            ('rejected', 'Rejected'),
+                            ('returned', 'Returned'),
+                            ('canceled', 'Canceled'),
+                            ('cs_return', 'Customer Returned')
+                        ]
                         if self.env.context['lang'] == 'ar_001':
-                            res['fields']['state']['selection'] = [('holding', 'بالخزينة'), ('depoisted', 'مودعة'),
-                                                                   ('approved', 'محصل'), ('rejected',
-                                                                                           'مرفوض'), ('returned', 'مرتجع'),
-                                                                   ('canceled', 'ملغاه'), ('cs_return', 'مرتجع للعميل')]
+                            res['fields']['state']['selection'] = [
+                                ('holding', 'بالخزينة'),
+                                ('depoisted', 'مودعة'),
+                                ('approved', 'محصل'),
+                                ('rejected', 'مرفوض'),
+                                ('returned', 'مرتجع'),
+                                ('canceled', 'ملغاه'),
+                                ('cs_return', 'مرتجع للعميل')
+                            ]
         if 'toolbar' in res:
             if 'menu_sent' in self.env.context:
                 if self.env.context['menu_sent'] == 'holding':
                     for i in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][i]['name'] == 'Reject Checks' or res['toolbar']['action'][i]['name'] == 'رفض الشيك':
+                        if res['toolbar']['action'][i]['name'] == 'Reject Checks' or res['toolbar']['action'][i]['name'] == "رفض الشيك":
                             del res['toolbar']['action'][i]
                             break
                     for i in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][i]['name'] == 'Customer Return' or res['toolbar']['action'][i]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][i]['name'] == 'Customer Return' or res['toolbar']['action'][i]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][i]
                             break
                     for i in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][i]['name'] == 'Cancel Checks' or res['toolbar']['action'][i]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][i]['name'] == 'Cancel Checks' or res['toolbar']['action'][i]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][i]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -122,11 +148,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -134,7 +160,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -151,7 +177,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -159,7 +185,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -167,7 +193,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -184,7 +210,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -192,7 +218,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -205,11 +231,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -226,11 +252,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -238,7 +264,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                 if self.env.context['menu_sent'] == 'debited':
@@ -251,11 +277,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -267,7 +293,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -284,11 +310,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -300,7 +326,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -317,11 +343,11 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
+                        if res['toolbar']['action'][j]['name'] == 'Cancel Checks' or res['toolbar']['action'][j]['name'] == "الغاء الشيك":
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -333,7 +359,7 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
-                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للشركة':
+                        if res['toolbar']['action'][j]['name'] == 'Customer Return' or res['toolbar']['action'][j]['name'] == 'ترجيع للعميل':
                             del res['toolbar']['action'][j]
                             break
                     for j in range(len(res['toolbar']['action'])):
@@ -341,3 +367,10 @@ class check_management(models.Model):
                             del res['toolbar']['action'][j]
                             break
         return res
+
+    def name_get(self):
+        result = []
+        for record in self:
+            result.append((record.id, "Check #" +
+                           str(record.check_number)))
+        return result

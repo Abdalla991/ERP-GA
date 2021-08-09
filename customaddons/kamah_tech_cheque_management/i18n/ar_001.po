@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0+e-20210506\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-24 12:20+0000\n"
-"PO-Revision-Date: 2021-06-24 12:20+0000\n"
+"POT-Creation-Date: 2021-07-13 13:19+0000\n"
+"PO-Revision-Date: 2021-07-13 13:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -314,9 +314,15 @@ msgid "Checks Received"
 msgstr "الشيكات المقبوضة"
 
 #. module: kamah_tech_cheque_management
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_check_management__company_id
+#: model:ir.model.fields,field_description:kamah_tech_cheque_management.field_normal_payments__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: kamah_tech_cheque_management
 #: model:ir.actions.act_window,name:kamah_tech_cheque_management.check_cycle_wizard_action5
 msgid "Company Return"
-msgstr ""
+msgstr "ترجيع للشركة"
 
 #. module: kamah_tech_cheque_management
 #: model_terms:ir.ui.view,arch_db:kamah_tech_cheque_management.normal_payments_check_form_view
