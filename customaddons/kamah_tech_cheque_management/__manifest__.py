@@ -3,7 +3,7 @@
     'name': "Check Management",
 
     'sequence': '100',
-    
+
     'summary': """ Check Management  """,
 
     'description': """
@@ -16,13 +16,13 @@
     'website': "http://www.yds-int.com/",
 
     # Categories can be used to filter modules in modules listing
-    # Check 
+    # Check
     # for the full list
     'category': 'Accounting',
     'version': '14.0.1.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account', 'account_accountant'],
+    'depends': ['base', 'account', 'account_accountant', 'yds_discounts'],
 
     # always loaded
     'data': [
