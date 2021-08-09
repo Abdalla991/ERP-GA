@@ -13,6 +13,9 @@ class YdsMrpProduction(models.Model):
     mark_done_restriction = fields.Boolean(
         related="company_id.mo_mark_done_restriction")
 
+    product_category = fields.Many2one(
+        related="product_id.product_tmpl_id.categ_id", string="Product Category", store=True)
+
     @api.depends('product_id', 'bom_id', 'company_id')
     def _compute_allowed_product_ids(self):
 

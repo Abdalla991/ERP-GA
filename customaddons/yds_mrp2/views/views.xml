@@ -24,6 +24,17 @@
             </field>
         </record>
 
+        <record id="view_production_pivot_inherit_mrp" model="ir.ui.view">
+            <field name="name">mrp.production.view.pivot.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.view_production_pivot"/>
+            <field name="arch" type="xml">
+                <xpath expr="//pivot" position="inside">
+                    <field name="product_category" type="row" />
+                </xpath>
+            </field>
+        </record>
+
     </data>
 
 
