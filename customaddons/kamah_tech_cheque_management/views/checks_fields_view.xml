@@ -33,7 +33,7 @@
             <field name="name">checks.object.form</field>
             <field name="model">check.management</field>
             <field name="arch" type="xml">
-                <form string="" create="false">
+                <form string="" create="false" delete="false">
                     <header>
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -76,7 +76,7 @@
             <field name="model">check.management</field>
 
             <field name="arch" type="xml">
-                <tree string="" create="false" edit="false">
+                <tree string="" create="false" edit="false" delete="false">
                     <field name="check_number"/>
                     <field name="check_date"/>
                     <field name="investor_id" />
