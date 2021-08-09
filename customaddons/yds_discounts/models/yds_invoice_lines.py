@@ -68,7 +68,6 @@ class YDSAccountMove(models.Model):
                         # print("line "+str(count)+"has "+"uni discount of " +str(universal_discount_line_amount))
                     else:
                         universal_discount_line_amount = 0
-
                     lineName = line.name[:64]+" Universal discount "
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
@@ -85,6 +84,7 @@ class YDSAccountMove(models.Model):
                                 and (move.move_type == "out_invoice"
                                      or move.move_type == "out_refund")\
                                 and amount > 0:
+                            print("Move type: "+move.move_type)
                             if move.move_type == "out_invoice":
                                 already_exists.update({
                                     'debit': amount > 0.0 and amount or 0.0,
@@ -139,6 +139,8 @@ class YDSAccountMove(models.Model):
                                     'company_currency_id': terms_lines.company_currency_id.id,
                                     'date': move.date,
                                 }
+                                print("Move type: "+move.move_type)
+                                print("Move Amount: "+str(amount))
                                 if move.move_type == "out_invoice":
                                     dict.update({
                                         'debit': amount > 0.0 and amount or 0.0,
@@ -168,19 +170,27 @@ class YDSAccountMove(models.Model):
                                     })
                                     move.line_ids = [(0, 0, dict)]
                             if in_draft_mode:
-                                # print("Uni in draft mode 2")
+                                print("Uni in draft mode")
                                 # Update the payement account amount
                                 move._recompute_dynamic_lines(
                                     recompute_all_taxes=True, recompute_tax_base_amount=True)
                             else:
-                                # print("Uni not in draft mode final")
+                                print("Uni not in draft mode final")
                                 already_exists = self.line_ids.filtered(
                                     lambda line: line.name and line.name.find(lineName) == 0)
-                                already_exists.with_context(check_move_validity=False).update({
+                                if move.move_type == "out_invoice":
+                                    already_exists.with_context(check_move_validity=False).update({
                                     'debit': amount > 0.0 and amount or 0.0,
                                     'credit': amount < 0.0 and -amount or 0.0,
                                     'amount_currency': -amount_currency,
                                 })
+                                else:
+                                    already_exists.with_context(check_move_validity=False).update({
+                                    'debit':  amount < 0.0 and -amount or 0.0,
+                                    'credit': amount > 0.0 and amount or 0.0,
+                                    'amount_currency': amount_currency,
+                                })
+                                
                                 # ipdb.set_trace()
                                 move.with_context(check_move_validity=False)._recompute_dynamic_lines(
                                     recompute_all_taxes=True, recompute_tax_base_amount=True)
@@ -371,10 +381,18 @@ class YDSAccountMove(models.Model):
                                     print("not in draft mode 2")
                                     already_exists = move.line_ids.filtered(
                                         lambda line: line.name and line.name.find(newLineName) == 0)
-                                    already_exists.with_context(check_move_validity=False).update({
+                                        
+                                    if move.move_type == "out_invoice":
+                                        already_exists.with_context(check_move_validity=False).update({
                                         'debit': amount > 0.0 and amount or 0.0,
                                         'credit': amount < 0.0 and -amount or 0.0,
                                         'amount_currency': -amount_currency,
+                                    })
+                                    else:
+                                        already_exists.with_context(check_move_validity=False).update({
+                                        'debit':  amount < 0.0 and -amount or 0.0,
+                                        'credit': amount > 0.0 and amount or 0.0,
+                                        'amount_currency': amount_currency,
                                     })
                                     move.with_context(check_move_validity=False)._recompute_dynamic_lines(
                                         recompute_all_taxes=True, recompute_tax_base_amount=True)
