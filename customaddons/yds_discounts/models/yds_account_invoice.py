@@ -136,6 +136,12 @@ class YDSAccountMove(models.Model):
             move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - move.yds_total_discount - move.ks_amount_discount
             move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total- move.yds_total_discount - move.ks_amount_discount
+
+            if (move.move_type == 'out_invoice'):
+                move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total- move.yds_total_discount - move.ks_amount_discount
+            else:
+                move.amount_total_signed = abs(total) if move.move_type == 'entry' else -(total- (move.yds_total_discount + move.ks_amount_discount))
+
             move.amount_residual_signed = total_residual
             currency = len(currencies) == 1 and currencies.pop() or move.company_id.currency_id
             # Compute 'payment_state'.
@@ -518,6 +524,37 @@ class YDSAccountMove(models.Model):
                     'is_anglo_saxon_line': True,
                 })
         return lines_vals_list
+
+    def action_switch_invoice_into_refund_credit_note(self):
+        if any(move.move_type not in ('in_invoice', 'out_invoice') for move in self):
+            raise ValidationError(_("This action isn't available for this document."))
+
+        for move in self:
+            reversed_move = move._reverse_move_vals({}, False)
+            new_invoice_line_ids = []
+            for cmd, virtualid, line_vals in reversed_move['line_ids']:
+                if not line_vals['exclude_from_invoice_tab']:
+                    new_invoice_line_ids.append((0, 0,line_vals))
+            if move.amount_total < 0:
+                # Inverse all invoice_line_ids
+                for cmd, virtualid, line_vals in new_invoice_line_ids:
+                    line_vals.update({
+                        'quantity' : -line_vals['quantity'],
+                        'amount_currency' : -line_vals['amount_currency'],
+                        'debit' : line_vals['credit'],
+                        'credit' : line_vals['debit']
+                    })
+           
+            move.write({
+                'move_type': move.move_type.replace('invoice', 'refund'),
+                'invoice_line_ids' : [(5, 0, 0)],
+                'partner_bank_id': False,
+            })
+            move.write({'invoice_line_ids' : new_invoice_line_ids})
+            # import ipdb
+            # ipdb.set_trace()
+            move.add_all_lines()
+
 
 class YDSAccountMoveLine(models.Model):
     _inherit = "account.move.line"
