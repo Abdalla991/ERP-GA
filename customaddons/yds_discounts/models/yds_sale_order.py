@@ -21,7 +21,7 @@ class YDSSaleOrder(models.Model):
         'res.partner.category', string='Customer Tags', compute='_compute_yds_customer_category_id', store=True)
     yds_customer_tag = fields.Char(
         string="Customer Tags", compute="_compute_yds_customer_tags", store=True, default="")
-    
+
     yds_update = fields.Char(
         "Is Updated", help="Field used to update orders customer tags")
 
@@ -43,7 +43,6 @@ class YDSSaleOrder(models.Model):
                     else:
                         record.yds_customer_tag += " - "+tag.name
                     i += 1
-
 
     @api.depends('order_line.price_total')
     def _amount_all(self):
@@ -150,9 +149,12 @@ class SaleOrderlineTemplate(models.Model):
                 line.yds_cost_percentage = (product_cost / line.price_unit)*100
 
     @api.depends('product_id')
+    @api.onchange('product_uom_qty', 'product_id')
     def _compute_yds_product_cost(self):
         for line in self:
-            line.yds_product_cost = line.product_id.standard_price * line.product_uom_qty
+            line.yds_product_cost = line.product_id.standard_price * \
+                line.product_uom._compute_quantity(
+                    line.product_uom_qty, line.product_id.uom_id)
 
     # @api.depends('invoice_lines', 'invoice_lines.price_total', 'invoice_lines.move_id.state', 'invoice_lines.move_id.move_type','untaxed_amount_invoiced')
     # def _compute_yds_untaxed_amount_invoiced(self):
