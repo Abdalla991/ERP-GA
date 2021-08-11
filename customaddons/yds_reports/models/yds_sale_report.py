@@ -79,7 +79,7 @@ class YDSSaleReport(models.Model):
             CASE WHEN l.product_id IS NOT NULL THEN sum((l.price_unit * l.product_uom_qty * l.discount / 100.0 / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END))ELSE 0 END as discount_amount,
             s.id as order_id,
             CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount,
-            l.yds_product_cost as cost,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(l.purchase_price * l.product_uom_qty) ELSE 0 END as cost,
             l.yds_cost_percentage as cost_percentage,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
             s.ks_global_discount_rate as uni_rate,
