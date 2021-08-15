@@ -29,6 +29,7 @@ class YDSSaleReport(models.Model):
     uni_amount = fields.Float('Universal Discount Amount', readonly=True)
     uni_rate = fields.Float('Universal Discount %', readonly=True)
     customer_tag = fields.Char('Customer Tag', readonly=True)
+    yds_order_qty = fields.Float('فاقد مبيعات', readonly=True)
 
     # def _query(self, with_clause='', fields={}, groupby='', from_clause=''):
     #     # fields['price_total'] = ", SUM(l.x_price_total / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) AS price_total"
@@ -80,6 +81,7 @@ class YDSSaleReport(models.Model):
             s.id as order_id,
             CASE WHEN l.product_id IS NOT NULL THEN SUM(l.price_subtotal - l.x_price_subtotal) ELSE 0 END AS uni_amount,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.purchase_price * l.product_uom_qty) ELSE 0 END as cost,
+            CASE WHEN l.product_id IS NOT NULL THEN sum(l.product_uom_qty - l.qty_invoiced) ELSE 0 END as yds_order_qty,
             l.yds_cost_percentage as cost_percentage,
             CASE WHEN l.product_id IS NOT NULL THEN sum(l.x_price_subtotal_wo_uni / CASE COALESCE(s.currency_rate, 0) WHEN 0 THEN 1.0 ELSE s.currency_rate END) ELSE 0 END as x_price_subtotal_wo_uni,
             s.ks_global_discount_rate as uni_rate,
