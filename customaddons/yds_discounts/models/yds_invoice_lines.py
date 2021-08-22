@@ -68,7 +68,7 @@ class YDSAccountMove(models.Model):
                         # print("line "+str(count)+"has "+"uni discount of " +str(universal_discount_line_amount))
                     else:
                         universal_discount_line_amount = 0
-                    lineName = line.name[:64]+" Universal discount "
+                    lineName = line.name+" Universal discount "
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     terms_lines = move.line_ids.filtered(
@@ -204,7 +204,7 @@ class YDSAccountMove(models.Model):
         for move in self:
             for line in move.invoice_line_ids:
                 if line.name and move.ks_global_discount_rate == 0:
-                    lineName = line.name[:64]+" Universal discount "
+                    lineName = line.name+" Universal discount "
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     if already_exists:
@@ -257,7 +257,7 @@ class YDSAccountMove(models.Model):
 
                     # ipdb.set_trace()
 
-                    lineName = line.name[:64]+" discount "
+                    lineName = line.name+" discount "
                     print("------Existing Lines ------")
                     for l in move.line_ids:
                         print(str(l.name))
@@ -301,7 +301,7 @@ class YDSAccountMove(models.Model):
                             print("does not exist")
                             in_draft_mode = move != move._origin
                             # if move.move_type == 'out_invoice':
-                            newLineName = line.name[:64]+" discount "
+                            newLineName = line.name+" discount "
                             if hasDiscount and move.move_type in type_list:
                                 in_draft_mode = move != move._origin
                                 terms_lines = move.line_ids.filtered(
@@ -405,7 +405,7 @@ class YDSAccountMove(models.Model):
         for move in self:
             for line in move.invoice_line_ids:
                 if line.name and line.discount == 0:
-                    lineName = line.name[:64]+" discount "
+                    lineName = line.name+" discount "
                     already_exists = move.line_ids.filtered(
                         lambda line: line.name and line.name.find(lineName) == 0)
                     if already_exists:
@@ -441,14 +441,16 @@ class YDSAccountMove(models.Model):
                     lines_to_be_removed -= line
 
             # debugging purposes REMOVE ME
-            # print("before cleaning")
+            print("before cleaning")
             for l in lines_to_be_removed:
                 print(l.name)
+                print(l.product_id.name)
 
             # remove existing invoice lines from the list
             for invoice_line in move.invoice_line_ids:
                 if invoice_line.discount > 0:
                     for l in lines_to_be_removed:
+                        print (l.name +" -- " + invoice_line.name )
                         if l.name == invoice_line.name + " discount ":
                             lines_to_be_removed -= l
                 if move.ks_global_discount_rate > 0:
@@ -457,7 +459,7 @@ class YDSAccountMove(models.Model):
                             lines_to_be_removed -= l
 
             # debugging purposes REMOVE ME
-            # print("after cleaning")
+            print("after cleaning")
             for l in lines_to_be_removed:
                 print(l.name)
 
