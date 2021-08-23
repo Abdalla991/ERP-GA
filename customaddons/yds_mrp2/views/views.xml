@@ -3,6 +3,17 @@
 
     <data>
 
+        <record id="mrp_production_form_view_inherit_mrp" model="ir.ui.view">
+            <field name="name">mrp.production.view.form.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='quantity_done']" position="before">
+                    <field name="qty_in_preprd" />
+                </xpath>
+            </field>
+        </record>
+
         <record id="yds_res_config_settings_view_form" model="ir.ui.view">
             <field name="name">yds.res.config.settings.view.form.inherit.mark.done</field>
             <field name="model">res.config.settings</field>
@@ -18,6 +29,23 @@
                             <label for="mo_mark_done_restriction" />
                             <div class="text-muted">
                                 Enable restriction on Manufacturing Order mark done buttone, to check available quantities.</div>
+                        </div>
+                    </div>
+                    <div class="o_setting_right_pane" modifiers="{}">
+                        <label for="qty_in_mo_relation"/>
+                        <a href="" title="Stock" class="o_doc_link" target="_blank" modifiers="{}"/>
+                        <div class="text-muted">
+                            
+                                Stock to show additional QTY from in MO .
+                            
+                        </div>
+                        <div class="content-group">
+                            <div class="content-group">
+                                <div class="mt16" modifiers="{}">
+                                    <label for="qty_in_mo_relation" string="Stock" modifiers="{}"/>
+                                    <field name="qty_in_mo_relation" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </xpath>
