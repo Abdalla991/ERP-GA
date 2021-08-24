@@ -49,12 +49,12 @@ class YdsMrpProduction(models.Model):
         if self.mark_done_restriction:
             unavailable_components = []
             for move in self.move_raw_ids:
-                if move.state not in ['assigned', 'done', 'partially_available']:
+                if move.state not in ['assigned', 'done']:
                     unavailable_components.append(move.product_id.name)
             if len(unavailable_components) > 0:
                 unavail_str = ', '.join(unavailable_components)
                 raise ValidationError(
-                    _(f'Please check the availability of the following components: {unavail_str}.'))
+                    _(f'Please check the total availability of the following components: {unavail_str}.'))
                 return
             res = super(YdsMrpProduction, self).button_mark_done()
             return res
