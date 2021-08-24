@@ -6,8 +6,8 @@ class Company(models.Model):
     mo_mark_done_restriction = fields.Boolean(
         string="Mark Done Restriction", default=True)
 
-    qty_in_mo_relation = fields.Many2one(
-        'stock.location', string='Additional QTY Stock')
+    qty_in_store_relation = fields.Many2one(
+        'stock.location', string='Store Location')
 
 
 class YDSMrpSettings(models.TransientModel):
@@ -16,17 +16,17 @@ class YDSMrpSettings(models.TransientModel):
     mo_mark_done_restriction = fields.Boolean(
         string="Activate Mark Done Restriction", related='company_id.mo_mark_done_restriction', readonly=False)
 
-    qty_in_mo_relation = fields.Many2one(
-        'stock.location', string='Additional QTY Stock')
+    qty_in_store_relation = fields.Many2one(
+        'stock.location', string='Store Location')
 
-    qty_in_mo_id = fields.Integer(related='qty_in_mo_relation.id')
+    qty_in_store_id = fields.Integer(related='qty_in_store_relation.id')
 
     @api.model
     def get_values(self):
         res = super(YDSMrpSettings, self).get_values()
         res.update(
-            qty_in_mo_relation=int(self.env['ir.config_parameter'].sudo().get_param(
-                'yds_mrp2.qty_in_mo_id', default=False))
+            qty_in_store_relation=int(self.env['ir.config_parameter'].sudo().get_param(
+                'yds_mrp2.qty_in_store_id', default=False))
         )
         return res
 
@@ -34,6 +34,6 @@ class YDSMrpSettings(models.TransientModel):
         super(YDSMrpSettings, self).set_values()
         param = self.env['ir.config_parameter'].sudo()
 
-        field1 = self.qty_in_mo_id
+        field1 = self.qty_in_store_id
         param.set_param(
-            'yds_mrp2.qty_in_mo_id', field1)
+            'yds_mrp2.qty_in_store_id', field1)

@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="mrp.mrp_production_form_view" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='quantity_done']" position="before">
-                    <field name="qty_in_preprd" />
+                    <field name="qty_in_store" />
                 </xpath>
             </field>
         </record>
@@ -32,18 +32,16 @@
                         </div>
                     </div>
                     <div class="o_setting_right_pane" modifiers="{}">
-                        <label for="qty_in_mo_relation"/>
+                        <label for="qty_in_store_relation"/>
                         <a href="" title="Stock" class="o_doc_link" target="_blank" modifiers="{}"/>
                         <div class="text-muted">
-                            
-                                Stock to show additional QTY from in MO .
-                            
+                                Store location to display quantities from in the Manufacturing Order.                            
                         </div>
                         <div class="content-group">
                             <div class="content-group">
                                 <div class="mt16" modifiers="{}">
-                                    <label for="qty_in_mo_relation" string="Stock" modifiers="{}"/>
-                                    <field name="qty_in_mo_relation" />
+                                    <label for="qty_in_store_relation" string="Stock" modifiers="{}"/>
+                                    <field name="qty_in_store_relation" />
                                 </div>
                             </div>
                         </div>
