@@ -48,6 +48,9 @@ class normal_payments(models.Model):
     account_id = fields.Many2one('account.account', string="Account")
     analyitc_id = fields.Many2one(
         'account.analytic.account', string="Analytic Account")
+    computed_move_name = fields.Char(string="", required=False,
+                        readonly=True)
+
 
     def _compute_receipt_number(self):
 
@@ -93,70 +96,75 @@ class normal_payments(models.Model):
             'domain': [('jebal_con_pay_id', 'in', self.ids)],
         }
 
-    @api.depends('partner_id')
+    @api.depends('partner_id','computed_move_name')
     def get_title(self):
         for rec in self:
-            if rec.partner_id:
+            if rec.computed_move_name:
+                rec.name = rec.computed_move_name
+            elif rec.partner_id:
                 rec.name = "Payment for Customer " + str(rec.partner_id.name)
             else:
                 rec.name = '*'
+            
         return True
 
     def action_confirm(self):
-        pay_amt = 0
-        if self.payment_subtype:
-            pay_amt = self.amount
-        else:
-            pay_amt = self.amount1
-        move = {
-            'name': 'Parnter Payment ' + 'Receipt:' + self.receipt_number,
-            'journal_id': self.payment_method.id,
-            'ref': self.receipt_number,
-            'company_id': self.user_id.company_id.id,
-        }
-        move_line = {
-            'name': 'Parnter Payment ' + 'Receipt:' + self.receipt_number,
-            'partner_id': self.partner_id.id,
-            'ref': self.receipt_number,
-            'jebal_con_pay_id': self.id,
-        }
-        if self.send_rec_money == 'send':
-            debit_account = [{'account': self.account_id.id,
-                              'percentage': 100, 'analyitc_id': self.analyitc_id.id, }]
-            credit_account = [
-                {'account': self.payment_method.default_account_id.id, 'percentage': 100}]
-        else:
-            credit_account = [{'account': self.account_id.id,
-                               'percentage': 100, 'analyitc_id': self.analyitc_id.id, }]
-            debit_account = [
-                {'account': self.payment_method.default_account_id.id, 'percentage': 100}]
-        self.env['create.moves'].create_move_lines(move=move, move_line=move_line,
-                                                   debit_account=debit_account,
-                                                   credit_account=credit_account,
-                                                   src_currency=self.currency_id,
-                                                   amount=pay_amt)
-        self.state = 'posted'
-        if self.payment_subtype:
-            for check in self.pay_check_ids:
-                check_line_val = {}
-                check_line_val['check_number'] = check.check_number
-                check_line_val['check_date'] = check.check_date
-                check_line_val['check_bank'] = check.bank.id
-                check_line_val['dep_bank'] = check.dep_bank.id
-                if self.send_rec_money == 'rece':
-                    check_line_val['state'] = 'holding'
-                    check_line_val['check_type'] = 'rece'
-                else:
-                    check_line_val['state'] = 'handed'
-                    check_line_val['check_type'] = 'pay'
-                check_line_val['amount'] = check.amount
-                check_line_val['open_amount'] = check.amount
-                check_line_val['type'] = 'regular'
-                check_line_val['notespayable_id'] = self.payment_method.default_account_id.id
-                check_line_val['notes_rece_id'] = self.payment_method.default_account_id.id
-                check_line_val['investor_id'] = self.partner_id.id
-                self.env['check.management'].create(check_line_val)
-        return True
+        for rec in self:
+            pay_amt = 0
+            if rec.payment_subtype:
+                pay_amt = rec.amount
+            else:
+                pay_amt = rec.amount1
+            move = {
+                'name': 'Parnter Payment ' + 'Receipt:' + rec.receipt_number,
+                'journal_id': rec.payment_method.id,
+                'partner_id': rec.partner_id.id,
+                'ref': rec.name,
+                'company_id': rec.user_id.company_id.id,
+            }
+            move_line = {
+                'name': 'Parnter Payment ' + 'Receipt:' + rec.receipt_number,
+                'partner_id': rec.partner_id.id,
+                'ref': rec.name,
+                'jebal_con_pay_id': rec.id,
+            }
+            if rec.send_rec_money == 'send':
+                debit_account = [{'account': rec.account_id.id,
+                                'percentage': 100, 'analyitc_id': rec.analyitc_id.id, }]
+                credit_account = [
+                    {'account': rec.payment_method.default_account_id.id, 'percentage': 100}]
+            else:
+                credit_account = [{'account': rec.account_id.id,
+                                'percentage': 100, 'analyitc_id': rec.analyitc_id.id, }]
+                debit_account = [
+                    {'account': rec.payment_method.default_account_id.id, 'percentage': 100}]
+            rec.computed_move_name = rec.env['create.moves'].create_move_lines(move=move, move_line=move_line,
+                                                    debit_account=debit_account,
+                                                    credit_account=credit_account,
+                                                    src_currency=rec.currency_id,
+                                                    amount=pay_amt)
+            rec.state = 'posted'
+            if rec.payment_subtype:
+                for check in rec.pay_check_ids:
+                    check_line_val = {}
+                    check_line_val['check_number'] = check.check_number
+                    check_line_val['check_date'] = check.check_date
+                    check_line_val['check_bank'] = check.bank.id
+                    check_line_val['dep_bank'] = check.dep_bank.id
+                    if rec.send_rec_money == 'rece':
+                        check_line_val['state'] = 'holding'
+                        check_line_val['check_type'] = 'rece'
+                    else:
+                        check_line_val['state'] = 'handed'
+                        check_line_val['check_type'] = 'pay'
+                    check_line_val['amount'] = check.amount
+                    check_line_val['open_amount'] = check.amount
+                    check_line_val['type'] = 'regular'
+                    check_line_val['notespayable_id'] = rec.payment_method.default_account_id.id
+                    check_line_val['notes_rece_id'] = rec.payment_method.default_account_id.id
+                    check_line_val['investor_id'] = rec.partner_id.id
+                    rec.env['check.management'].create(check_line_val)
+            return True
 
 
 class payments_check_create(models.Model):

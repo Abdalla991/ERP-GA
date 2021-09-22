@@ -68,6 +68,7 @@ class check_cycle_accs(models.TransientModel):
                     move = {
                         'name': 'Depoisting Check number ' + check.check_number,
                         'journal_id': self.journal_id.id,
+                        'partner_id': check.investor_id.id,
                         'ref': 'Depoisting Check number ' + check.check_number,
                         'company_id': self.env.user.company_id.id
                     }
@@ -109,6 +110,7 @@ class check_cycle_accs(models.TransientModel):
                     move = {
                         'name': 'Approving Check number ' + check.check_number,
                         'journal_id': self.journal_id.id,
+                        'partner_id': check.investor_id.id,
                         'ref': 'Approving Check number ' + check.check_number,
                         'company_id': self.env.user.company_id.id
                     }
@@ -166,6 +168,7 @@ class check_cycle_accs(models.TransientModel):
                     move = {
                         'name': 'Returning Check number ' + check.check_number,
                         'journal_id': check.under_collect_jour.id,
+                        'partner_id': check.investor_id.id,
                         'ref': 'Returning Check number ' + check.check_number,
                         'company_id': self.env.user.company_id.id
                     }
@@ -197,6 +200,7 @@ class check_cycle_accs(models.TransientModel):
                     move = {
                         'name': 'Debiting Check number ' + check.check_number,
                         'journal_id': self.journal_id.id,
+                        'partner_id': check.investor_id.id,
                         'ref': 'Debiting Check number ' + check.check_number,
                         'company_id': self.env.user.company_id.id
                     }
@@ -227,6 +231,7 @@ class check_cycle_accs(models.TransientModel):
                         'name': 'Returning Check number ' + check.check_number + ' to customer',
                         # 'journal_id': journal_id,
                         'journal_id': exchange_journal.id,
+                        'partner_id': check.investor_id.id,
                         'ref': 'Returning Check number ' + check.check_number + ' to customer',
                         'company_id': self.env.user.company_id.id,
 

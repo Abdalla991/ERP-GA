@@ -1,10 +1,9 @@
 from odoo import models, fields, api, exceptions
 from datetime import date, datetime, time, timedelta
+from collections import defaultdict
 
 class acc_move(models.Model):
-
-    _inherit = 'account.move'
-
+    _inherit='account.move'
 class move_lines(models.Model):
 
     _inherit = 'account.move.line'
@@ -38,17 +37,18 @@ class create_moves(models.Model):
         amount_b = currency_id._convert(kwargs['amount'], company_currency, company,date)
         credit = amount_b < 0 and -amount_b or 0.00
         move_vals = {
-            'name': kwargs['move']['name'],
+            # 'name': kwargs['move']['name'],
+            'partner_id': kwargs['move']['partner_id'],
             'journal_id': kwargs['move']['journal_id'],
             'date': datetime.today(),
             'ref': kwargs['move']['ref'],
             'company_id': kwargs['move']['company_id'],
-        }
-
+        }  
         move = self.env['account.move'].with_context(check_move_validity=False).create(move_vals)
+
         for index in kwargs['debit_account']:
             debit_line_vals = {
-                'name': kwargs['move_line']['name'],
+                # 'name': kwargs['move_line']['name'],
                 'account_id': index['account'],
                 'partner_id': kwargs['move_line']['partner_id'],
                 'debit': (index['percentage'] / 100) * kwargs['amount'],
@@ -71,7 +71,7 @@ class create_moves(models.Model):
 
         for index in kwargs['credit_account']:
             credit_line_vals = {
-                'name': kwargs['move_line']['name'],
+                # 'name': kwargs['move_line']['name'],
                 'account_id': index['account'],
                 'partner_id': kwargs['move_line']['partner_id'],
                 'debit': credit,
@@ -89,6 +89,7 @@ class create_moves(models.Model):
             credit_line_vals['move_id'] = move.id
             aml_obj.create(credit_line_vals)
         move.action_post()
+        return move.name
     def adjust_move_percentage(self,**kwargs):
         # Debit
         tot_dens = 0.0
