@@ -1,6 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-import ipdb, math
+import math
 
 class mrpReport(models.TransientModel):
     _name = 'mrp.report'
