@@ -1,6 +1,5 @@
 from odoo import models, fields, api, exceptions, _
 from odoo.exceptions import UserError, ValidationError
-import ipdb  # Remove before publishing
 
 # this file is concerned with the addition/removal of new lines
 
