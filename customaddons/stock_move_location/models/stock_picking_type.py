@@ -1,6 +1,7 @@
 # Copyright 2019 Sergio Teruel <sergio.teruel@tecnativa.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-from odoo import fields, models
+from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 
 class StockPickingType(models.Model):
@@ -24,3 +25,20 @@ class StockPickingType(models.Model):
             "default_edit_locations": False,
         }
         return action
+
+
+class YDSStockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    def button_validate(self):
+        if self.picking_type_id.code == 'internal':
+
+            for move_line in self.move_line_ids_without_package:
+                yds_product_id=move_line.product_id
+                yds_stock_location=move_line.location_id
+                res=self.env['stock.quant'].search([('location_id','=',yds_stock_location.id),('product_id','=',yds_product_id.id)])
+                final_number= res.quantity-res.reserved_quantity
+                if move_line.qty_done > final_number:
+                    raise ValidationError("Done quantity can not be bigger than stock available quantity")
+                else:
+                    super(YDSStockPicking,self).button_validate()
